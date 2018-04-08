@@ -2177,6 +2177,7 @@ section {
   display: block;
 }
 
+
 /**
  * Correct the font size and margin on `h1` elements within `section` and
  * `article` contexts in Chrome, Firefox, and Safari.
@@ -2382,6 +2383,31 @@ textarea {
   margin: 0;
   /* 2 */
 }
+
+select{
+  height: 2.4375rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-user-select: none;
+  user-select: none;
+  appearance: none;
+  border: 1px solid #cacaca;
+  border-radius: 3px;
+  background-color: #fefefe;
+  font-size: 1rem;
+  line-height: normal;
+  color: #333333;
+  background-origin: content-box;
+  background-position: right -1rem center;
+  background-repeat: no-repeat;
+  background-size: 9px 6px;
+  padding-right: 1.5rem;
+  transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
+}
+
+
 
 /**
  * Show the overflow in IE.
@@ -6071,7 +6097,7 @@ button.btn-floating {
 }
 
 select:focus {
-  outline: 1px solid #c9f3ef;
+  outline: 1px solid #1565c0;
 }
 
 button:focus {
