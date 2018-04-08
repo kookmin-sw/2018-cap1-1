@@ -20,19 +20,20 @@ var provider = new HookedWeb3Provider({
             };
             // 개인 키를 저장하기 위한 버퍼 생성
             var privateKey = EthJS.Util.toBuffer('0x1a56e47492bf3df9', 'hex');
-            var tx = new EthJS.Tx(rawTx); 
-            tx.sign(privateKey);
-            callback(null, tx.serialize().toString('hex'));
+            var tx = new EthJS.Tx(rawTx); // 원시 트랜잭션 생성
+            tx.sign(privateKey); // 원시 트랜잭션을 서명
+            callback(null, tx.serialize().toString('hex')); // 서명된 것을 직렬화하여 콜백을 사용해 전달
         }
     }
 });
 var web3 = new Web3(provider);
 web3.eth.sendTransaction({
+    // 커스텀 공급자가 nonce를 계산할 수 있으므로 여기서는  nonce빼고 전달
     from: "0xba6406ddf8817620393ab1310ab4d0c2deda714d",
     to: "0x2bdbec0ccd70307a00c66de02789e394c2c7d549",
     value: web3.toWei("0.1", "ether"),
     gasPrice: "2000000000",
-    gas: "21000"
+    gas: "21000" // 어떤 데이터도 없는 경우 항상 가스는 21000 !!!
 }, function(error, result){
     console.log(error, result)
 })
