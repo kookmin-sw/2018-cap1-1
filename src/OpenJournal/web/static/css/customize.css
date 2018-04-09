@@ -26,3 +26,27 @@
 .sch_smit:hover {
   background: #0D47A1;
 }
+
+.articles__header {
+  padding-top: 5px;
+  padding-bottom: 10px;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  line-height: 1;
+}
+
+.articles__header-select select {
+  max-width: 300px;
+}
+
+
