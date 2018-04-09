@@ -3457,7 +3457,7 @@ table span.badge {
 .container {
   margin: 0 auto;
   max-width: 1280px;
-  width: 90%;
+  width: 100%;
 }
 
 @media only screen and (min-width: 601px) {
