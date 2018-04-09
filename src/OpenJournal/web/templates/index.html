@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Parallax Template - Materialize</title>
+  <title>Open Journal</title>
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -14,7 +14,7 @@
 <body>
   <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="#" class="brand-logo">Open Jaurnal</a>
+      <a id="logo-container" href="#" class="brand-logo">Open Journal</a>
       <ul class="right hide-on-med-and-down">
         <li><a href="#">인기 논문</a></li>
       </ul>
@@ -46,7 +46,7 @@
     <div class="section no-pad-bot">
       <div class="container">
         <br><br>
-        <h1 class="header center blue-text text-darken-4 text-lighten-2">OPEN JAURNAL</h1>
+        <h1 class="header center blue-text text-darken-4 text-lighten-2">OPEN JOURNAL</h1>
         <div class="row center">
           <h5 class="header col s12  black-text">논문 저작권자에게 충분한 보상이 보장되는 오픈 저널 커뮤니티</h5>
         </div>
@@ -75,11 +75,45 @@
       </div>
     </div>
   </div>
-
+  
+    <div  class="container">
+    <div class="section">
+      <div class="articles__header row">
+        <div class="col s4 center">
+          <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
+            <option value="total">전체</option>
+            <option value="engineering">공학</option>
+            <option value="education">교육</option>
+            <option value="AFO">농수해양</option>
+            <option value="interdisciplinary">복합학</option>
+            <option value="social">사회</option>
+            <option value="article_physication">예술체육</option>
+            <option value="medicine">의약학</option>
+            <option value="humanities">인문</option>
+            <option value="natural">자연</option>
+          </select>
+        </div>
+        <div class="col s4 center">
+          <select id="subCat" class="browser-default">
+            <option value="0">전체</option>
+          </select>
+        </div>
+        
+        <div class="col s4 center">
+          <select class="browser-default">
+            <option value="9">인기논문</option>
+            <option value="10">최신논문</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
   <!--  Scripts-->
+
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="../static/js/materialize.js"></script>
   <script src="../static/js/init.js"></script>
+  <script src="../static/js/customize.js"></script>
 
   </body>
 </html>
