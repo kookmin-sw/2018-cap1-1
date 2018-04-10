@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify
 from flask_oauthlib.client import OAuth
-from pymongo import MongoClient 
+from pymongo import MongoClient
 from urllib2 import Request, urlopen, URLError
 
 
@@ -87,17 +87,38 @@ def login2():
 def setcookie():
    if request.method == 'POST':
 	user = request.form['nm']
-   
  	resp = make_response(render_template('readcookie.html'))
-	resp.set_cookie('userID', user)   
+	resp.set_cookie('userID', user)
    	return resp
-
 
 @app.route('/getcookie')
 def getcookie():
    name = request.cookies.get('userID')
    return '<h1>welcome '+name+'</h1>'
 
+@app.route('/enrollArticle')
+def enrollArticle():
+   return render_template('write.html')
+
+@app.route('/setArticle', methods=['POST'])
+def setArticle():
+    if 'google_token' in session:
+        if request.method == 'POST':
+            me = google.get('userinfo')
+            category = "article test"
+            userId = me.data['email']
+            subject = request.form['subject']
+            content = request.form['content']
+            doc = {'user_id': userId, 'category':category,'subject':subject, 'content':content}
+            client = MongoClient('localhost', 27017)
+            db = client.OpenJournal
+            collection = db.Article
+            collection.insert(doc)
+            client.close()
+            print("test")
+            return "글쓰기 성공"
+        else:
+            return "no session"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
