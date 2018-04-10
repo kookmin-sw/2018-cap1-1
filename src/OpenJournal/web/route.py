@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*- 
-
 from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify
 from flask_oauthlib.client import OAuth
 from pymongo import MongoClient 
@@ -35,7 +34,8 @@ def index():
     if 'google_token' in session:
         me = google.get('userinfo')
 	return render_template('authorization.html', name=me.data['name'])
-    return redirect(url_for('login'))
+    else:
+	return redirect(url_for('login'))
 
 @app.route('/login')
 def login():
@@ -108,7 +108,9 @@ def enrollUser():
 		return "이미 회원 가입 되었습니다."
 	collection.insert(doc)
 	client.close()
-	return render_template("index.html")   
+	return render_template("index.html")
+    else:
+	return "잘못된 데이터 수신 에러 입니다."   
     
 """쿠키 설정"""
 @app.route('/login2')
@@ -127,7 +129,6 @@ def setcookie():
 def getcookie():
    name = request.cookies.get('userID')
    return '<h1>welcome '+name+'</h1>'
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
