@@ -41,5 +41,3 @@ function ShowHideSubCat(){
   
   subElement.appendChild(df);
 }
-
-
