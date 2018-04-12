@@ -37,7 +37,8 @@ def index():
         me = google.get('userinfo')
         #return me.data['gender']
 	return render_template('authorization.html', name=me.data['name'])
-    return redirect(url_for('login'))
+    else:
+	return redirect(url_for('login'))
 
 
 @app.route('/login')
