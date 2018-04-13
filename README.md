@@ -1,6 +1,6 @@
 # Open Journal - 캡톤 아메리카
 
- <img style="display:block; margin:auto;" src="../img/cap.png" width="70%" height="70%">
+ <img style="display:block; margin:auto;" src="/img/cap.png" width="70%" height="70%">
 
 ### 1. 프로젝트 목적 
 
