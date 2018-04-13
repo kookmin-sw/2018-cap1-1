@@ -6,6 +6,7 @@
 
   현재 논문시장에서는 논문을 검수하는 과정, 등록하는 과정에서 많은 비용이 나갈 뿐만 아니라, 논문을 학회에 등록하게 되면 저작권을 포기하기까지 하며 저작권료에 대한 보상을 받지 못하는 경우가 대부분이다. 우리는 저작권을 중요시하는 **논문 시장 분야**에 블록체인 기술을 적용시켜 IEEE, ACM, 한국정보과학회와 같은 **중앙 집권형 데이터베이스 관리 시스템** 형식의 학회에서 벗어나려 한다. 본 프로젝트는 논문 저자가 **Open Journal** 플랫폼에 논문을 게재할 때, 블록체인 기술을 이용하여 논문 저자와 논문 사용자 사이에 **Smart Contract**에 의해서 즉각적으로 거래가 이루어져 저자의 저작권을 충분히 보호해주고 보상해주는 것을 목표로 한다.
 
+
 ## 2. Abstract
 
   In the present journal market, not only is there a lot of cost in the process of accepting and registering theses, but also when the thesis is registered in the academic society, its abandoned and the reward is not received. Our team try to escape from **a centralized database management system type society** like IEEE, ACM, and Korea Information Science Society by applying block chain technology to the copyright market. When make transaction using **open journal** platform, this project aims to provide sufficient protection for authors' copyright  immediately by **Smart Contract** between authors and users using block-chain technology.
@@ -16,7 +17,6 @@
 
 [![capton](http://img.youtube.com/vi/FlC69TKqo5M/0.jpg)](https://www.youtube.com/watch?v=FlC69TKqo5M "capton")
 
-------
 
 ## 4. 팀 소개
 
