@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-
 from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify
 from flask_oauthlib.client import OAuth
 from pymongo import MongoClient
 from urllib2 import Request, urlopen, URLError
-
 
 app = Flask(__name__)
 app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
@@ -38,7 +36,7 @@ def index():
         return render_template('authorization.html', name=me.data['name'])
     else:
         return redirect(url_for('login'))
-
+      
 @app.route('/login')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
@@ -46,7 +44,6 @@ def login():
 @app.route('/logout', methods = ['POST', 'GET'])
 def logout():
     session.pop('google_token', None)
-    #return redirect(url_for('index'))
     return render_template('index.html')
 
 @app.route('/login/authorized')
@@ -59,8 +56,22 @@ def authorized():
         )
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-    return jsonify({"data": me.data})
-    #return render_template('authorization.html', name=me.data['name'])
+
+    userId = me.data['email']
+    userName = me.data['name']
+    doc = {'user_id': userId, 'user_name': userName}
+   
+    client = MongoClient('localhost', 27017)
+    db = client.OpenJournal
+    collection = db.Oauth_Users
+    cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
+    for document in cursor:  
+	if document['user_id'] == userId:
+	    return render_template('authorization.html', name=me.data['name'])
+    	    
+    collection.insert(doc)
+    client.close()
+    return "구글계정으로 처음 로그인. db에 oauth정보 추가"    
 
 @google.tokengetter
 def get_google_oauth_token():
@@ -76,6 +87,32 @@ def board():
     client.close()
     return render_template('white_board.html', data=rows)
 
+@app.route('/enroll')
+def enroll():
+   return render_template('enroll.html')
+
+#일반회원 가입. 데이터베이스에 User등록
+@app.route('/enrollUser', methods=['POST'])
+def enrollUser():
+    if request.method == 'POST':
+        userId = request.form['user_id']
+	userName = request.form['user_name']
+	userPw = request.form['user_pw']
+  	doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw}  
+        client = MongoClient('localhost', 27017)
+        db = client.OpenJournal
+        collection = db.Users
+        cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
+        for document in cursor:  
+	    if document['user_id'] == userId:
+		return "이미 회원 가입 되었습니다."
+	collection.insert(doc)
+	client.close()
+	return render_template("index.html")
+    else:
+	return "잘못된 데이터 수신 에러 입니다."   
+    
+"""쿠키 설정"""
 @app.route('/login2')
 def login2():
    return render_template('login2.html')
@@ -114,9 +151,9 @@ def setArticle():
             client.close()
             return "글쓰기 성공"
         else:
-            return "no session"
+            return "세션에 토큰정보없음"
     else:
         return "로그인 안돼있음"
-
+      
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

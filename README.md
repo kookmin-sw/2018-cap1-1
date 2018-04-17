@@ -1,43 +1,74 @@
-# 캡톤 아메리카
-![capton](./img/cap.png)
-## 1. 프로젝트 소개
-우리의 프로젝트는 논문 저자가 우리가 만든 플랫폼에 논문을 게재하였을 때 블록체인 기술을 이용하여 논문저자와 사용자가 Smart  Contract에 의해서 즉각적으로 금전적 거래가 이루어 지는 것을 목표로 한다.  우리가 만든 플랫폼에 현실 세계에서의 신뢰성 향상을 위해서 다양한 주제에 대한 토론의 장이 될 수 있는 Open Journal Community 구축을 목표로 하고 있다. 저자가 우리의 플랫폼을 사용하게 된다면, **저자는 자신의 논문에 대한 정확한 저작권료를 가상 화폐로 받을 수 있고, 사용자는 가상 화폐를 통해 논문을 열람할 수 있다**. 
+# Open Journal - 캡톤 아메리카
 
-## 2. 소개 영상
+ <img style="display:block; margin:auto;" src="/img/cap.png" width="70%" height="70%">
+
+## 1. 프로젝트 목적 
+
+  현재 논문시장에서는 논문을 검수하는 과정, 등록하는 과정에서 많은 비용이 나갈 뿐만 아니라, 논문을 학회에 등록하게 되면 저작권을 포기하기까지 하며 저작권료에 대한 보상을 받지 못하는 경우가 대부분이다. 우리는 저작권을 중요시하는 **논문 시장 분야**에 블록체인 기술을 적용시켜 IEEE, ACM, 한국정보과학회와 같은 **중앙 집권형 데이터베이스 관리 시스템** 형식의 학회에서 벗어나려 한다. 본 프로젝트는 논문 저자가 **Open Journal** 플랫폼에 논문을 게재할 때, 블록체인 기술을 이용하여 논문 저자와 논문 사용자 사이에 **Smart Contract**에 의해서 즉각적으로 거래가 이루어져 저자의 저작권을 충분히 보호해주고 보상해주는 것을 목표로 한다.
+
+
+## 2. Abstract
+
+  In the present journal market, not only is there a lot of cost in the process of accepting and registering theses, but also when the thesis is registered in the academic society, its abandoned and the reward is not received. Our team try to escape from **a centralized database management system type society** like IEEE, ACM, and Korea Information Science Society by applying block chain technology to the copyright market. When make transaction using **open journal** platform, this project aims to provide sufficient protection for authors' copyright  immediately by **Smart Contract** between authors and users using block-chain technology.
+
+
+
+## 3. 프로젝트 소개 영상
+
 [![capton](http://img.youtube.com/vi/FlC69TKqo5M/0.jpg)](https://www.youtube.com/watch?v=FlC69TKqo5M "capton")
-## 3. 팀 소개
-### 임성수 교수님
 
-#### 1.  팀장: 엄형근 
-![eom](./img/eom.png)
- ```markdown
+
+## 4. 팀 소개
+
+#### - 지도교수 : 임성수교수님 (Lim Sung-soo)
+
+```markdown
+역할: 캡톤 아메리카의 정신적 지주, 블록체인 전문가
+E-mail: sslim@kookmin.ac.kr 
+
+```
+
+
+
+#### - 팀장 : 엄형근 (Eom Hyeong-geun)
+
+![eom](/img/eom.png)
+
+```markdown
 학번: 20133236
 역할: Block Chain Data Structure 개발
 E-mail: eom2390@gmail.com
 ```
-#### 2.  팀원: 차민준 
-![cha](./img/cha.png)
- ```markdown
+
+#### - 팀원 : 차민준 (Cha Min-jun)
+
+
+
+![cha](/img/cha.png)
+
+```markdown
 학번: 20133266
 역할: Block Chain Data Structure 개발
 E-mail: minjun12378@gmail.com
 ```
-#### 3.  팀원: 구민준
-![goo](./img/goo.png)
- ```markdown
+
+#### - 팀원 : 구민준 (Koo Min-jun)
+
+![goo](/img/goo.png)
+
+```markdown
 학번: 20133192
 역할: Web Front End 개발 및 커뮤니티 서비스 개발
 E-mail: mjkoo711@gmail.com
 ```
-#### 4.  팀원: 변구훈
-![hoon](./img/goohoon.png)
- ```markdown
+
+#### - 팀원 : 변구훈 (Byun Goo-hoon)
+
+![hoon](/img/goohoon.png)
+
+```markdown
 학번: 20153185
 역할: Web Back End 개발, DB 설계
 E-mail: dksekfldks65@naver.com  
 ```
-## 4. 기타
 
-
-
- 

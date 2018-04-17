@@ -3106,7 +3106,6 @@ td, th {
 
 .collection {
   margin: 0.5rem 0 1rem 0;
-  border: 1px solid #e0e0e0;
   border-radius: 2px;
   overflow: hidden;
   position: relative;
@@ -3116,12 +3115,12 @@ td, th {
   background-color: #fff;
   line-height: 1.5rem;
   padding: 10px 20px;
-  margin: 0;
-  border-bottom: 1px solid #e0e0e0;
+  border: 1px solid #e0e0e0;
+  margin-bottom : 0.5rem;
 }
 
 .collection .collection-item.avatar {
-  min-height: 84px;
+  height: 100%;
   padding-left: 72px;
   position: relative;
 }
@@ -3157,10 +3156,6 @@ td, th {
   position: absolute;
   top: 16px;
   right: 16px;
-}
-
-.collection .collection-item:last-child {
-  border-bottom: none;
 }
 
 .collection .collection-item.active {
