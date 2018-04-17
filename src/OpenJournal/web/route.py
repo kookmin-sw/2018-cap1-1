@@ -35,23 +35,19 @@ def home():
 def index():
     if 'google_token' in session:
         me = google.get('userinfo')
-        #return me.data['gender']
-	return render_template('authorization.html', name=me.data['name'])
+        return render_template('authorization.html', name=me.data['name'])
     else:
-	return redirect(url_for('login'))
-
+        return redirect(url_for('login'))
 
 @app.route('/login')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
-
 
 @app.route('/logout', methods = ['POST', 'GET'])
 def logout():
     session.pop('google_token', None)
     #return redirect(url_for('index'))
     return render_template('index.html')
-
 
 @app.route('/login/authorized')
 def authorized():
@@ -71,14 +67,14 @@ def get_google_oauth_token():
     return session.get('google_token')
 
 #mongo URI가 들어왔을 때 'GET'메소드를 통해 mongo.html에 data 전송
-@app.route('/mongo', methods=['GET'])
-def mongo():
+@app.route('/board', methods=['GET'])
+def board():
     client = MongoClient('localhost', 27017)
-    db = client.mongoTest
-    collection = db.mongoTest
-    results = collection.find()
+    db = client.OpenJournal
+    collection = db.Article
+    rows = collection.find()
     client.close()
-    return render_template('mongo.html', data=results)
+    return render_template('white_board.html', data=rows)
 
 @app.route('/login2')
 def login2():
@@ -116,10 +112,11 @@ def setArticle():
             collection = db.Article
             collection.insert(doc)
             client.close()
-            print("test")
             return "글쓰기 성공"
         else:
             return "no session"
+    else:
+        return "로그인 안돼있음"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
