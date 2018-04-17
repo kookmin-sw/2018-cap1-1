@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify
 from flask_oauthlib.client import OAuth
-from pymongo import MongoClient 
+from pymongo import MongoClient
 from urllib2 import Request, urlopen, URLError
 
 app = Flask(__name__)
@@ -33,10 +33,10 @@ def home():
 def index():
     if 'google_token' in session:
         me = google.get('userinfo')
-	return render_template('authorization.html', name=me.data['name'])
+        return render_template('authorization.html', name=me.data['name'])
     else:
-	return redirect(url_for('login'))
-
+        return redirect(url_for('login'))
+      
 @app.route('/login')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
@@ -78,14 +78,14 @@ def get_google_oauth_token():
     return session.get('google_token')
 
 #mongo URI가 들어왔을 때 'GET'메소드를 통해 mongo.html에 data 전송
-@app.route('/mongo', methods=['GET'])
-def mongo():
+@app.route('/board', methods=['GET'])
+def board():
     client = MongoClient('localhost', 27017)
-    db = client.mongoTest
-    collection = db.mongoTest
-    results = collection.find()
+    db = client.OpenJournal
+    collection = db.Article
+    rows = collection.find()
     client.close()
-    return render_template('mongo.html', data=results)
+    return render_template('white_board.html', data=rows)
 
 @app.route('/enroll')
 def enroll():
@@ -122,7 +122,7 @@ def setcookie():
    if request.method == 'POST':
 	user = request.form['nm']
  	resp = make_response(render_template('readcookie.html'))
-	resp.set_cookie('userID', user)   
+	resp.set_cookie('userID', user)
    	return resp
 
 @app.route('/getcookie')
@@ -130,5 +130,30 @@ def getcookie():
    name = request.cookies.get('userID')
    return '<h1>welcome '+name+'</h1>'
 
+@app.route('/enrollArticle')
+def enrollArticle():
+   return render_template('write.html')
+
+@app.route('/setArticle', methods=['POST'])
+def setArticle():
+    if 'google_token' in session:
+        if request.method == 'POST':
+            me = google.get('userinfo')
+            category = "article test"
+            userId = me.data['email']
+            subject = request.form['subject']
+            content = request.form['content']
+            doc = {'user_id': userId, 'category':category,'subject':subject, 'content':content}
+            client = MongoClient('localhost', 27017)
+            db = client.OpenJournal
+            collection = db.Article
+            collection.insert(doc)
+            client.close()
+            return "글쓰기 성공"
+        else:
+            return "세션에 토큰정보없음"
+    else:
+        return "로그인 안돼있음"
+      
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
