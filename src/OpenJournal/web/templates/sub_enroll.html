@@ -14,7 +14,7 @@
 <body>
   <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="#" class="brand-logo">Open Journal</a>
+      <a id="logo-container" href="main.html" class="brand-logo">Open Journal</a>
       <ul class="right hide-on-med-and-down">
         <li><a href="#">커뮤니티</a></li>
       </ul>
@@ -34,39 +34,25 @@
     <div class="section no-pad-bot">
       <div class="container">
         <br><br>
-        <h1 class="header center blue-text text-darken-4 text-lighten-2">OPEN JOURNAL</h1>
+        <h1 class="header center blue-text text-darken-4 text-lighten-2">논문 등록 및 검수</h1>
         <div class="row center">
-          <h5 class="header col s12  black-text">논문 저작권자에게 충분한 보상이 보장되는 오픈 저널 커뮤니티</h5>
+          <h5 class="header col s12  black-text">논문 등록을 위해, 검수를 통해 최소 5,000점의 명성 점수가 필요합니다.</h5>
         </div>
         <div class="row center">
-          <a href="oauth" id="" class="btn-large waves-effect waves-light blue darken-4">구글 로그인</a>
-          <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">가입</a>
+          <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">검수 신청</a>
           <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">더 알아보기</a>
         </div>
         <br><br>
       </div>
     </div>
-    <div class="parallax"><img src="../static/background1.jpg" alt="Unsplashed background img 1"></div>
+    <div class="parallax"><img src="../static/enrollment.png" alt="Unsplashed background img 1"></div>
   </div>
  
-  <div class="container">
-    <div class="section">
-      <div class="row">
-        <div class="col s12">
-          <form>
-            <span class='blue_window'>
-              <input type='search' class='input_text' />
-            </span>
-            <button type='submit' class='center sch_smit'><i class="material-icons">search</i></button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+  
   
   <div  class="container">
     <div class="section">
-      <div class="articles__header row">
+      <div class="row" style="margin-bottom:0px;">
         <div class="col s4 center">
           <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
             <option value="total">전체</option>
@@ -93,62 +79,54 @@
             <option value="10">최신논문</option>
           </select>
         </div>
-        
-        <div class="col s12">
-          <ul class="collection">
-            <li class="collection-item avatar">
-              <i class="material-icons circle purple">folder</i>
-              <span class="title">오픈소스 소프트웨어 비지니스 모델 분류 프레임워크</span>
-              <p>
-              저자 : 김상필 / 강영모 / 김종배 <br>
-              </p>
-              주제어 : 소프트웨어 / 비지니스 모델 / 프레임워크 / 오픈소스 / OSS 비지니스
-              <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-            </li>
-            <li class="collection-item avatar">
-              <i class="material-icons circle">folder</i>
-              <span class="title">미국 화학물질 규제행정의 체계와 법제</span>
-              <p>저자 : 오성은, 윤혜선<br></p>
-              <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 화학물질 규제체계 / 유해화학물질 관리 / 미국 유해화학물질관리법 / 미국 소비자제품안전개선법 / 캘리포니아 법령 65 / Chemical Regulation / Toxic Substance Management / U.S. Toxic Substance Control Act of 1976 / U.S. Consumer Product Safety Improvement Act / California Proposition 65 / 사회과학 / 법학
-              </p>
-            </li>
-            <li class="collection-item avatar">
-              <i class="material-icons circle green">folder</i>
-              <span class="title">투석환자에서 수면장애에 영향을 주는 심리학적 요인과 의학적 요인</span>
-              <p>저자 : 지윤미 / 강건우 / 서민재 / 김홍익 / 우정민<br></p>
-              <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : Hemodialysis patients / Quality of life / Psychological factors / Medical factors / 심리학적 요인 / 의학적 요인 / 혈액투석환자 / 삶의 질 / 수면의 질 / Sleep quality / 의학 / Medicine / 임상의학
-              </p>
-              <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-            </li>
-            <li class="collection-item avatar">
-              <i class="material-icons circle blue">folder</i>
-              <span class="title">체육과 인간 형성에 관한 근대 일본의 연구 동향</span>
-              <p>저자 : 김기용<br></p>
-              <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 체육개념 / 인간형성 / 연구동향
-              </p>
-            </li>
-            <li class="collection-item avatar">
-              <i class="material-icons circle yellow">folder</i>
-              <span class="title">자연명상법을 통한 심리치유의 필요성과 그 대안</span>
-              <p>저자 : 강명희<br></p>
-              <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 기세간 / 자연환경 / 아뢰야식 / 계차별관 / 명상 / 수용 / Bhājana loka / A natural environment / Ālayavijñāna / Dhātu-prabheda-sṃrti / Meditation / A acceptance. / 인문학 / 불교학
-              </p>
-              <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-            </li>
-            <li class="collection-item avatar">
-              <i class="material-icons circle pink">folder</i>
-              <span class="title">오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
-              <p>저자 : 이준표 / 한갑수 / 이승항<br></p>
-              <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 공학 / Engineering / 전기통신
-              </p>
-              <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
-            </li>
-          </ul>
-        </div>
+      </div>
+
+      <div style="border:1px solid; margin-bottom:20px;">
+          <div class="nav-wrapper col s12 center">
+            <form>
+              <div class="input-field">
+                <input id="search" type="search" required>
+                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                <i class="material-icons">close</i>
+              </div>
+            </form>
+          </div>
+      </div>
+
+      <div class="col s12">
+        <ul class="collection">
+          <li class="collection-item avatar">
+            <i class="material-icons circle">folder</i>
+            <span class="title">미국 화학물질 규제행정의 체계와 법제</span>
+            <p>저자 : 오성은, 윤혜선<br></p>
+            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 화학물질 규제체계 / 유해화학물질 관리 / 미국 유해화학물질관리법 / 미국 소비자제품안전개선법 / 캘리포니아 법령 65 / Chemical Regulation / Toxic Substance Management / U.S. Toxic Substance Control Act of 1976 / U.S. Consumer Product Safety Improvement Act / California Proposition 65 / 사회과학 / 법학
+            </p>
+          </li>
+          
+          <li class="collection-item avatar">
+            <i class="material-icons circle blue">folder</i>
+            <span class="title">체육과 인간 형성에 관한 근대 일본의 연구 동향</span>
+            <p>저자 : 김기용<br></p>
+            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 체육개념 / 인간형성 / 연구동향
+            </p>
+          </li>
+        </ul>
+      </div>
+      <div class="col s12 center">
+        <ul class="pagination">
+          <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+          <li class="active"><a href="#!">1</a></li>
+          <li class="waves-effect"><a href="#!">2</a></li>
+          <li class="waves-effect"><a href="#!">3</a></li>
+          <li class="waves-effect"><a href="#!">4</a></li>
+          <li class="waves-effect"><a href="#!">5</a></li>
+          <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+        </ul>
       </div>
     </div>
   </div>
   <!--  Scripts-->
+
 
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="../static/js/materialize.js"></script>
