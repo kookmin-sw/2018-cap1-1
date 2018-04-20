@@ -2,7 +2,16 @@
 from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify
 from flask_oauthlib.client import OAuth
 from pymongo import MongoClient
+from pymongo import Connection
 from urllib2 import Request, urlopen, URLError
+import gridfs
+from gridfs.errors import NoFile
+from bson.objectid import ObjectId
+from werkzeug import secure_filename
+
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+db = Connection().test
+fs = gridfs.GridFS(db)
 
 app = Flask(__name__)
 app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
@@ -41,6 +50,37 @@ def index():
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
 
+def allowed_file(filename):
+    return '.' in filename and \
+            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+@app.route('/enrollPaper', methods=['GET', 'POST'])
+def enrollPaper():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file:
+            filename = secure_filename(file.filename)
+            oid = fs.put(file, content_type=file.content_type, filename=filename)
+            #return redirect(url_for('serve_gridfs_file', oid=str(oid)))\
+            return "file upload success"
+    return "file upload fail"
+
+"""
+@app.route('/files/<oid>')
+def serve_gridfs_file(oid):
+    try:
+        file = fs.get(ObjectId(oid))
+        response = make_response(file.read())
+        response.mimetype = file.content_type
+        return response
+    except NoFile:
+        abort(404)
+"""
+
+@app.route('/upload')
+def upload():
+    return render_template('upload.html')
+
 @app.route("/sub_enroll")
 def subEnroll():
     return render_template('sub_enroll.html')
@@ -48,7 +88,7 @@ def subEnroll():
 @app.route('/logout', methods = ['POST', 'GET'])
 def logout():
     session.pop('google_token', None)
-    return render_template('index.html')
+    return render_template('main.html')
 
 @app.route('/login/authorized')
 def authorized():
@@ -100,9 +140,9 @@ def enroll():
 def enrollUser():
     if request.method == 'POST':
         userId = request.form['user_id']
-	userName = request.form['user_name']
-	userPw = request.form['user_pw']
-  	doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw}
+        userName = request.form['user_name']
+        userPw = request.form['user_pw']
+        doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw}
         client = MongoClient('localhost', 27017)
         db = client.OpenJournal
         collection = db.Users
@@ -112,7 +152,7 @@ def enrollUser():
 		return "이미 회원 가입 되었습니다."
 	collection.insert(doc)
 	client.close()
-	return render_template("index.html")
+	return render_template("main.html")
     else:
 	return "잘못된 데이터 수신 에러 입니다."
 
