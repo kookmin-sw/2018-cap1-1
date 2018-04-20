@@ -27,7 +27,7 @@ google = oauth.remote_app(
 
 @app.route("/")
 def home():
-    return render_template('index.html')
+    return render_template('main.html')
 
 @app.route('/oauth', methods=['GET', 'POST'])
 def index():
@@ -40,6 +40,10 @@ def index():
 @app.route('/login')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
+
+@app.route("/sub_enroll")
+def subEnroll():
+    return render_template('sub_enroll.html')
 
 @app.route('/logout', methods = ['POST', 'GET'])
 def logout():
