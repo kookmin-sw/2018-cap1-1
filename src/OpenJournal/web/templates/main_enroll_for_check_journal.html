@@ -31,36 +31,12 @@
   </nav>
   
 
-  <div  class="container">
-    <div class="section">
-      <div class="row" style="margin-bottom:0px;">
-        <div class="col s12 center">
-          <form action="#">
-            <div class="file-field input-field">
-              <div class="btn blue darken-4">
-                <span>File</span>
-                <input type="file">
-              </div>
-              <div class="file-path-wrapper">
-                <input class="file-path validate" type="text">
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="container">
   	<div class="section">
   		<div class="row">
   			<div class="col s12 center">
-					<div class="col s6 center">
-						<img class="materialboxed" width="100%" src="../static/background1.jpg">
-					</div>
-
-					<div class="col s6 center">
-	          <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
+					<form action="#">
+            <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
 	            <option value="total">전체</option>
 	            <option value="engineering">공학</option>
 	            <option value="education">교육</option>
@@ -72,19 +48,40 @@
 	            <option value="humanities">인문</option>
 	            <option value="natural">자연</option>
 	          </select>
+
 	          <select id="subCat" class="browser-default">
 	            <option value="0">전체</option>
 	          </select>
-	          <div class="input-field col s12">
-		          <input placeholder="이름을 입력하세요." id="name" type="text" class="validate">
-		          <label for="name">저자이름</label>
-	        	</div>
 
-		        <div class="input-field col s12">
-		          <input placeholder="논문 제목을 입력하세요." id="titlename" type="text" class="validate">
-		          <label for="titlename">논문 제목</label>
+	          <div class="input-field col s12">
+		          <input id="name" type="text" class="validate">
+		          <label for="name">저자 이름</label>
 		        </div>
-					</div>
+
+	          <div class="input-field col s12">
+		          <input id="name" type="text" class="validate">
+		          <label for="name">논문 제목</label>
+		        </div>
+
+						<div class="input-field col s12">
+		          <input id="name" type="text" class="validate">
+		          <label for="name">Abstract</label>
+		        </div>
+
+		        <div class="file-field input-field col s12">
+              <div class="btn blue darken-4">
+                <span>File</span>
+                <input type="file">
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path validate" type="text">
+              </div>
+            </div>
+
+	          <div class="btn blue darken-4">
+	            <span>등록</span>
+	          </div>
+          </form>
   			</div>
   		</div>
   	</div>
