@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Open Journal</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="../static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../static/css/customize.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+  <nav class="white" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="main.html" class="brand-logo">Open Journal</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#">커뮤니티</a></li>
+      </ul>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#">논문 등록 및 검수</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="sidenav">
+        <li><a href="main_enroll.html">논문 등록 및 검수</a></li>
+        <li><a href="#">커뮤니티</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
+    </div>
+  </nav>
+  
+
+  <div class="container">
+  	<div class="section">
+  		<div class="row">
+  			<div class="col s12 center">
+					<form action="#">
+            <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
+	            <option value="total">전체</option>
+	            <option value="engineering">공학</option>
+	            <option value="education">교육</option>
+	            <option value="AFO">농수해양</option>
+	            <option value="interdisciplinary">복합학</option>
+	            <option value="social">사회</option>
+	            <option value="article_physication">예술체육</option>
+	            <option value="medicine">의약학</option>
+	            <option value="humanities">인문</option>
+	            <option value="natural">자연</option>
+	          </select>
+
+	          <select id="subCat" class="browser-default">
+	            <option value="0">전체</option>
+	          </select>
+
+	          <div class="input-field col s12">
+		          <input id="name" type="text" class="validate">
+		          <label for="name">저자 이름</label>
+		        </div>
+
+	          <div class="input-field col s12">
+		          <input id="name" type="text" class="validate">
+		          <label for="name">논문 제목</label>
+		        </div>
+
+						<div class="input-field col s12">
+		          <input id="name" type="text" class="validate">
+		          <label for="name">Abstract</label>
+		        </div>
+
+		        <div class="file-field input-field col s12">
+              <div class="btn blue darken-4">
+                <span>File</span>
+                <input type="file">
+              </div>
+              <div class="file-path-wrapper">
+                <input class="file-path validate" type="text">
+              </div>
+            </div>
+
+	          <div class="btn blue darken-4">
+	            <span>등록</span>
+	          </div>
+          </form>
+  			</div>
+  		</div>
+  	</div>
+  </div>
+  
+  <!--  Scripts-->
+
+
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="../static/js/materialize.js"></script>
+  <script src="../static/js/init.js"></script>
+  <script src="../static/js/customize.js"></script>
+
+  </body>
+</html>
