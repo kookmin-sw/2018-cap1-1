@@ -36,7 +36,7 @@ def index():
         return render_template('authorization.html', name=me.data['name'])
     else:
         return redirect(url_for('login'))
-      
+
 @app.route('/login')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
@@ -60,18 +60,18 @@ def authorized():
     userId = me.data['email']
     userName = me.data['name']
     doc = {'user_id': userId, 'user_name': userName}
-   
+
     client = MongoClient('localhost', 27017)
     db = client.OpenJournal
     collection = db.Oauth_Users
     cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
-    for document in cursor:  
+    for document in cursor:
 	if document['user_id'] == userId:
 	    return render_template('authorization.html', name=me.data['name'])
-    	    
+
     collection.insert(doc)
     client.close()
-    return "구글계정으로 처음 로그인. db에 oauth정보 추가"    
+    return "구글계정으로 처음 로그인. db에 oauth정보 추가"
 
 @google.tokengetter
 def get_google_oauth_token():
@@ -98,20 +98,20 @@ def enrollUser():
         userId = request.form['user_id']
 	userName = request.form['user_name']
 	userPw = request.form['user_pw']
-  	doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw}  
+  	doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw}
         client = MongoClient('localhost', 27017)
         db = client.OpenJournal
         collection = db.Users
         cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
-        for document in cursor:  
+        for document in cursor:
 	    if document['user_id'] == userId:
 		return "이미 회원 가입 되었습니다."
 	collection.insert(doc)
 	client.close()
 	return render_template("index.html")
     else:
-	return "잘못된 데이터 수신 에러 입니다."   
-    
+	return "잘못된 데이터 수신 에러 입니다."
+
 """쿠키 설정"""
 @app.route('/login2')
 def login2():
@@ -154,6 +154,6 @@ def setArticle():
             return "세션에 토큰정보없음"
     else:
         return "로그인 안돼있음"
-      
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
