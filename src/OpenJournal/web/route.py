@@ -187,7 +187,6 @@ def setArticle():
             userId = me.data['email']
             subject = request.form['subject']
             content = request.form['content']
-	    comment = 
             doc = {'user_id': userId, 'category':category,'subject':subject, 'content':content}
             client = MongoClient('localhost', 27017)
             db = client.OpenJournal
