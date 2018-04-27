@@ -10,8 +10,6 @@ from bson.objectid import ObjectId
 from werkzeug import secure_filename
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-db = Connection().test
-fs = gridfs.GridFS(db)
 
 app = Flask(__name__)
 app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
@@ -56,11 +54,13 @@ def allowed_file(filename):
 
 @app.route('/enrollPaper', methods=['GET', 'POST'])
 def enrollPaper():
+    db = Connection().OpenJournal
+    fs = gridfs.GridFS(db)
     if request.method == 'POST':
         file = request.files['file']
-        if file:
+        if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            oid = fs.put(file, content_type=file.content_type, filename=filename)
+            file_id = fs.put(file, content_type=file.content_type, filename=filename)
             #return redirect(url_for('serve_gridfs_file', oid=str(oid)))\
             return "file upload success"
     return "file upload fail"
@@ -187,6 +187,7 @@ def setArticle():
             userId = me.data['email']
             subject = request.form['subject']
             content = request.form['content']
+	    comment = 
             doc = {'user_id': userId, 'category':category,'subject':subject, 'content':content}
             client = MongoClient('localhost', 27017)
             db = client.OpenJournal
