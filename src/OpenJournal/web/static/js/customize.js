@@ -48,6 +48,9 @@ function ShowHideSubCat(){
 //   image: '', //optional
 //   id: 1, //optional
 // };
+$(document).ready(function(){
+  $('.dropdown-trigger').dropdown();
+});
 
 $('.chips').material_chip();
 $('.chips-initial').material_chip({

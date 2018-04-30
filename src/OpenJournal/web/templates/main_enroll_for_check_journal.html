@@ -13,15 +13,19 @@
 </head>
 <body>
   <nav class="white" role="navigation">
+    <ul id="dropdown1" class="dropdown-content">
+      <li><a href="oauth" class="black-text">구글 로그인</a></li>
+      <li><a href="#!" class="black-text">로그인</a></li>
+      <li class="divider"></li>
+      <li><a href="#!" class="black-text">회원가입</a></li>
+    </ul>
     <div class="nav-wrapper container">
       <a id="logo-container" href="main.html" class="brand-logo">Open Journal</a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="main_comunity.html">커뮤니티</a></li>
+      <li><a href="main_enroll.html">논문 등록 및 검수</a></li>
+      <li><a href="main_comunity.html">커뮤니티</a></li>
+      <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
       </ul>
-      <ul class="right hide-on-med-and-down">
-        <li><a href="main_enroll.html">논문 등록 및 검수</a></li>
-      </ul>
-
       <ul id="nav-mobile" class="sidenav">
         <li><a href="main_enroll.html">논문 등록 및 검수</a></li>
         <li><a href="main_comunity.html">커뮤니티</a></li>
@@ -29,6 +33,7 @@
       <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
     </div>
   </nav>
+
   
 
   <div class="container">
