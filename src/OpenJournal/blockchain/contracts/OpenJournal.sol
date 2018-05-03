@@ -2,7 +2,7 @@ pragma solidity ^0.4.18;
 
 import "./Token/JournalToken.sol";
 
-contract OpenJournal is JournalToken {
+contract OpenJournal is JournalToken(100000, "JournalToken", 18, "jt") {
     
     struct Journal {
         uint number;
@@ -24,10 +24,10 @@ contract OpenJournal is JournalToken {
     mapping (address => Subscriber) public subscribers;                         // 구독자 주소 : Subscriber
     mapping (address => mapping (uint => bool)) public is_subscribed;           // 구독자가 논문을 구독하였는지에 대한 여부
 
-    uint public subscriberNumber = 2;       // Subscriber 번호(현재는 test 위해 2로 설정 해놓음)
-    uint public journalNumber = 2;          // Journal 번호(현재는 test 위해 2로 설정 해놓음)
-    uint public signUpCost = 100;           // 회원가입시 주어질 토큰
-    uint public upperbound_value = 50;      // 저자가 논문 등록시 값의 상한선  
+    uint public subscriberNumber;       // Subscriber 번호(현재는 test 위해 2로 설정 해놓음)
+    uint public journalNumber;          // Journal 번호(현재는 test 위해 2로 설정 해놓음)
+    uint public signUpCost;             // 회원가입시 주어질 토큰
+    uint public upperbound_value;       // 저자가 논문 등록시 값의 상한선  
     address public master;    
 
     event LogSignUp(
@@ -47,7 +47,19 @@ contract OpenJournal is JournalToken {
         address indexed _subscriber, 
         uint[] _myjournals, 
         uint[] _subscribed
-    );     
+    );   
+
+    function OpenJournal(
+        uint _subscriberNumber,
+        uint _journalNumber,
+        uint _signUpCost,
+        uint _upperbound_value
+    ) public {
+        subscriberNumber = _subscriberNumber;
+        journalNumber = _journalNumber;
+        signUpCost = _signUpCost;
+        upperbound_value = _upperbound_value;
+    }   
 
     function signUp() public returns (bool) {
         subscriberNumber++;
@@ -57,12 +69,12 @@ contract OpenJournal is JournalToken {
             msg.sender,
             new uint[](0)
         );
-        
 
         transferFrom(master, msg.sender, signUpCost);
 
         emit LogSignUp(subscriberNumber, msg.sender, subscribers[msg.sender].subscriber_journal);
 
+        return true;
     }
 
     function registJournal(uint _journalValue, string _title, string _description) public returns (bool) {
@@ -78,7 +90,9 @@ contract OpenJournal is JournalToken {
             new uint[](0)            
         );
 
-        emit LogRegistJournal(journalNumber, msg.sender, _title, _journalValue);       
+        emit LogRegistJournal(journalNumber, msg.sender, _title, _journalValue);   
+
+        return true;    
     }
 
     function subscribeJournal(uint _journalNumber) public returns (bool){
@@ -92,6 +106,8 @@ contract OpenJournal is JournalToken {
         is_subscribed[msg.sender][_journalNumber] = true;
 
         emit LogSubscribeJournal(msg.sender, subscribers[msg.sender].subscriber_journal, journals[_journalNumber].subscribed);
+
+        return true;
     }
 
     function showSubscribedJournal() public view returns (uint[]){
