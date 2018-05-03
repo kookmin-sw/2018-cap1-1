@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Test OpenJournal</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+          <h1 class="text-center">Test OpenJournal</h1>
+          <hr/>
+          <br/>
+        </div>
+      </div>
+
+      <div id="journalsRow" class="row">
+        <!-- JOURNALS LOAD HERE -->
+      </div>
+    </div>
+
+    <div id="journalTemplate" style="display: none;">
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Journal Title</h3>
+          </div>
+          <div class="panel-body">
+            <br/><br/>
+            <strong>Number</strong>: <span class="journal-number">Golden Retriever</span><br/>
+            <strong>Author</strong>: <span class="journal-author">3</span><br/>
+            <strong>Description</strong>: <span class="journal-description">Warren, MI</span><br/><br/>
+            <button class="btn btn-default btn-subscribe" type="button" data-id="0">Subscribe</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/web3.min.js"></script>
+    <script src="js/truffle-contract.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
