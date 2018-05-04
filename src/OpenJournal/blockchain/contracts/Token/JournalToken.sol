@@ -21,7 +21,9 @@ contract JournalToken is EIP20Interface {
         uint256 msgValue,
         uint256 amount,
         uint256 totalSupply,
-        address msgSender
+        address msgSender,
+        uint8 decimals,
+        string symbol
     );    
 
     function JournalToken(
@@ -45,12 +47,15 @@ contract JournalToken is EIP20Interface {
 
     /// @dev Buys tokens with Ether, exchanging them 1:rate
     function buyToken() public payable {
+        require(msg.value > 0);
+
         uint256 amount = msg.value.mul(rate);
         balances[msg.sender] = balances[msg.sender].add(amount);
         totalSupply = totalSupply.add(amount);
 
         master.transfer(msg.value);
-        emit BuyToken(msg.value, amount, totalSupply, msg.sender);
+
+        emit BuyToken(msg.value, amount, totalSupply, msg.sender, decimals, symbol);
     }
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
