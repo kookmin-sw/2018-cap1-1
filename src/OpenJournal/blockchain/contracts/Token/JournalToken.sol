@@ -54,14 +54,13 @@ contract JournalToken is EIP20Interface {
         totalSupply = totalSupply.add(amount);
 
         master.transfer(msg.value);
-
         emit BuyToken(msg.value, amount, totalSupply, msg.sender, decimals, symbol);
     }
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
         require(balances[msg.sender] >= _value);
-        balances[msg.sender] -= _value;
-        balances[_to] += _value;
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+        balances[_to] = balances[_to].add(_value);
         emit Transfer(msg.sender, _to, _value);
         return true;
     }
