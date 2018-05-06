@@ -1,5 +1,5 @@
-var journalToken = artifacts.require("./JournalToken.sol");
+var openJournal = artifacts.require("./OpenJournal.sol");
 
 module.exports = function(deployer) {
-	deployer.deploy(journalToken);
+	deployer.deploy(openJournal, 0, 0, 100, 10);
 }
