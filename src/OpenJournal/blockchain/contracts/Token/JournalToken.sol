@@ -2,8 +2,9 @@ pragma solidity ^0.4.21;
 
 import "./EIP20Interface.sol";
 import "../Math/SafeMath.sol";
+import "../Owner/Owned.sol";
 
-contract JournalToken is EIP20Interface {
+contract JournalToken is EIP20Interface, Owned {
 
     using SafeMath for uint256;
 
@@ -41,12 +42,12 @@ contract JournalToken is EIP20Interface {
     }   
 
     /// @dev Fallback to calling deposit when ether is sent directly to contract.
-    function() public payable {
+    function() public onlyOwner payable {
         buyToken();
     }
 
     /// @dev Buys tokens with Ether, exchanging them 1:rate
-    function buyToken() public payable {
+    function buyToken() public onlyOwner payable {
         require(msg.value > 0);
 
         uint256 amount = msg.value.mul(rate);
@@ -68,10 +69,10 @@ contract JournalToken is EIP20Interface {
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
         uint256 allowance = allowed[_from][msg.sender];
         require(balances[_from] >= _value && allowance >= _value);
-        balances[_to] += _value;
-        balances[_from] -= _value;
+        balances[_to] = balances[_to].add(_value);
+        balances[_from] = balances[_from].sub(_value);
         if (allowance < MAX_UINT256) {
-            allowed[_from][msg.sender] -= _value;
+            allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
         }
         emit Transfer(_from, _to, _value);
         return true;
