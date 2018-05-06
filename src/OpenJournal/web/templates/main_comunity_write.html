@@ -14,17 +14,17 @@
 <body>
   <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-      <a id="logo-container" href="main.html" class="brand-logo">Open Journal</a>
+      <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="main_comunity.html">커뮤니티</a></li>
+        <li><a href="main_comunity">커뮤니티</a></li>
       </ul>
       <ul class="right hide-on-med-and-down">
-        <li><a href="main_enroll.html">논문 등록 및 검수</a></li>
+        <li><a href="main_enroll">논문 등록 및 검수</a></li>
       </ul>
 
       <ul id="nav-mobile" class="sidenav">
-        <li><a href="main_enroll.html">논문 등록 및 검수</a></li>
-        <li><a href="main_comunity.html">커뮤니티</a></li>
+        <li><a href="main_enroll">논문 등록 및 검수</a></li>
+        <li><a href="main_comunity">커뮤니티</a></li>
       </ul>
       <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
     </div>
@@ -33,14 +33,14 @@
   <div class="container">
     <div class="section">
       <div class="row" style="margin-bottom:0px;">
-        <form action="#">
+        <form action="enrollWriting" method="POST">
           <ul class="subject">
             <li style="width:100%;">
               <div class="col s2 center">
                 <label>게시판</label>
               </div>
               <div class="col s5 center">
-                <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
+                <select id="mainCat" name="mainCat" class="browser-default" onchange="ShowHideSubCat()">
                   <option value="total">전체</option>
                   <option value="engineering">공학</option>
                   <option value="education">교육</option>
@@ -54,7 +54,7 @@
                 </select>
               </div>
               <div class="col s5 center">
-                <select id="subCat" class="browser-default">
+                <select id="subCat" name="subCat" class="browser-default">
                   <option value="0">전체</option>
                 </select>
               </div>
@@ -64,7 +64,7 @@
                 <label>제목</label>
               </div>
               <div class="input-field col s10">
-                <input id="name" type="text" class="validate">
+                <input id="title" name="title" type="text" class="validate">
               </div>
             </li>
             <li>
@@ -72,14 +72,19 @@
                 <label>내용</label>
               </div>
               <div style="border:1px solid #9e9e9e; overflow: hidden;" class="input-field col s10">
-                <textarea style="border-bottom: 0px; height:480px; overflow: scroll; resize:none; max-height: 480px;" id="contents" class="materialize-textarea"></textarea>
+                <textarea style="border-bottom: 0px; height:480px; overflow: scroll; resize:none; max-height: 480px;" id="contents" name="contents" class="materialize-textarea"></textarea>
               </div>
             </li>
             <li>
               <div class="right s12 btn blue darken-4">
                   <span>게시</span>
               </div>
-            </li>  
+            </li>
+            <tr>
+              <td colspan="2">
+                  <input type="submit" name="enroll" value="enroll" />
+              </td>
+            </tr>
           </ul>
         </form>
       </div>
