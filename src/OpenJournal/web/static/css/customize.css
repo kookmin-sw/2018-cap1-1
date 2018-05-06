@@ -116,3 +116,12 @@
   min-height:70px;
 }
 
+.journal_info{
+  margin-top : 40px;
+  border-top : 1px solid #9e9e9e;
+}
+.journal_info > tbody > tr > td{
+  padding:3px;
+  text-align: center;
+}
+

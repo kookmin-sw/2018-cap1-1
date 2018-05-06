@@ -91,3 +91,7 @@ $('.chips').on('chip.select', function(e, chip){
 });
 
 $('.chips-initial').material_chip('data');  
+
+function openTotalJournal(){
+  $('#journalPDF').attr('src', "../static/journal_example.pdf");
+}
