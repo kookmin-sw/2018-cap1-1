@@ -2,7 +2,7 @@ pragma solidity ^0.4.18;
 
 import "./Token/JournalToken.sol";
 
-contract OpenJournal is JournalToken(0, "JournalToken", 18, "jt") {
+contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     
     struct Journal {
         uint256 number;
@@ -28,11 +28,9 @@ contract OpenJournal is JournalToken(0, "JournalToken", 18, "jt") {
     uint256 public journalNumber;          // Journal 번호(현재는 test 위해 2로 설정 해놓음)
     uint8 public signUpCost;               // 회원가입시 주어질 토큰
     uint8 public upperbound_value;         // 저자가 논문 등록시 값의 상한선  
-    address public master;  // 임시로 설정  
+    address public owner;  
 
     event LogSignUp(
-    uint256 a,
-    uint256 b,
         uint256 indexed _subscriber_number, 
         address indexed _subscriber_address, 
         uint[] _subscriber_journal
@@ -48,7 +46,8 @@ contract OpenJournal is JournalToken(0, "JournalToken", 18, "jt") {
     event LogSubscribeJournal(
         address indexed _subscriber, 
         uint[] _myjournals, 
-        uint[] _subscribed
+        uint[] _subscribed,
+        bool _is_subscribed
     );
 
     event LogShowSubscribedJournal(
@@ -58,6 +57,13 @@ contract OpenJournal is JournalToken(0, "JournalToken", 18, "jt") {
     event LogShowJournalSubscriber(
         uint[] _subscriber
     );     
+
+    
+    event Test(
+        uint256 a,
+        uint256 b
+    );
+    
 
     function OpenJournal(
         uint256 _subscriberNumber,
@@ -69,21 +75,23 @@ contract OpenJournal is JournalToken(0, "JournalToken", 18, "jt") {
         journalNumber = _journalNumber;
         signUpCost = _signUpCost;
         upperbound_value = _upperbound_value;
-        master = msg.sender;
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner {
+        require(msg.sender == owner);
+        _;
     }   
 
-    function signUp(address _to) public returns (bool) {
-        require(msg.sender == master);
-
+    function signUp(address _to) public onlyOwner returns (bool) {
         subscriberNumber++;            
         subscribers[_to] = Subscriber(
             subscriberNumber,
             _to,
             new uint[](0)
         );
-        //transfer(_to, signUpCost);    왜 balances[msg.sender]가 0이되는걸까
-        emit LogSignUp(balances[msg.sender], signUpCost, subscriberNumber, msg.sender, subscribers[msg.sender].subscriber_journal);
-
+        transfer(_to, signUpCost);   
+        emit LogSignUp(subscriberNumber, _to, subscribers[msg.sender].subscriber_journal);
         return true;
     }
 
@@ -106,14 +114,19 @@ contract OpenJournal is JournalToken(0, "JournalToken", 18, "jt") {
     function subscribeJournal(uint256 _journalNumber) public returns (bool){
         require(_journalNumber > 0 && _journalNumber <= journalNumber && is_subscribed[msg.sender][_journalNumber] == false);        
 
-        //transfer(journals[_journalNumber].author, journals[_journalNumber].value);
+        transfer(journals[_journalNumber].author, journals[_journalNumber].value);
         uint sub_id = subscribers[msg.sender].subscriber_number;
 
         subscribers[msg.sender].subscriber_journal.push(_journalNumber);  
         journals[_journalNumber].subscribed.push(sub_id);       
         is_subscribed[msg.sender][_journalNumber] = true;
 
-        emit LogSubscribeJournal(msg.sender, subscribers[msg.sender].subscriber_journal, journals[_journalNumber].subscribed);
+        emit LogSubscribeJournal(
+            msg.sender, 
+            subscribers[msg.sender].subscriber_journal, 
+            journals[_journalNumber].subscribed, 
+            is_subscribed[msg.sender][_journalNumber]
+        );
 
         return true;
     }

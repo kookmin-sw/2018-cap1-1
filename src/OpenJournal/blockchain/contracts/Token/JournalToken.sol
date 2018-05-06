@@ -14,7 +14,7 @@ contract JournalToken is EIP20Interface {
     string public name;                     // Token name
     uint8 public decimals;                  // How many decimals to show.
     string public symbol;                   // Token unit
-    address public master;                  
+    address public owner;                  
     uint256 constant public rate = 1000;    // The ratio of our token to Ether
 
     event BuyToken(
@@ -37,7 +37,7 @@ contract JournalToken is EIP20Interface {
         name = _tokenName;                                    // Set the name for display purposes
         decimals = _decimalUnits;                             // Amount of decimals for display purrposes
         symbol = _tokenSymbol;
-        master = msg.sender;
+        owner = msg.sender;
     }   
 
     /// @dev Fallback to calling deposit when ether is sent directly to contract.
@@ -53,12 +53,12 @@ contract JournalToken is EIP20Interface {
         balances[msg.sender] = balances[msg.sender].add(amount);
         totalSupply = totalSupply.add(amount);
 
-        master.transfer(msg.value);
+        owner.transfer(msg.value);
         emit BuyToken(msg.value, amount, totalSupply, msg.sender, decimals, symbol);
     }
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
-        require(balances[msg.sender] >= _value);
+        require(balances[owner] >= _value);
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
         emit Transfer(msg.sender, _to, _value);
