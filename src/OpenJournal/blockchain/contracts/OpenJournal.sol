@@ -119,13 +119,13 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     }
 
     function showSubscribedJournal() public view returns (uint[]){
-        emit LogShowSubscribedJournal(subscribers[msg.sender].subscriber_journal);
+        //emit LogShowSubscribedJournal(subscribers[msg.sender].subscriber_journal);
 
         return subscribers[msg.sender].subscriber_journal;
     }
 
     function showJournalSubscriber(uint _journalNumber) public view returns (uint[]) {
-        emit LogShowJournalSubscriber(journals[_journalNumber].subscribed);
+        //emit LogShowJournalSubscriber(journals[_journalNumber].subscribed);
 
         return journals[_journalNumber].subscribed;
     }

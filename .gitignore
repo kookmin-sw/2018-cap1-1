@@ -1,4 +1,4 @@
 .DS_Store
 .env
-src/build
+src/OpenJournal/blockchain/build
 

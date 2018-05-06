@@ -42,12 +42,13 @@ contract JournalToken is EIP20Interface, Owned {
     }   
 
     /// @dev Fallback to calling deposit when ether is sent directly to contract.
-    function() public onlyOwner payable {
+    function() public payable {
         buyToken();
     }
 
-    /// @dev Buys tokens with Ether, exchanging them 1:rate
-    function buyToken() public onlyOwner payable {
+    // @dev Buys tokens with Ether, exchanging them 1:rate
+    // msg.sender가 msg.value만큼의 이더를 owner에게 주고 msg.value * rate만큼의 토큰을 가져감
+    function buyToken() public payable {
         require(msg.value > 0);
 
         uint256 amount = msg.value.mul(rate);
