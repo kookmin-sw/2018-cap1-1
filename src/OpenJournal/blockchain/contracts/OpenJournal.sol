@@ -67,7 +67,6 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         journalNumber = _journalNumber;
         signUpCost = _signUpCost;
         upperbound_value = _upperbound_value;
-        //owner = msg.sender;
     }
 
     function signUp(address _to) public onlyOwner returns (bool) {

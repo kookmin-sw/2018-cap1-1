@@ -19,12 +19,12 @@ contract JournalToken is EIP20Interface, Owned {
     uint256 constant public rate = 1000;    // The ratio of our token to Ether
 
     event BuyToken(
-        uint256 msgValue,
-        uint256 amount,
-        uint256 totalSupply,
-        address msgSender,
-        uint8 decimals,
-        string symbol
+        uint256 _msgValue,
+        uint256 _amount,
+        uint256 _totalSupply,
+        address _msgSender,
+        uint8 _decimals,
+        string _symbol
     );    
 
     function JournalToken(
