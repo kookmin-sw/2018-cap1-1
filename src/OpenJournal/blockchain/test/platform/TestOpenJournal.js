@@ -104,7 +104,7 @@ contract('OpenJournal', function(accounts) {
     expect(is_subscribed_1.toString()).to.equal('true');
     
   });
-
+/*
   it('should be possible to show journals of subscriber', async function () {
     let result1 = await openJournal.showSubscribedJournal({from:subscriber1});
     let result2 = await openJournal.showSubscribedJournal({from:subscriber2});
@@ -120,5 +120,5 @@ contract('OpenJournal', function(accounts) {
     expect(result1.toString()).to.equal('1');
     expect(result2.toString()).to.equal('1,2');
   }); 
-
+*/
 });

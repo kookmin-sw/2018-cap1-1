@@ -2,8 +2,9 @@ pragma solidity ^0.4.21;
 
 import "./EIP20Interface.sol";
 import "../Math/SafeMath.sol";
+import "../Owner/Owned.sol";
 
-contract JournalToken is EIP20Interface {
+contract JournalToken is EIP20Interface, Owned {
 
     using SafeMath for uint256;
 
@@ -18,12 +19,12 @@ contract JournalToken is EIP20Interface {
     uint256 constant public rate = 1000;    // The ratio of our token to Ether
 
     event BuyToken(
-        uint256 msgValue,
-        uint256 amount,
-        uint256 totalSupply,
-        address msgSender,
-        uint8 decimals,
-        string symbol
+        uint256 _msgValue,
+        uint256 _amount,
+        uint256 _totalSupply,
+        address _msgSender,
+        uint8 _decimals,
+        string _symbol
     );    
 
     function JournalToken(
@@ -45,7 +46,8 @@ contract JournalToken is EIP20Interface {
         buyToken();
     }
 
-    /// @dev Buys tokens with Ether, exchanging them 1:rate
+    // @dev Buys tokens with Ether, exchanging them 1:rate
+    // msg.sender가 msg.value만큼의 이더를 owner에게 주고 msg.value * rate만큼의 토큰을 가져감
     function buyToken() public payable {
         require(msg.value > 0);
 
@@ -68,10 +70,10 @@ contract JournalToken is EIP20Interface {
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
         uint256 allowance = allowed[_from][msg.sender];
         require(balances[_from] >= _value && allowance >= _value);
-        balances[_to] += _value;
-        balances[_from] -= _value;
+        balances[_to] = balances[_to].add(_value);
+        balances[_from] = balances[_from].sub(_value);
         if (allowance < MAX_UINT256) {
-            allowed[_from][msg.sender] -= _value;
+            allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
         }
         emit Transfer(_from, _to, _value);
         return true;

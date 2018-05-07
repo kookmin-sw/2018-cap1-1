@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.21;
 
 import "./Token/JournalToken.sol";
 
@@ -28,7 +28,6 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     uint256 public journalNumber;          // Journal 번호(현재는 test 위해 2로 설정 해놓음)
     uint8 public signUpCost;               // 회원가입시 주어질 토큰
     uint8 public upperbound_value;         // 저자가 논문 등록시 값의 상한선  
-    address public owner;  
 
     event LogSignUp(
         uint256 indexed _subscriber_number, 
@@ -58,13 +57,6 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         uint[] _subscriber
     );     
 
-    
-    event Test(
-        uint256 a,
-        uint256 b
-    );
-    
-
     function OpenJournal(
         uint256 _subscriberNumber,
         uint256 _journalNumber,
@@ -75,16 +67,10 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         journalNumber = _journalNumber;
         signUpCost = _signUpCost;
         upperbound_value = _upperbound_value;
-        owner = msg.sender;
     }
 
-    modifier onlyOwner {
-        require(msg.sender == owner);
-        _;
-    }   
-
     function signUp(address _to) public onlyOwner returns (bool) {
-        subscriberNumber++;            
+        subscriberNumber = subscriberNumber.add(1);            
         subscribers[_to] = Subscriber(
             subscriberNumber,
             _to,
@@ -97,7 +83,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
 
     function registJournal(uint8 _journalValue, string _title, string _description) public returns (bool) {
         require(_journalValue <= upperbound_value);
-        journalNumber++;
+        journalNumber = journalNumber.add(1);
         journals[journalNumber] = Journal(
             journalNumber,
             msg.sender,
@@ -132,13 +118,13 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     }
 
     function showSubscribedJournal() public view returns (uint[]){
-        emit LogShowSubscribedJournal(subscribers[msg.sender].subscriber_journal);
+        //emit LogShowSubscribedJournal(subscribers[msg.sender].subscriber_journal);
 
         return subscribers[msg.sender].subscriber_journal;
     }
 
     function showJournalSubscriber(uint _journalNumber) public view returns (uint[]) {
-        emit LogShowJournalSubscriber(journals[_journalNumber].subscribed);
+        //emit LogShowJournalSubscriber(journals[_journalNumber].subscribed);
 
         return journals[_journalNumber].subscribed;
     }
