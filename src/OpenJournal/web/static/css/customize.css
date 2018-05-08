@@ -90,6 +90,13 @@
   width:3%;
 }
 
+.comment-check{
+  vertical-align: center; 
+  padding:0px; 
+  width:3%;
+}
+
+
 .comment-contents{
   padding:6px; 
   padding-left: 5%;
