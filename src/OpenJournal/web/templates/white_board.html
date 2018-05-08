@@ -10,12 +10,13 @@
 <p>---------------------------------</p>
   {% for i in data %}
     <p>id : {{i._id}}</p>
-    <p>이름 : {{i.user_id}}</p>
+    <p>이름 : {{i.userName}}</p>
+    <p>글번호 : {{i.writingNum}}</p>
     <p>카테고리 : {{i.mainCategory}}</p>
     <p>서브카테고리 : {{i.subCategory}}</p>
     <p>제목 : {{i.title}}</p>
-    <p>내용 : {{i.contents}}</p>
     <p>조회수 : {{i.hits}}</p>
+    <p>시간 : {{i.time}}</p>
     <p>---------------------</p>
   {% endfor %}
 </div>

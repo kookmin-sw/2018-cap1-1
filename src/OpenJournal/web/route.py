@@ -4,7 +4,7 @@ from flask_oauthlib.client import OAuth
 from pymongo import MongoClient
 from pymongo import Connection
 from urllib2 import Request, urlopen, URLError
-import gridfs
+import gridfs, datetime
 from gridfs.errors import NoFile
 from bson.objectid import ObjectId
 from werkzeug import secure_filename
@@ -66,9 +66,24 @@ def serve_gridfs_file(oid):
 def mainEnroll():
     return render_template('main_enroll.html')
 
+#mongo URI가 들어왔을 때 'GET'메소드를 통해 white_board.html에 data 전송
+@app.route('/board', methods=['GET'])
+def board():
+    client = MongoClient('localhost', 27017)
+    db = client.OpenJournal
+    collection = db.Bulletin
+    rows = collection.find()
+    client.close()
+    return render_template('white_board.html', data=rows)
+
 @app.route("/main_comunity")
 def mainComunity():
-    return render_template('main_comunity.html')
+    client = MongoClient('localhost', 27017)
+    db = client.OpenJournal
+    collection = db.Bulletin
+    rows = collection.find()
+    client.close()
+    return render_template('main_comunity.html', data=rows)
 
 @app.route("/main_enroll_for_check_journal")
 def mainEnrollForCheckJournal():
@@ -103,8 +118,8 @@ def authorized():
     collection = db.Oauth_Users
     cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
     for document in cursor:
-	if document['user_id'] == userId:
-	    return render_template('authorization.html', name=me.data['name'])
+        if document['user_id'] == userId:
+            return render_template('authorization.html', name=me.data['name'])
 
     collection.insert(doc)
     client.close()
@@ -113,16 +128,6 @@ def authorized():
 @google.tokengetter
 def get_google_oauth_token():
     return session.get('google_token')
-
-#mongo URI가 들어왔을 때 'GET'메소드를 통해 white_board.html에 data 전송
-@app.route('/board', methods=['GET'])
-def board():
-    client = MongoClient('localhost', 27017)
-    db = client.OpenJournal
-    collection = db.Bulletin
-    rows = collection.find()
-    client.close()
-    return render_template('white_board.html', data=rows)
 
 @app.route('/enroll')
 def enroll():
@@ -142,8 +147,8 @@ def enrollUser():
         collection = db.Users
         cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
         for document in cursor:
-	    if document['user_id'] == userId:
-		return "이미 회원 가입 되었습니다."
+            if document['user_id'] == userId:
+                return "이미 회원 가입 되었습니다."
 	collection.insert(doc)
 	client.close()
 	return render_template("main.html")
@@ -198,25 +203,35 @@ def enrollPaper():
     else:
         return "로그인 안돼있음"
 
-@app.route('/enrollWriting', methods=['POST'])
+@app.route('/enrollWriting', methods=['POST', 'GET'])
 def enrollWriting():
     if 'google_token' in session:
         if request.method == 'POST':
             me = google.get('userinfo')
-            userId = me.data['email']
+            userName = me.data['name']
             mainCategory = request.form['mainCat']
             subCategory = request.form['subCat']
             title = request.form['title']
             contents = request.form['contents']
             hits = 0
-            doc = {'user_id': userId, 'mainCategory':mainCategory, 'subCategory':subCategory,
-                   'title':title, 'contents':contents, 'hits':hits}
+            like = 0
+            writingNum = 0
             client = MongoClient('localhost', 27017)
             db = client.OpenJournal
-            collection = db.Bulletin
-            collection.insert(doc)
+            collection = db.BulletinNum
+            bulletinCollection = db.Bulletin
+            cursor = collection.find_one({"_id": ObjectId("5af1836db79ff2818f02efb0")})
+            writingNum = cursor['writingNum']+1
+            now = datetime.datetime.now()
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            doc = {'userName': userName, 'mainCategory':mainCategory, 'subCategory':subCategory,
+                   'title':title, 'contents':contents, 'hits':hits, 'writingNum':writingNum,
+                   'time':currentTime}
+            bulletinCollection.insert(doc)
+            collection.update({"_id": ObjectId("5af1836db79ff2818f02efb0")}, {"_id": ObjectId("5af1836db79ff2818f02efb0"),
+            'writingNum':writingNum})
             client.close()
-            return render_template('main_comunity.html')
+            return mainComunity()
     else:
         return "로그인 안돼있음"
 

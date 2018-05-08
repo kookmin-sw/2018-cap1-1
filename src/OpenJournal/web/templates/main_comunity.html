@@ -68,24 +68,18 @@
               </tr>
             </thead>
 
-            <tbody>
-              <tr>
-                <td class="center">002</td>
-                <td class="center" style="cursor:pointer;" onclick="location.href='main_comunity_detail.html'">프로젝트를 진행하려 합니다. 도와주세요.</td>
-                <td class="center">엄형근</td>
-                <td class="center">2018.04.28</td>
-                <td class="center">15</td>
-                <td class="center">2</td>
-              </tr>
-              <tr>
-                <td class="center">001</td>
-                <td class="center">논문 추천 부탁드립니다.</td>
-                <td class="center">구민준</td>
-                <td class="center">2018.04.26</td>
-                <td class="center">400</td>
-                <td class="center">14</td>
-              </tr>
-            </tbody>
+            {% for i in data %}
+              <tbody>
+                <tr>
+                  <td class="center">{{i.writingNum}}</td>
+                  <td class="center" style="cursor:pointer;" onclick="location.href='main_comunity_detail.html'">{{i.title}}</td>
+                  <td class="center">{{i.userName}}</td>
+                  <td class="center">{{i.time}}</td>
+                  <td class="center">{{i.hits}}</td>
+                  <td class="center">2</td>
+                </tr>
+              </tbody>
+            {% endfor %}
 
             <tfoot>
               <tr style="border-bottom:0px;">
