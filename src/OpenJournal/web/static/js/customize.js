@@ -34,7 +34,7 @@ function ShowHideSubCat(){
   
   for(var i=0; i<subSize; i++){
     var option = document.createElement('option');
-    option.value = i;
+    option.value = subCategory[subCategoryIdx][i];
     option.appendChild(document.createTextNode(subCategory[subCategoryIdx][i]));
     df.appendChild(option);
   }
