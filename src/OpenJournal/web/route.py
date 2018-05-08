@@ -119,7 +119,7 @@ def get_google_oauth_token():
 def board():
     client = MongoClient('localhost', 27017)
     db = client.OpenJournal
-    collection = db.Article
+    collection = db.Bulletin
     rows = collection.find()
     client.close()
     return render_template('white_board.html', data=rows)
