@@ -52,20 +52,6 @@ def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-@app.route('/enrollPaper', methods=['GET', 'POST'])
-def enrollPaper():
-    db = Connection().OpenJournal
-    fs = gridfs.GridFS(db)
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_id = fs.put(file, content_type=file.content_type, filename=filename)
-            #return redirect(url_for('serve_gridfs_file', oid=str(oid)))\
-            return "file upload success"
-    return "file upload fail"
-
-"""
 @app.route('/files/<oid>')
 def serve_gridfs_file(oid):
     try:
@@ -75,15 +61,22 @@ def serve_gridfs_file(oid):
         return response
     except NoFile:
         abort(404)
-"""
 
-@app.route('/upload')
-def upload():
-    return render_template('upload.html')
+@app.route("/main_enroll")
+def mainEnroll():
+    return render_template('main_enroll.html')
 
-@app.route("/sub_enroll")
-def subEnroll():
-    return render_template('sub_enroll.html')
+@app.route("/main_comunity")
+def mainComunity():
+    return render_template('main_comunity.html')
+
+@app.route("/main_enroll_for_check_journal")
+def mainEnrollForCheckJournal():
+    return render_template('main_enroll_for_check_journal.html')
+
+@app.route("/main_comunity_write")
+def mainComunityWrite():
+    return render_template('main_comunity_write.html')
 
 @app.route('/logout', methods = ['POST', 'GET'])
 def logout():
@@ -121,12 +114,12 @@ def authorized():
 def get_google_oauth_token():
     return session.get('google_token')
 
-#mongo URI가 들어왔을 때 'GET'메소드를 통해 mongo.html에 data 전송
+#mongo URI가 들어왔을 때 'GET'메소드를 통해 white_board.html에 data 전송
 @app.route('/board', methods=['GET'])
 def board():
     client = MongoClient('localhost', 27017)
     db = client.OpenJournal
-    collection = db.Article
+    collection = db.Bulletin
     rows = collection.find()
     client.close()
     return render_template('white_board.html', data=rows)
@@ -142,7 +135,8 @@ def enrollUser():
         userId = request.form['user_id']
         userName = request.form['user_name']
         userPw = request.form['user_pw']
-        doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw}
+        fame = 0
+        doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw, 'user_fame': fame}
         client = MongoClient('localhost', 27017)
         db = client.OpenJournal
         collection = db.Users
@@ -174,28 +168,55 @@ def getcookie():
    name = request.cookies.get('userID')
    return '<h1>welcome '+name+'</h1>'
 
-@app.route('/enrollArticle')
-def enrollArticle():
-   return render_template('write.html')
-
-@app.route('/setArticle', methods=['POST'])
-def setArticle():
+@app.route('/enrollPaper', methods=['POST'])
+def enrollPaper():
     if 'google_token' in session:
         if request.method == 'POST':
             me = google.get('userinfo')
-            category = "article test"
             userId = me.data['email']
-            subject = request.form['subject']
-            content = request.form['content']
-            doc = {'user_id': userId, 'category':category,'subject':subject, 'content':content}
+            mainCategory = request.form['mainCat']
+            subCategory = request.form['subCat']
+            writer = request.form['name']
+            title = request.form['title']
+            abstract = request.form['abstract']
+            hits = 0
+            doc = {'user_id': userId, 'writer':writer,
+                   'mainCategory':mainCategory, 'subCategory':subCategory,
+                   'title':title, 'abstract':abstract, 'hits':hits}
             client = MongoClient('localhost', 27017)
             db = client.OpenJournal
-            collection = db.Article
+            fs = gridfs.GridFS(db)
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                fild_id = fs.put(file, content_type=file.content_type, filename=filename)
+                #return redirect(url_for('serve_gridfs_file', oid=str(oid)))
+            collection = db.PaperInformation
             collection.insert(doc)
             client.close()
-            return "글쓰기 성공"
-        else:
-            return "세션에 토큰정보없음"
+            return render_template('main_enroll.html')
+    else:
+        return "로그인 안돼있음"
+
+@app.route('/enrollWriting', methods=['POST'])
+def enrollWriting():
+    if 'google_token' in session:
+        if request.method == 'POST':
+            me = google.get('userinfo')
+            userId = me.data['email']
+            mainCategory = request.form['mainCat']
+            subCategory = request.form['subCat']
+            title = request.form['title']
+            contents = request.form['contents']
+            hits = 0
+            doc = {'user_id': userId, 'mainCategory':mainCategory, 'subCategory':subCategory,
+                   'title':title, 'contents':contents, 'hits':hits}
+            client = MongoClient('localhost', 27017)
+            db = client.OpenJournal
+            collection = db.Bulletin
+            collection.insert(doc)
+            client.close()
+            return render_template('main_comunity.html')
     else:
         return "로그인 안돼있음"
 
