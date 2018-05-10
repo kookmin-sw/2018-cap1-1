@@ -23,10 +23,9 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     mapping (uint => Journal) public journals;                                  // 논문 번호 : Journal
     mapping (address => Subscriber) public subscribers;                         // 구독자 주소 : Subscriber
     mapping (address => mapping (uint => bool)) public is_subscribed;           // 구독자가 논문을 구독하였는지에 대한 여부
-    mapping (address => mapping (uint => bool)) public is_subscriber;               // 구독자가 현재 존재하는지에 대한 여부
 
-    uint256 public subscriberNumber;       // Subscriber 번호(현재는 test 위해 2로 설정 해놓음)
-    uint256 public journalNumber;          // Journal 번호(현재는 test 위해 2로 설정 해놓음)
+    uint256 public subscriberNumber;       // Subscriber 번호
+    uint256 public journalNumber;          // Journal 번호
     uint8 public signUpCost;               // 회원가입시 주어질 토큰
     uint8 public upperbound_value;         // 저자가 논문 등록시 값의 상한선  
 

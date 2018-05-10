@@ -6,8 +6,6 @@ import "../Owner/Owned.sol";
 
 contract JournalToken is EIP20Interface, Owned {
 
-    // private로 바꾸고 get으로 바꿔보자..
-
     using SafeMath for uint256;
 
     uint256 constant private MAX_UINT256 = 2**256 - 1;
