@@ -17,6 +17,8 @@ app.config['GOOGLE_SECRET'] = "61w2EkT-lKN8eUkSRUBWIxMx"
 app.debug = True
 app.secret_key = 'development'
 oauth = OAuth(app)
+client = MongoClient('localhost', 27017)
+db = client.OpenJournal
 
 google = oauth.remote_app(
     'google',
@@ -39,9 +41,13 @@ def home():
 @app.route("/main_comunity_detail", methods=['GET', 'POST'])
 def getWriting():
     id = request.args.get("id")
-    client = MongoClient('localhost', 27017)
-    db = client.OpenJournal
     bulletin = db.Bulletin
+    hit = 0
+    data = bulletin.find({"_id": ObjectId(id)})
+    for document in data:
+        if document['_id'] == ObjectId(id):
+            hit = document['hits']
+    bulletin.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
     data = bulletin.find({"_id": ObjectId(id)})
     return render_template('main_comunity_detail.html',data = data)
 
@@ -56,6 +62,31 @@ def index():
 @app.route('/login')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
+
+@app.route('/commentEnroll', methods=['POST'])
+def commentEnroll():
+    if 'google_token' in session:
+        if request.method == 'POST':
+            bulletin = db.Bulletin
+            me = google.get('userinfo')
+            userName = me.data['name']
+            now = datetime.datetime.now()
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            commentContent = request.form['comment']
+            objectId = request.form['objectId']
+            data = bulletin.find({"_id": ObjectId(objectId)})
+            commentNum = 0
+            for document in data:
+                if document['_id'] == ObjectId(objectId):
+                    commentNum = document['commentNum']
+            commentDict = {'commentNum':commentNum+1, 'userName':userName, 'Time':currentTime, 'comment':commentContent}
+            bulletin.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
+            bulletin.update({"_id": ObjectId(objectId)},{"$set": {"commentNum":commentNum+1}})
+            return "댓글 등록"
+        else:
+            return "post형태의 데이터 전송이 아닙니다."
+    else:
+        return "로그인이 필요한 기능입니다."
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -222,10 +253,11 @@ def enrollWriting():
             cursor = collection.find_one({"_id": ObjectId("5af1836db79ff2818f02efb0")})
             writingNum = int(cursor['writingNum']+1)
             now = datetime.datetime.now()
+            commentNum = 0
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             doc = {'userName': userName, 'mainCategory':mainCategory, 'subCategory':subCategory,
                    'title':title, 'contents':contents, 'hits':hits, 'writingNum':writingNum,
-                   'time':currentTime}
+                   'time':currentTime, 'commentNum':commentNum}
             bulletinCollection.insert(doc)
             collection.update({"_id": ObjectId("5af1836db79ff2818f02efb0")}, {"_id": ObjectId("5af1836db79ff2818f02efb0"),
             'writingNum':writingNum})

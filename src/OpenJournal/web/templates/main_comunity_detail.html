@@ -20,10 +20,10 @@
       <li><a href="#!" class="black-text">회원가입</a></li>
     </ul>
     <div class="nav-wrapper container">
-      <a id="logo-container" href="main.html" class="brand-logo">Open Journal</a>
+      <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
       <ul class="right hide-on-med-and-down">
-      <li><a href="main_enroll.html">논문 등록 및 검수</a></li>
-      <li><a href="main_comunity.html">커뮤니티</a></li>
+      <li><a href="main_enroll">논문 등록 및 검수</a></li>
+      <li><a href="main_comunity">커뮤니티</a></li>
       <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
       </ul>
       <ul id="nav-mobile" class="sidenav">
@@ -34,7 +34,6 @@
     </div>
   </nav>
 
-  <p>---------------------</p>
   {% for i in data %}
     <div  class="container">
       <div class="section">
@@ -88,23 +87,23 @@
                     </tbody>
                   </table>
                 </ul>
-
-         	      <table>
-         	        <tbody>
-                    <tr>
-                      <td class="comment-window-first-td">
-                        <div class="input-field col s12">
-                          <textarea id="contents" class="materialize-textarea"></textarea>
-                        </div>
-                      </td>
-                      <td class="comment-window-second-td">
-                        <div class="center btn blue darken-4">
-                          <span>등록</span>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <form action="commentEnroll" method="POST">
+                  <textarea style="display:none", name="objectId", id = "objectId">{{i._id}}</textarea>
+         	        <table>
+         	          <tbody>
+                      <tr>
+                        <td class="comment-window-first-td">
+                          <div class="input-field col s12">
+                            <textarea id="comment" name="comment" class="materialize-textarea"></textarea>
+                          </div>
+                        </td>
+                        <td class="comment-window-second-td" name="enroll">
+                            <input type="submit" class="center btn blue darken-4" name="enrollBtn" value="등록" />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+              </form>
               </div>
             </div>
           </div>
