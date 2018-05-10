@@ -23,6 +23,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     mapping (uint => Journal) public journals;                                  // 논문 번호 : Journal
     mapping (address => Subscriber) public subscribers;                         // 구독자 주소 : Subscriber
     mapping (address => mapping (uint => bool)) public is_subscribed;           // 구독자가 논문을 구독하였는지에 대한 여부
+    mapping (address => mapping (uint => bool)) public is_subscriber;               // 구독자가 현재 존재하는지에 대한 여부
 
     uint256 public subscriberNumber;       // Subscriber 번호(현재는 test 위해 2로 설정 해놓음)
     uint256 public journalNumber;          // Journal 번호(현재는 test 위해 2로 설정 해놓음)
@@ -69,15 +70,15 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         upperbound_value = _upperbound_value;
     }
 
-    function signUp(address _to) public onlyOwner returns (bool) {
+    function signUp() public returns (bool) {
         subscriberNumber = subscriberNumber.add(1);            
-        subscribers[_to] = Subscriber(
+        subscribers[msg.sender] = Subscriber(
             subscriberNumber,
-            _to,
+            msg.sender,
             new uint[](0)
         );
-        transfer(_to, signUpCost);   
-        emit LogSignUp(subscriberNumber, _to, subscribers[msg.sender].subscriber_journal);
+        transferFromOwner(msg.sender, signUpCost);   
+        emit LogSignUp(subscriberNumber, msg.sender, subscribers[msg.sender].subscriber_journal);
         return true;
     }
 
