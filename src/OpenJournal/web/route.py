@@ -66,22 +66,12 @@ def serve_gridfs_file(oid):
 def mainEnroll():
     return render_template('main_enroll.html')
 
-#mongo URI가 들어왔을 때 'GET'메소드를 통해 white_board.html에 data 전송
-@app.route('/board', methods=['GET'])
-def board():
-    client = MongoClient('localhost', 27017)
-    db = client.OpenJournal
-    collection = db.Bulletin
-    rows = collection.find()
-    client.close()
-    return render_template('white_board.html', data=rows)
-
 @app.route("/main_comunity")
 def mainComunity():
     client = MongoClient('localhost', 27017)
     db = client.OpenJournal
     collection = db.Bulletin
-    rows = collection.find()
+    rows = collection.find().sort("writingNum",-1)
     client.close()
     return render_template('main_comunity.html', data=rows)
 
