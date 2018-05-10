@@ -1112,8 +1112,8 @@ document.addEventListener('keyup', docHandleKeyup);
 /**
  * Initialize jQuery wrapper for plugin
  * @param {Class} plugin  javascript class
- * @param {string} pluginName  jQuery plugin name
- * @param {string} classRef  Class reference name
+ * @param {string} pluginName jQuery plugin name
+ * @param {string} classRef Class reference name
  */
 M.initializeJqueryWrapper = function (plugin, pluginName, classRef) {
   jQuery.fn[pluginName] = function (methodOrOptions) {
@@ -1146,7 +1146,7 @@ M.initializeJqueryWrapper = function (plugin, pluginName, classRef) {
 
 /**
  * Automatically initialize components
- * @param {Element} context  DOM Element to search within for components
+ * @param {Element} context DOM Element to search within for components
  */
 M.AutoInit = function (context) {
   // Use document.body if no context is given
@@ -1203,7 +1203,7 @@ M.guid = function () {
 
 /**
  * Escapes hash from special characters
- * @param {string} hash  String returned from this.hash
+ * @param {string} hash String returned from this.hash
  * @returns {string}
  */
 M.escapeHash = function (hash) {
@@ -1227,23 +1227,23 @@ M.elementOrParentIsFixed = function (element) {
  * @typedef {Object} Edges
  * @property {Boolean} top  If the top edge was exceeded
  * @property {Boolean} right  If the right edge was exceeded
- * @property {Boolean} bottom  If the bottom edge was exceeded
- * @property {Boolean} left  If the left edge was exceeded
+ * @property {Boolean} bottom If the bottom edge was exceeded
+ * @property {Boolean} left If the left edge was exceeded
  */
 
 /**
  * @typedef {Object} Bounding
  * @property {Number} left  left offset coordinate
- * @property {Number} top  top offset coordinate
+ * @property {Number} top top offset coordinate
  * @property {Number} width
  * @property {Number} height
  */
 
 /**
  * Escapes hash from special characters
- * @param {Element} container  Container element that acts as the boundary
- * @param {Bounding} bounding  element bounding that is being checked
- * @param {Number} offset  offset from edge that counts as exceeding
+ * @param {Element} container Container element that acts as the boundary
+ * @param {Bounding} bounding element bounding that is being checked
+ * @param {Number} offset offset from edge that counts as exceeding
  * @returns {Edges}
  */
 M.checkWithinContainer = function (container, bounding, offset) {
@@ -1348,7 +1348,7 @@ M.getOverflowParent = function (element) {
 
 /**
  * Gets id of component from a trigger
- * @param {Element} trigger  trigger
+ * @param {Element} trigger trigger
  * @returns {string}
  */
 M.getIdFromTrigger = function (trigger) {
@@ -1384,14 +1384,14 @@ M.getDocumentScrollLeft = function () {
  * @typedef {Object} Edges
  * @property {Boolean} top  If the top edge was exceeded
  * @property {Boolean} right  If the right edge was exceeded
- * @property {Boolean} bottom  If the bottom edge was exceeded
- * @property {Boolean} left  If the left edge was exceeded
+ * @property {Boolean} bottom If the bottom edge was exceeded
+ * @property {Boolean} left If the left edge was exceeded
  */
 
 /**
  * @typedef {Object} Bounding
  * @property {Number} left  left offset coordinate
- * @property {Number} top  top offset coordinate
+ * @property {Number} top top offset coordinate
  * @property {Number} width
  * @property {Number} height
  */
@@ -6682,7 +6682,7 @@ $jscomp.polyfill = function (e, r, p, m) {
 
       /**
        * Render dropdown content
-       * @param {Object} data  data set
+       * @param {Object} data data set
        * @param {String} val  current input value
        */
 
@@ -7499,8 +7499,8 @@ $jscomp.polyfill = function (e, r, p, m) {
 
   /**
    * @typedef {Object} chip
-   * @property {String} tag  chip tag string
-   * @property {String} [image]  chip avatar image string
+   * @property {String} tag chip tag string
+   * @property {String} [image] chip avatar image string
    */
 
   /**
@@ -9338,10 +9338,10 @@ $jscomp.polyfill = function (e, r, p, m) {
         // if (!$target.hasClass('pika-select')) {
         //   // if this is touch event prevent mouse events emulation
         //   // if (e.preventDefault) {
-        //   //   e.preventDefault();
+        //   //  e.preventDefault();
         //   // } else {
-        //   //   e.returnValue = false;
-        //   //   return false;
+        //   //  e.returnValue = false;
+        //   //  return false;
         //   // }
         // } else {
         //   this._c = true;
@@ -11875,8 +11875,8 @@ $jscomp.polyfill = function (e, r, p, m) {
 
       /**
        * Make option as selected and scroll to selected position
-       * @param {jQuery} collection  Select options jQuery element
-       * @param {Element} newOption  element of the new option
+       * @param {jQuery} collection Select options jQuery element
+       * @param {Element} newOption element of the new option
        */
 
     }, {
@@ -12209,7 +12209,7 @@ $jscomp.polyfill = function (e, r, p, m) {
 
       /**
        * Calculate the offset of the thumb
-       * @return {Number}  offset in pixels
+       * @return {Number} offset in pixels
        */
 
     }, {
