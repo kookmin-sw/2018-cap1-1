@@ -132,3 +132,25 @@
   text-align: center;
 }
 
+.vertical-container {  display: -webkit-flex;
+  display:         flex;
+  -webkit-align-items: center;
+          align-items: center;
+  -webkit-justify-content: center;
+          justify-content: center;
+  height: 800px;
+}
+
+.vertical-subcontainer{
+  position:relative;
+  box-sizing: border-box;
+  width:505px;
+  min-height:700px;
+  height:auto;
+  background-color: #ffffff;
+}
+
+.login-shadow {
+    box-shadow: -60px 0px 100px -90px #000000,
+        60px 0px 100px -90px #000000;
+}
