@@ -61,17 +61,19 @@
               <p style="margin:0; text-align: left;" > {{i.contents}}</p>
             </div>
 
+
             <div class="comment-window s12 col center">
               <ul>
+                                  {% for j in i.commentDicts %}
                 <li class="comment-list">
                   <table>
                     <tbody>
                       <tr>
                         <td class="comment-name">
-                          구민준
+                          {{j.userName}}
                         </td>
                         <td class="comment-date">
-                          2018.05.03 14:44
+                          {{j.Time}}
                         </td>
                         <td class="comment-blank">
                         </td>
@@ -81,12 +83,15 @@
                       </tr>
                       <tr>
                         <td colspan="4" class="comment-contents">
-                          <a class="blue-text" href="main_view_journal.html"> #1111번</a> 논문을 참고하시면 좋을 것 같습니다.
+                          {{j.comment}}
                         </td>
                       </tr>
                     </tbody>
                   </table>
+                </li>
+                  {% endfor %}
                 </ul>
+
                 <form action="commentEnroll" method="POST">
                   <textarea style="display:none", name="objectId", id = "objectId">{{i._id}}</textarea>
          	        <table>
