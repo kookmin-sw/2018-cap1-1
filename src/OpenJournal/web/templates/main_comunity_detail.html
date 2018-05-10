@@ -14,10 +14,9 @@
 <body>
   <nav class="white" role="navigation">
     <ul id="dropdown1" class="dropdown-content">
-      <li><a href="oauth" class="black-text">구글 로그인</a></li>
-      <li><a href="#!" class="black-text">로그인</a></li>
+      <li><a href="main_login.html" class="black-text">로그인</a></li>
       <li class="divider"></li>
-      <li><a href="#!" class="black-text">회원가입</a></li>
+      <li><a href="main_new_member.html" class="black-text">회원가입</a></li>
     </ul>
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
@@ -64,16 +63,19 @@
 
             <div class="comment-window s12 col center">
               <ul>
-                                  {% for j in i.commentDicts %}
-                <li class="comment-list">
+                {% for j in i.commentDicts %}
+                <li id={{j.commentNum}} class="comment-list">
                   <table>
                     <tbody>
-                      <tr>
+                      <tr id={{j.userId}}>
                         <td class="comment-name">
                           {{j.userName}}
                         </td>
                         <td class="comment-date">
                           {{j.Time}}
+                        </td>
+                        <td id="chaminjun_002" onclick="checkcheck(this)" class="comment-check unchecked">
+                          <img  style="height:10px; width:10px;" src="../static/uncheck.png"/>
                         </td>
                         <td class="comment-blank">
                         </td>

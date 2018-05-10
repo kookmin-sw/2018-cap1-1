@@ -34,7 +34,7 @@ function ShowHideSubCat(){
 
   for(var i=0; i<subSize; i++){
     var option = document.createElement('option');
-    option.value = i;
+    option.value = subCategory[subCategoryIdx][i];
     option.appendChild(document.createTextNode(subCategory[subCategoryIdx][i]));
     df.appendChild(option);
   }
@@ -48,6 +48,7 @@ function ShowHideSubCat(){
 //   image: '', //optional
 //   id: 1, //optional
 // };
+
 $(document).ready(function(){
   $('.dropdown-trigger').dropdown();
 });
@@ -95,3 +96,24 @@ $('.chips-initial').material_chip('data');
 function openTotalJournal(){
   $('#journalPDF').attr('src', "../static/journal_example.pdf");
 }
+
+function checkcheck(test){
+  var img_id = test.id;
+
+  if(document.getElementById(img_id).classList.contains('unchecked')){
+    var split_arr = img_id.split("_");
+    console.log(split_arr[0], split_arr[1]);
+    //아이디 증가할 땐 split_arr[0]
+    //댓글번호는 split_arr[1]
+
+    var special_id = document.getElementById(img_id).firstElementChild;
+    special_id.src = "../static/check.png"
+    document.getElementById(img_id).classList.add('checked');
+    document.getElementById(img_id).classList.remove('unchecked');
+
+  }
+  
+}
+
+
+

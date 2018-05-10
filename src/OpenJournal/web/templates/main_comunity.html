@@ -14,10 +14,9 @@
 <body>
   <nav class="white" role="navigation">
     <ul id="dropdown1" class="dropdown-content">
-      <li><a href="oauth" class="black-text">구글 로그인</a></li>
-      <li><a href="#!" class="black-text">로그인</a></li>
+      <li><a href="main_login.html" class="black-text">로그인</a></li>
       <li class="divider"></li>
-      <li><a href="#!" class="black-text">회원가입</a></li>
+      <li><a href="main_new_member.html" class="black-text">회원가입</a></li>
     </ul>
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
@@ -59,12 +58,13 @@
           <table>
             <thead>
               <tr>
-                <th class="center" style="width:10%;">번호</th>
-                <th class="center" style="width:55%;">제목</th>
+                <th class="center" style="width:5%;">번호</th>
+                <th class="center" style="width:10%;">대분류</th>
+                <th class="center" style="width:10%;">소분류</th>
+                <th class="center" style="width:50%;">제목</th>
                 <th class="center" style="width:10%;">작성자</th>
-                <th class="center" style="width:15%;">작성일</th>
+                <th class="center" style="width:10%;">작성일</th>
                 <th class="center" style="width:5%;">조회</th>
-                <th class="center" style="width:5%;">좋아요</th>
               </tr>
             </thead>
 
@@ -72,6 +72,8 @@
               <tbody>
                 <tr>
                   <td class="center">{{i.writingNum}}</td>
+                  <td class="center">{{i.mainCategory}}</td>
+                  <td class="center">{{i.subCategory}}</td>
                   <td class="center" style="cursor:pointer;" onclick="location.href='/main_comunity_detail?id={{i._id}}'">{{i.title}}</td>
                   <td class="center">{{i.userName}}</td>
                   <td class="center">{{i.time}}</td>
