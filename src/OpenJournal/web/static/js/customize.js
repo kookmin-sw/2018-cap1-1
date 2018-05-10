@@ -16,29 +16,29 @@ var subCategory = [["전체","건축공학", "고분자공학", "공학일반", 
 function ShowHideSubCat(){
   var x = document.getElementById("mainCat").value;
   var subCategoryIdx = null;
-  
+
   for(var i=0; i<categorySize; i++){
     if(x == category[i]){
       subCategoryIdx = i;
       break;
     }
   }
-  
-  
+
+
   //subCat에 붙임
   var subElement = document.getElementById("subCat");
   var subSize = subCategory[subCategoryIdx].length;
   df = document.createDocumentFragment(); // create a document fragment to hold the options while we create them
-  
+
   subElement.options.length = 0;
-  
+
   for(var i=0; i<subSize; i++){
     var option = document.createElement('option');
     option.value = subCategory[subCategoryIdx][i];
     option.appendChild(document.createTextNode(subCategory[subCategoryIdx][i]));
     df.appendChild(option);
   }
-  
+
   subElement.appendChild(df);
 }
 
@@ -91,7 +91,7 @@ $('.chips').on('chip.select', function(e, chip){
   // you have the selected chip here
 });
 
-$('.chips-initial').material_chip('data');  
+$('.chips-initial').material_chip('data');
 
 function openTotalJournal(){
   $('#journalPDF').attr('src', "../static/journal_example.pdf");

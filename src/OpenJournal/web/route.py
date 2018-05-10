@@ -4,7 +4,7 @@ from flask_oauthlib.client import OAuth
 from pymongo import MongoClient
 from pymongo import Connection
 from urllib2 import Request, urlopen, URLError
-import gridfs
+import gridfs, datetime
 from gridfs.errors import NoFile
 from bson.objectid import ObjectId
 from werkzeug import secure_filename
@@ -17,6 +17,8 @@ app.config['GOOGLE_SECRET'] = "61w2EkT-lKN8eUkSRUBWIxMx"
 app.debug = True
 app.secret_key = 'development'
 oauth = OAuth(app)
+client = MongoClient('localhost', 27017)
+db = client.OpenJournal
 
 google = oauth.remote_app(
     'google',
@@ -36,6 +38,19 @@ google = oauth.remote_app(
 def home():
     return render_template('main.html')
 
+@app.route("/main_comunity_detail", methods=['GET', 'POST'])
+def getWriting():
+    id = request.args.get("id")
+    bulletin = db.Bulletin
+    hit = 0
+    data = bulletin.find({"_id": ObjectId(id)})
+    for document in data:
+        if document['_id'] == ObjectId(id):
+            hit = document['hits']
+    bulletin.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
+    data = bulletin.find({"_id": ObjectId(id)})
+    return render_template('main_comunity_detail.html',data = data)
+
 @app.route('/oauth', methods=['GET', 'POST'])
 def index():
     if 'google_token' in session:
@@ -47,6 +62,31 @@ def index():
 @app.route('/login')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
+
+@app.route('/commentEnroll', methods=['POST'])
+def commentEnroll():
+    if 'google_token' in session:
+        if request.method == 'POST':
+            bulletin = db.Bulletin
+            me = google.get('userinfo')
+            userName = me.data['name']
+            now = datetime.datetime.now()
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            commentContent = request.form['comment']
+            objectId = request.form['objectId']
+            data = bulletin.find({"_id": ObjectId(objectId)})
+            commentNum = 0
+            for document in data:
+                if document['_id'] == ObjectId(objectId):
+                    commentNum = document['commentNum']
+            commentDict = {'commentNum':commentNum+1, 'userName':userName, 'Time':currentTime, 'comment':commentContent}
+            bulletin.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
+            bulletin.update({"_id": ObjectId(objectId)},{"$set": {"commentNum":commentNum+1}})
+            return "댓글 등록"
+        else:
+            return "post형태의 데이터 전송이 아닙니다."
+    else:
+        return "로그인이 필요한 기능입니다."
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -68,7 +108,12 @@ def mainEnroll():
 
 @app.route("/main_comunity")
 def mainComunity():
-    return render_template('main_comunity.html')
+    client = MongoClient('localhost', 27017)
+    db = client.OpenJournal
+    collection = db.Bulletin
+    rows = collection.find().sort("writingNum",-1)
+    client.close()
+    return render_template('main_comunity.html', data=rows)
 
 @app.route("/main_enroll_for_check_journal")
 def mainEnrollForCheckJournal():
@@ -103,8 +148,8 @@ def authorized():
     collection = db.Oauth_Users
     cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
     for document in cursor:
-	if document['user_id'] == userId:
-	    return render_template('authorization.html', name=me.data['name'])
+        if document['user_id'] == userId:
+            return render_template('authorization.html', name=me.data['name'])
 
     collection.insert(doc)
     client.close()
@@ -113,16 +158,6 @@ def authorized():
 @google.tokengetter
 def get_google_oauth_token():
     return session.get('google_token')
-
-#mongo URI가 들어왔을 때 'GET'메소드를 통해 white_board.html에 data 전송
-@app.route('/board', methods=['GET'])
-def board():
-    client = MongoClient('localhost', 27017)
-    db = client.OpenJournal
-    collection = db.Bulletin
-    rows = collection.find()
-    client.close()
-    return render_template('white_board.html', data=rows)
 
 @app.route('/enroll')
 def enroll():
@@ -142,8 +177,8 @@ def enrollUser():
         collection = db.Users
         cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
         for document in cursor:
-	    if document['user_id'] == userId:
-		return "이미 회원 가입 되었습니다."
+            if document['user_id'] == userId:
+                return "이미 회원 가입 되었습니다."
 	collection.insert(doc)
 	client.close()
 	return render_template("main.html")
@@ -198,25 +233,36 @@ def enrollPaper():
     else:
         return "로그인 안돼있음"
 
-@app.route('/enrollWriting', methods=['POST'])
+@app.route('/enrollWriting', methods=['POST', 'GET'])
 def enrollWriting():
     if 'google_token' in session:
         if request.method == 'POST':
             me = google.get('userinfo')
-            userId = me.data['email']
+            userName = me.data['name']
             mainCategory = request.form['mainCat']
             subCategory = request.form['subCat']
             title = request.form['title']
             contents = request.form['contents']
             hits = 0
-            doc = {'user_id': userId, 'mainCategory':mainCategory, 'subCategory':subCategory,
-                   'title':title, 'contents':contents, 'hits':hits}
+            like = 0
+            writingNum = 0
             client = MongoClient('localhost', 27017)
             db = client.OpenJournal
-            collection = db.Bulletin
-            collection.insert(doc)
+            collection = db.BulletinNum
+            bulletinCollection = db.Bulletin
+            cursor = collection.find_one({"_id": ObjectId("5af1836db79ff2818f02efb0")})
+            writingNum = int(cursor['writingNum']+1)
+            now = datetime.datetime.now()
+            commentNum = 0
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            doc = {'userName': userName, 'mainCategory':mainCategory, 'subCategory':subCategory,
+                   'title':title, 'contents':contents, 'hits':hits, 'writingNum':writingNum,
+                   'time':currentTime, 'commentNum':commentNum}
+            bulletinCollection.insert(doc)
+            collection.update({"_id": ObjectId("5af1836db79ff2818f02efb0")}, {"_id": ObjectId("5af1836db79ff2818f02efb0"),
+            'writingNum':writingNum})
             client.close()
-            return render_template('main_comunity.html')
+            return mainComunity()
     else:
         return "로그인 안돼있음"
 
