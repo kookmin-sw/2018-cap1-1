@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Open Journal</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="../static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../static/css/customize.css" type="text/css" rel="stylesheet"/>
+</head>
+<body style="background-color: #f5f5f5;">
+	<div class="container">
+		<div class="section">
+			<div class="row">
+        <div class="col s12 center">
+					<div class="vertical-container">
+						<div class="login-shadow vertical-subcontainer">
+							<div class="row">
+								<div class="col s12">
+									<p style="margin:7rem 0 3rem 0; font-size:2rem;" class="blue-text"> Open Journal <span class="black-text">계정만들기</span> </p>
+								</div>
+							</div>
+							<div style="margin:0;" class="row">
+						    <form class="col s12" onsubmit="return tocheckpw1()">
+						      <div style="margin:0;" class="row">
+						        <div class="input-field col s6">
+						          <input id="first_name" type="text" class="validate" required>
+						          <label for="first_name">First Name</label>
+						        </div>
+						        <div class="input-field col s6">
+						          <input style="margin:0;" id="last_name" type="text" class="validate" required>
+						          <label for="last_name">Last Name</label>
+						        </div>
+						      </div>
+						      <div style="margin:0;" class="row">
+						        <div class="input-field col s12">
+						          <input style="margin:0;" id="email" type="email" class="validate" required>
+						          <label for="email">Email</label>
+						          <span class="helper-text" data-error="틀린 형식입니다." data-success="올바른 이메일 형식입니다."></span>
+						        </div>
+						      </div>
+						      <div style="margin:0;" class="row">
+						        <div class="input-field col s6">
+						          <input style="margin:0;" id="new_password" type="password" class="validate" required>
+						          <label for="new_password">비밀번호</label>
+						        </div>
+						        <div class="input-field col s6">
+						          <input style="margin:0;" id="new_password_check" type="password" class="validate" required>
+						          <label for="new_password_check">비밀번호 확인</label>
+						        </div>
+						      </div>
+
+						      <div style="margin:0;" class="row">
+							      <div class="input-field col s12">
+						          <i class="material-icons prefix">phone</i>
+						          <input id="icon_telephone" type="tel" class="validate" required>
+						          <label for="icon_telephone">Telephone</label>
+						        </div>
+						      </div>
+						      <div style="margin:0;" class="row">
+							      <div class="input-field col s12">
+						          <input id="birthday" type="text" class="datepicker">
+						          <label for="birthday">Birthday</label>
+						        </div>
+						      </div>
+						      <input style="margin-top:5rem;" type="submit" class="center s12 btn blue darken-4" name="newmember" value="입력완료" />
+						    </form>
+						  </div>
+						</div>
+					</div>
+				</div>
+			</div>
+	  </div>
+	</div>
+  <!--  Scripts-->
+
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="../static/js/materialize.js"></script>
+  <script src="../static/js/init.js"></script>
+  <script src="../static/js/customize.js"></script>
+
+  <script>
+  	  document.addEventListener('DOMContentLoaded', function() {
+		    var elems = document.querySelectorAll('.datepicker');
+		    var instances = M.Datepicker.init(elems);
+		  });
+
+		  function tocheckpw1() {
+        var pw = document.getElementById('new_password').value;
+        var pwck = document.getElementById('new_password_check').value;
+ 
+        if (pw != pwck) {
+            alert('비밀번호가 틀렸습니다. 다시 입력해 주세요');
+            return false;
+        }
+    	}
+
+  </script>
+
+  </body>
+</html>
