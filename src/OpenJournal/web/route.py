@@ -36,6 +36,15 @@ google = oauth.remote_app(
 def home():
     return render_template('main.html')
 
+@app.route("/main_comunity_detail", methods=['GET', 'POST'])
+def getWriting():
+    id = request.args.get("id")
+    client = MongoClient('localhost', 27017)
+    db = client.OpenJournal
+    bulletin = db.Bulletin
+    data = bulletin.find({"_id": ObjectId(id)})
+    return render_template('main_comunity_detail.html',data = data)
+
 @app.route('/oauth', methods=['GET', 'POST'])
 def index():
     if 'google_token' in session:
@@ -211,7 +220,7 @@ def enrollWriting():
             collection = db.BulletinNum
             bulletinCollection = db.Bulletin
             cursor = collection.find_one({"_id": ObjectId("5af1836db79ff2818f02efb0")})
-            writingNum = cursor['writingNum']+1
+            writingNum = int(cursor['writingNum']+1)
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             doc = {'userName': userName, 'mainCategory':mainCategory, 'subCategory':subCategory,
