@@ -48,6 +48,7 @@ function ShowHideSubCat(){
 //   image: '', //optional
 //   id: 1, //optional
 // };
+
 $(document).ready(function(){
   $('.dropdown-trigger').dropdown();
 });
@@ -113,4 +114,6 @@ function checkcheck(test){
   }
   
 }
+
+
 
