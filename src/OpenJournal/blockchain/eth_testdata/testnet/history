@@ -1,0 +1,17 @@
+eth.accounts
+eth.getBalance(eth.account[0])
+eth.getBalance(eth.accounts[0])
+eth.blockNumber
+miner.start()
+miner.stop()
+eth.getBalance(eth.accounts[0])
+eth.accounts
+eth.sendTransaction({from: '0x64bda47c7dea1583d1ad48bfca89842eaa9e6a37', to: '0x63517fc37670a17928aa9736a36dfeab1c7dae9a', value: web3.toWei(1, "ether")})
+eth.pendingTransactions
+eth.getBalance(eth.accounts[0])
+miner.start()
+miner.stop()
+eth.pendingTransactions
+eth.getBalance(eth.accounts[0])
+eth.getBalance(eth.accounts[1])
+eth.accounts
