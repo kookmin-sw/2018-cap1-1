@@ -54,6 +54,8 @@ def mainNewMember():
 
 @app.route("/userLogin", methods=['POST'])
 def userLogin():
+    if 'google_token' in session:         #일반회원 로그인 시 구글 로그인 정보가 세션에 담겨져있다면 세션에서 제거
+        session.pop('google_token', None)
     userId = request.form['email_id']
     password = request.form['password']
     collection = db.Users
@@ -106,6 +108,8 @@ def getWriting():
 
 @app.route('/oauth', methods=['GET', 'POST'])
 def index():
+    if 'userId' in session:         #구글회원 로그인 시 구글 로그인 정보가 세션에 담겨져있다면 세션에서 제거
+        session.pop('userId', None)
     if 'google_token' in session:
         me = google.get('userinfo')
         return render_template('main.html')
@@ -121,11 +125,10 @@ def commentEnroll():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             bulletin = db.Bulletin
-            me = google.get('userinfo')
             userName = ""
             if 'google_token' in session:
-                    userName = me.data['name']
-                return str(userName)
+                me = google.get('userinfo')
+                userName = me.data['name']
             elif 'userId' in session:
                 userName = db.Users
                 data = userName.find_one({"user_id": session['userId']})
@@ -144,7 +147,7 @@ def commentEnroll():
             bulletin.update({"_id": ObjectId(objectId)},{"$set": {"commentNum":commentNum+1}})
             return "댓글 등록"
         else:
-            return "post형태의 데이터 전송이 아닙니다."
+            return "잘못된 데이터 요청 입니다."
     else:
         return "로그인이 필요한 기능입니다."
 
@@ -198,11 +201,9 @@ def authorized():
         )
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-
     userId = me.data['email']
     userName = me.data['name']
     doc = {'user_id': userId, 'user_name': userName}
-
     client = MongoClient('localhost', 27017)
     db = client.OpenJournal
     collection = db.Oauth_Users
@@ -210,7 +211,6 @@ def authorized():
     for document in cursor:
         if document['user_id'] == userId:
             return render_template('main.html')
-
     collection.insert(doc)
     client.close()
     return render_template('main.html')
