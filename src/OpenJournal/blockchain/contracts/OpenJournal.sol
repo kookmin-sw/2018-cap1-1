@@ -117,6 +117,12 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         return true;
     }
 
+    function getAuthorAddress(uint256 _journalNumber) public returns (address){
+        require(_journalNumber > 0 && _journalNumber <= journalNumber);
+
+        return journals[_journalNumber].author;
+    }
+
     function showSubscribedJournal() public view returns (uint[]){
         //emit LogShowSubscribedJournal(subscribers[msg.sender].subscriber_journal);
 
