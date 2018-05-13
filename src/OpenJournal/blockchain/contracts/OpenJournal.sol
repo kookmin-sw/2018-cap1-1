@@ -24,8 +24,8 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     mapping (address => Subscriber) public subscribers;                         // 구독자 주소 : Subscriber
     mapping (address => mapping (uint => bool)) public is_subscribed;           // 구독자가 논문을 구독하였는지에 대한 여부
 
-    uint256 public subscriberNumber;       // Subscriber 번호(현재는 test 위해 2로 설정 해놓음)
-    uint256 public journalNumber;          // Journal 번호(현재는 test 위해 2로 설정 해놓음)
+    uint256 public subscriberNumber;       // Subscriber 번호
+    uint256 public journalNumber;          // Journal 번호
     uint8 public signUpCost;               // 회원가입시 주어질 토큰
     uint8 public upperbound_value;         // 저자가 논문 등록시 값의 상한선  
 
@@ -69,15 +69,15 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         upperbound_value = _upperbound_value;
     }
 
-    function signUp(address _to) public onlyOwner returns (bool) {
+    function signUp() public returns (bool) {
         subscriberNumber = subscriberNumber.add(1);            
-        subscribers[_to] = Subscriber(
+        subscribers[msg.sender] = Subscriber(
             subscriberNumber,
-            _to,
+            msg.sender,
             new uint[](0)
         );
-        transfer(_to, signUpCost);   
-        emit LogSignUp(subscriberNumber, _to, subscribers[msg.sender].subscriber_journal);
+        transferFromOwner(msg.sender, signUpCost);   
+        emit LogSignUp(subscriberNumber, msg.sender, subscribers[msg.sender].subscriber_journal);
         return true;
     }
 
@@ -115,6 +115,12 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         );
 
         return true;
+    }
+
+    function getAuthorAddress(uint256 _journalNumber) public returns (address){
+        require(_journalNumber > 0 && _journalNumber <= journalNumber);
+
+        return journals[_journalNumber].author;
     }
 
     function showSubscribedJournal() public view returns (uint[]){
