@@ -1,3 +1,5 @@
+
+
 App = {
     web3Provider: null,
     contracts: {},
@@ -71,15 +73,14 @@ App = {
         
         // ************************ Test Code Start **************************
         
-        let openJournal;
-        let register;
-        register = "0xC29dcebbcA87357F24963383024c8eDdDb4396E7";
-        openJournal = App.contracts.OpenJournal.deployed().then(function(instance){
-            console.log(instance);
-            // instance.registJournal(7, 'Journal 2', 'This is Journal for test', {from: register});
-            console.log(instance.journalNumber);
-        });
-        
+        // let openJournal;
+        // openJournal = App.contracts.OpenJournal.new(0, 0, 30, 50);
+
+        // let register;
+        // register = "0xC29dcebbcA87357F24963383024c8eDdDb4396E7";
+
+        // let regist;
+        // regist = openJournal.registJournal(7, 'Journal 2', 'This is Journal for test', {from:register}); 
 
         // ************************* Test Code End*****************************
       

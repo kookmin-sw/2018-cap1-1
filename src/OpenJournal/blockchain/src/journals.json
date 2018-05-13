@@ -1,7 +1,7 @@
 [
     {
         "id" : 0,
-        "number": 101,
+        "number": 0,
         "author": "Cha-minjun",
         "title": "How to love",
         "description": "Go straight",
@@ -9,7 +9,7 @@
     },
     {
         "id" : 1,
-        "number": 102,
+        "number": 1,
         "author": "Koo-minjun",
         "title": "How to nojam",
         "description": "Solo laughing",
