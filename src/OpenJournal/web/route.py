@@ -38,6 +38,12 @@ google = oauth.remote_app(
 def home():
     return render_template('main.html')
 
+@app.route("/loginInformation", methods=['POST']) #구현중
+def loginInformation():
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        return str(me.data['email'])
+
 @app.route("/main_login")
 def mainLogin():
     return render_template('main_login.html')
@@ -46,18 +52,33 @@ def mainLogin():
 def mainNewMember():
     return render_template('main_new_member.html')
 
+@app.route("/userLogin", methods=['POST'])
+def userLogin():
+    userId = request.form['email_id']
+    password = request.form['password']
+    collection = db.Users
+    cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
+    for document in cursor:
+        if document['user_id'] == userId and document['password'] == password:
+            session['userId'] = userId
+            break
+    return render_template('main.html')
+
+def mainLogin():
+    return render_template('main_login.html')
+
 @app.route("/enrollNewMember", methods=['POST'])
 def enrollNewMember():
     if request.method == 'POST':
         userFirstName = request.form['first_name']
-        userLastName = request.form['first_name']
+        userLastName = request.form['last_name']
         userName = userLastName+userFirstName
         userId = request.form['email_id']
         newPassWord = request.form['new_password']
         newPassWordCheck = request.form['new_password_check']
         telephone = request.form['telephone']
         birthday = request.form['birthday']
-        doc = {'user_id'  : userId,     'user_name': userName, 'passWord':newPassWord,
+        doc = {'user_id'  : userId,     'user_name': userName, 'password':newPassWord,
                'telephone':telephone, 'birthday' :birthday}
         collection = db.Users
         cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
@@ -87,7 +108,7 @@ def getWriting():
 def index():
     if 'google_token' in session:
         me = google.get('userinfo')
-        return render_template('authorization.html', name=me.data['name'])
+        return render_template('main.html')
     else:
         return redirect(url_for('login'))
 
@@ -97,11 +118,18 @@ def login():
 
 @app.route('/commentEnroll', methods=['POST'])
 def commentEnroll():
-    if 'google_token' in session:
+    if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             bulletin = db.Bulletin
             me = google.get('userinfo')
-            userName = me.data['name']
+            userName = ""
+            if 'google_token' in session:
+                    userName = me.data['name']
+                return str(userName)
+            elif 'userId' in session:
+                userName = db.Users
+                data = userName.find_one({"user_id": session['userId']})
+                userName = data['user_name']
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             commentContent = request.form['comment']
@@ -181,11 +209,11 @@ def authorized():
     cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
     for document in cursor:
         if document['user_id'] == userId:
-            return render_template('authorization.html', name=me.data['name'])
+            return render_template('main.html')
 
     collection.insert(doc)
     client.close()
-    return "구글계정으로 처음 로그인. db에 oauth정보 추가"
+    return render_template('main.html')
 
 @google.tokengetter
 def get_google_oauth_token():
@@ -194,24 +222,6 @@ def get_google_oauth_token():
 @app.route('/enroll')
 def enroll():
    return render_template('enroll.html')
-
-"""쿠키 설정"""
-@app.route('/login2')
-def login2():
-   return render_template('login2.html')
-
-@app.route('/setcookie', methods = ['POST', 'GET'])
-def setcookie():
-   if request.method == 'POST':
-	user = request.form['nm']
- 	resp = make_response(render_template('readcookie.html'))
-	resp.set_cookie('userID', user)
-   	return resp
-
-@app.route('/getcookie')
-def getcookie():
-   name = request.cookies.get('userID')
-   return '<h1>welcome '+name+'</h1>'
 
 @app.route('/enrollPaper', methods=['POST'])
 def enrollPaper():
