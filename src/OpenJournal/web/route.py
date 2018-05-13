@@ -38,6 +38,38 @@ google = oauth.remote_app(
 def home():
     return render_template('main.html')
 
+@app.route("/main_login")
+def mainLogin():
+    return render_template('main_login.html')
+
+@app.route("/main_new_member")
+def mainNewMember():
+    return render_template('main_new_member.html')
+
+@app.route("/enrollNewMember", methods=['POST'])
+def enrollNewMember():
+    if request.method == 'POST':
+        userFirstName = request.form['first_name']
+        userLastName = request.form['first_name']
+        userName = userLastName+userFirstName
+        userId = request.form['email_id']
+        newPassWord = request.form['new_password']
+        newPassWordCheck = request.form['new_password_check']
+        telephone = request.form['telephone']
+        birthday = request.form['birthday']
+        doc = {'user_id'  : userId,     'user_name': userName, 'passWord':newPassWord,
+               'telephone':telephone, 'birthday' :birthday}
+        collection = db.Users
+        cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
+        for document in cursor:
+            if document['user_id'] == userId:
+                return "이미 회원 가입 되었습니다."
+        collection.insert(doc)
+    	client.close()
+        return render_template("main.html")
+    else:
+        return "잘못된 데이터 요청 입니다."
+
 @app.route("/main_comunity_detail", methods=['GET', 'POST'])
 def getWriting():
     id = request.args.get("id")
@@ -162,28 +194,6 @@ def get_google_oauth_token():
 @app.route('/enroll')
 def enroll():
    return render_template('enroll.html')
-
-#일반회원 가입. 데이터베이스에 User등록
-@app.route('/enrollUser', methods=['POST'])
-def enrollUser():
-    if request.method == 'POST':
-        userId = request.form['user_id']
-        userName = request.form['user_name']
-        userPw = request.form['user_pw']
-        fame = 0
-        doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw, 'user_fame': fame}
-        client = MongoClient('localhost', 27017)
-        db = client.OpenJournal
-        collection = db.Users
-        cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
-        for document in cursor:
-            if document['user_id'] == userId:
-                return "이미 회원 가입 되었습니다."
-	collection.insert(doc)
-	client.close()
-	return render_template("main.html")
-    else:
-	return "잘못된 데이터 수신 에러 입니다."
 
 """쿠키 설정"""
 @app.route('/login2')
