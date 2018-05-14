@@ -30,20 +30,20 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     uint8 public upperbound_value;         // 저자가 논문 등록시 값의 상한선  
 
     event LogSignUp(
-        uint256 indexed _subscriber_number, 
-        address indexed _subscriber_address, 
+        uint256 _subscriber_number, 
+        address _subscriber_address, 
         uint[] _subscriber_journal
     );  
 
     event LogRegistJournal(
-        uint256 indexed _number, 
-        address indexed _author, 
+        uint256 _number, 
+        address _author, 
         string _title, 
         uint8 _value
     );  
 
     event LogSubscribeJournal(
-        address indexed _subscriber, 
+        address _subscriber, 
         uint[] _myjournals, 
         uint[] _subscribed,
         bool _is_subscribed
@@ -55,7 +55,17 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
 
     event LogShowJournalSubscriber(
         uint[] _subscriber
-    );     
+    );    
+
+    event LogGetAuthorAddress (
+        uint256 _number,
+        address _author
+    );
+
+    event LogGetValue (
+        uint256 _number,
+        uint8 _value
+    );
 
     function OpenJournal(
         uint256 _subscriberNumber,
@@ -117,21 +127,19 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         return true;
     }
 
-    function getAuthorAddress(uint256 _journalNumber) public returns (address){
-        require(_journalNumber > 0 && _journalNumber <= journalNumber);
-
+    function getAuthorAddress(uint256 _journalNumber) public view returns (address){
         return journals[_journalNumber].author;
     }
 
-    function showSubscribedJournal() public view returns (uint[]){
-        //emit LogShowSubscribedJournal(subscribers[msg.sender].subscriber_journal);
+    function getValue(uint256 _journalNumber) public view returns (uint8){
+        return journals[_journalNumber].value;
+    }
 
+    function showSubscribedJournal() public view returns (uint[]){
         return subscribers[msg.sender].subscriber_journal;
     }
 
     function showJournalSubscriber(uint _journalNumber) public view returns (uint[]) {
-        //emit LogShowJournalSubscriber(journals[_journalNumber].subscribed);
-
         return journals[_journalNumber].subscribed;
     }
 }
