@@ -38,6 +38,61 @@ google = oauth.remote_app(
 def home():
     return render_template('main.html')
 
+@app.route("/loginInformation", methods=['POST']) #구현중
+def loginInformation():
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        return str(me.data['email'])
+
+@app.route("/main_login")
+def mainLogin():
+    return render_template('main_login.html')
+
+@app.route("/main_new_member")
+def mainNewMember():
+    return render_template('main_new_member.html')
+
+@app.route("/userLogin", methods=['POST'])
+def userLogin():
+    if 'google_token' in session:         #일반회원 로그인 시 구글 로그인 정보가 세션에 담겨져있다면 세션에서 제거
+        session.pop('google_token', None)
+    userId = request.form['email_id']
+    password = request.form['password']
+    collection = db.Users
+    cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
+    for document in cursor:
+        if document['user_id'] == userId and document['password'] == password:
+            session['userId'] = userId
+            break
+    return render_template('main.html')
+
+def mainLogin():
+    return render_template('main_login.html')
+
+@app.route("/enrollNewMember", methods=['POST'])
+def enrollNewMember():
+    if request.method == 'POST':
+        userFirstName = request.form['first_name']
+        userLastName = request.form['last_name']
+        userName = userLastName+userFirstName
+        userId = request.form['email_id']
+        newPassWord = request.form['new_password']
+        newPassWordCheck = request.form['new_password_check']
+        telephone = request.form['telephone']
+        birthday = request.form['birthday']
+        doc = {'user_id'  : userId,     'user_name': userName, 'password':newPassWord,
+               'telephone':telephone, 'birthday' :birthday}
+        collection = db.Users
+        cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
+        for document in cursor:
+            if document['user_id'] == userId:
+                return "이미 회원 가입 되었습니다."
+        collection.insert(doc)
+    	client.close()
+        return render_template("main.html")
+    else:
+        return "잘못된 데이터 요청 입니다."
+
 @app.route("/main_comunity_detail", methods=['GET', 'POST'])
 def getWriting():
     id = request.args.get("id")
@@ -53,9 +108,11 @@ def getWriting():
 
 @app.route('/oauth', methods=['GET', 'POST'])
 def index():
+    if 'userId' in session:         #구글회원 로그인 시 구글 로그인 정보가 세션에 담겨져있다면 세션에서 제거
+        session.pop('userId', None)
     if 'google_token' in session:
         me = google.get('userinfo')
-        return render_template('authorization.html', name=me.data['name'])
+        return render_template('main.html')
     else:
         return redirect(url_for('login'))
 
@@ -65,11 +122,17 @@ def login():
 
 @app.route('/commentEnroll', methods=['POST'])
 def commentEnroll():
-    if 'google_token' in session:
+    if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             bulletin = db.Bulletin
-            me = google.get('userinfo')
-            userName = me.data['name']
+            userName = ""
+            if 'google_token' in session:
+                me = google.get('userinfo')
+                userName = me.data['name']
+            elif 'userId' in session:
+                userName = db.Users
+                data = userName.find_one({"user_id": session['userId']})
+                userName = data['user_name']
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             commentContent = request.form['comment']
@@ -84,7 +147,7 @@ def commentEnroll():
             bulletin.update({"_id": ObjectId(objectId)},{"$set": {"commentNum":commentNum+1}})
             return "댓글 등록"
         else:
-            return "post형태의 데이터 전송이 아닙니다."
+            return "잘못된 데이터 요청 입니다."
     else:
         return "로그인이 필요한 기능입니다."
 
@@ -138,22 +201,19 @@ def authorized():
         )
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-
     userId = me.data['email']
     userName = me.data['name']
     doc = {'user_id': userId, 'user_name': userName}
-
     client = MongoClient('localhost', 27017)
     db = client.OpenJournal
     collection = db.Oauth_Users
     cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
     for document in cursor:
         if document['user_id'] == userId:
-            return render_template('authorization.html', name=me.data['name'])
-
+            return render_template('main.html')
     collection.insert(doc)
     client.close()
-    return "구글계정으로 처음 로그인. db에 oauth정보 추가"
+    return render_template('main.html')
 
 @google.tokengetter
 def get_google_oauth_token():
@@ -162,46 +222,6 @@ def get_google_oauth_token():
 @app.route('/enroll')
 def enroll():
    return render_template('enroll.html')
-
-#일반회원 가입. 데이터베이스에 User등록
-@app.route('/enrollUser', methods=['POST'])
-def enrollUser():
-    if request.method == 'POST':
-        userId = request.form['user_id']
-        userName = request.form['user_name']
-        userPw = request.form['user_pw']
-        fame = 0
-        doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw, 'user_fame': fame}
-        client = MongoClient('localhost', 27017)
-        db = client.OpenJournal
-        collection = db.Users
-        cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
-        for document in cursor:
-            if document['user_id'] == userId:
-                return "이미 회원 가입 되었습니다."
-	collection.insert(doc)
-	client.close()
-	return render_template("main.html")
-    else:
-	return "잘못된 데이터 수신 에러 입니다."
-
-"""쿠키 설정"""
-@app.route('/login2')
-def login2():
-   return render_template('login2.html')
-
-@app.route('/setcookie', methods = ['POST', 'GET'])
-def setcookie():
-   if request.method == 'POST':
-	user = request.form['nm']
- 	resp = make_response(render_template('readcookie.html'))
-	resp.set_cookie('userID', user)
-   	return resp
-
-@app.route('/getcookie')
-def getcookie():
-   name = request.cookies.get('userID')
-   return '<h1>welcome '+name+'</h1>'
 
 @app.route('/enrollPaper', methods=['POST'])
 def enrollPaper():
