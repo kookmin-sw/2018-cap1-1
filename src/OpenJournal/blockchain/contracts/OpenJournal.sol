@@ -103,7 +103,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
             new uint[](0)            
         );
         emit LogRegistJournal(journalNumber, msg.sender, _title, _journalValue);   
-
+ 
         return true;    
     }
 

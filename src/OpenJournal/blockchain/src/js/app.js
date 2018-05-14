@@ -4,6 +4,7 @@ App = {
 
   //초기화
   init: function() {
+
     //논문 배열을 가져와서 리스트를 만든다. 
     $.getJSON("../journals.json", function(data) {
       var journalsRow = $("#journalsRow");
@@ -14,16 +15,15 @@ App = {
         journalTemplate.find(".journal-number").text(data[i].number);
         journalTemplate.find(".journal-author").text(data[i].author);
         journalTemplate.find(".journal-description").text(data[i].description);
-        journalTemplate.find(".btn-adopt").attr("data-id", data[i].id);
+        journalTemplate.find(".btn-subscribe").attr("data-id", data[i].number);
 
         journalsRow.append(journalTemplate.html());
       }
     });
-    
+
     //지갑설정 함수를 실행한다. 
     return App.initWeb3();
   },
-
   
   initWeb3: function() {
     // web3 인스턴스가 있는지 확인
@@ -57,31 +57,46 @@ App = {
     //OpenJournal 은 컴파일 시 나온 ABI JSON이다 여기에 기본 함수들이 표시가 된다. 
     //웹에서는 이 ABI JSON을 보고 실행을 할 수 있다.
     $.getJSON("OpenJournal.json", function(data) {
+
       // Get the necessary contract artifact file and instantiate it with truffle-contract
-      var SubscribeArtifact = data;
+      var Artifact = data;
       //미리 제공된 truffleContract 를 통해 Subscribe 인스턴스 생성
-      App.contracts.OpenJournal = TruffleContract(SubscribeArtifact);
+      App.contracts.OpenJournal = TruffleContract(Artifact);
       
       //지갑 설정
       App.contracts.OpenJournal.setProvider(App.web3Provider);
-    
-    });
 
+      // App.enrollJournal(); 
+      // 1번째 : 0x9bee130db55d1493465c66655b837f16eab9dff4b465e44fa6ec2fc2c6b98297으로 등록됨
+      // 2번째 : 
+      
+    });
     return App.bindEvents();
   },
 
+  // 논문을 등록하는 함수 (Test 중)
+  enrollJournal: function() {
+    App.contracts.OpenJournal.deployed().then(function(instance){
+      let register;
+      register = "0x23A2c86ca20B8700F9517A88C20a46C5a85D209b"; // 1번계좌: "0xC29dcebbcA87357F24963383024c8eDdDb4396E7"
+      console.log(instance);
+      instance.registJournal(4, 'Title : test2', 'Desc : This is Journal for test2', {from:register});
+      console.log("registed.");
+    });
+  },
+  
   //이벤트 바인딩
   bindEvents: function() {
     $(document).on("click", ".btn-subscribe", App.handleSubscribe);
   },
 
-  //Adopt 버튼 클릭시 adopt 함수 실행하는 함수이다. (트랙잭션이 발생된다.)
+  //Subscribe 버튼 클릭시 subscribeJournal 함수 실행하는 함수이다. (트랙잭션이 발생된다.)
   handleSubscribe: function(event) {
     //기본 이벤트 블럭함
     event.preventDefault();
 
     //저널 번호를 number 를 통해 쿼리해옴
-    var journalNumber = parseInt($(event.target).data("number"));
+    var journalNumber = parseInt($(event.target).data("id"));
 
     var subscriptionInstance;
     
@@ -94,12 +109,13 @@ App = {
       //처음 주소를 가져온다. 
       var account = accounts[0];
       
-      App.contracts.OpenJournal.deployed()
-        .then(function(instance) {
-          subcriptionInstance = instance;
-          
-          //journalNumber, account를 넣어서 함수를 실행한다. 
-          return subscriptionInstance.subscribeJournal(journalId, { from: account });
+      App.contracts.OpenJournal.deployed().then(function(instance) {
+          var authorAddress;
+          authorAddress = instance.getAuthorAddress.call(journalNumber);
+          console.log(authorAddress);
+
+          //journalNumber, account를 넣어서 함수를 실행한다.
+          return instance.subscribeJournal(journalNumber, { from: account });
         })
         .catch(function(err) {
           console.log(err.message);
