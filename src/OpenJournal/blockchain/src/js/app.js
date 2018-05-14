@@ -70,8 +70,17 @@ App = {
       // 1번째 : 0x9bee130db55d1493465c66655b837f16eab9dff4b465e44fa6ec2fc2c6b98297으로 등록됨
       // 2번째 : 
       
+      App.signUp();
+
     });
     return App.bindEvents();
+  },
+
+  signUp: function(){
+    App.contracts.OpenJournal.deployed().then(function(instance){
+      instance.signUp();
+      console.log("registed.");
+    });
   },
 
   // 논문을 등록하는 함수 (Test 중)
@@ -130,3 +139,4 @@ $(function() {
     App.init();
   });
 });
+
