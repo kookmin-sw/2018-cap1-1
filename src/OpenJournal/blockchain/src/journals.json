@@ -17,7 +17,7 @@
     },
     {
         "id" : 2,
-        "number": 103,
+        "number": 2,
         "author": "Oh-hansaem",
         "title": "How to shoot",
         "description": "Close all eyes",
@@ -25,7 +25,7 @@
     },
     {
         "id" : 3,
-        "number": 104,
+        "number": 3,
         "author": "Han-minin",
         "title": "How to enjoy",
         "description": "1-cycle life",
@@ -33,7 +33,7 @@
     },
     {
         "id" : 4,
-        "number": 105,
+        "number": 4,
         "author": "Lee-yonghoon",
         "title": "How to eat",
         "description": "KoomChuck KoomChuck",
