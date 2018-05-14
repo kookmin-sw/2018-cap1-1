@@ -4,7 +4,7 @@ from flask_oauthlib.client import OAuth
 from pymongo import MongoClient
 from pymongo import Connection
 from urllib2 import Request, urlopen, URLError
-import gridfs
+import gridfs, datetime
 from gridfs.errors import NoFile
 from bson.objectid import ObjectId
 from werkzeug import secure_filename
@@ -17,6 +17,8 @@ app.config['GOOGLE_SECRET'] = "61w2EkT-lKN8eUkSRUBWIxMx"
 app.debug = True
 app.secret_key = 'development'
 oauth = OAuth(app)
+client = MongoClient('localhost', 27017)
+db = client.OpenJournal
 
 google = oauth.remote_app(
     'google',
@@ -36,11 +38,81 @@ google = oauth.remote_app(
 def home():
     return render_template('main.html')
 
-@app.route('/oauth', methods=['GET', 'POST'])
-def index():
+@app.route("/loginInformation", methods=['POST']) #구현중
+def loginInformation():
     if 'google_token' in session:
         me = google.get('userinfo')
-        return render_template('authorization.html', name=me.data['name'])
+        return str(me.data['email'])
+
+@app.route("/main_login")
+def mainLogin():
+    return render_template('main_login.html')
+
+@app.route("/main_new_member")
+def mainNewMember():
+    return render_template('main_new_member.html')
+
+@app.route("/userLogin", methods=['POST'])
+def userLogin():
+    if 'google_token' in session:         #일반회원 로그인 시 구글 로그인 정보가 세션에 담겨져있다면 세션에서 제거
+        session.pop('google_token', None)
+    userId = request.form['email_id']
+    password = request.form['password']
+    collection = db.Users
+    cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
+    for document in cursor:
+        if document['user_id'] == userId and document['password'] == password:
+            session['userId'] = userId
+            break
+    return render_template('main.html')
+
+def mainLogin():
+    return render_template('main_login.html')
+
+@app.route("/enrollNewMember", methods=['POST'])
+def enrollNewMember():
+    if request.method == 'POST':
+        userFirstName = request.form['first_name']
+        userLastName = request.form['last_name']
+        userName = userLastName+userFirstName
+        userId = request.form['email_id']
+        newPassWord = request.form['new_password']
+        newPassWordCheck = request.form['new_password_check']
+        telephone = request.form['telephone']
+        birthday = request.form['birthday']
+        doc = {'user_id'  : userId,     'user_name': userName, 'password':newPassWord,
+               'telephone':telephone, 'birthday' :birthday}
+        collection = db.Users
+        cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
+        for document in cursor:
+            if document['user_id'] == userId:
+                return "이미 회원 가입 되었습니다."
+        collection.insert(doc)
+    	client.close()
+        return render_template("main.html")
+    else:
+        return "잘못된 데이터 요청 입니다."
+
+@app.route("/main_comunity_detail", methods=['GET', 'POST'])
+def getWriting():
+    id = request.args.get("id")
+    bulletin = db.Bulletin
+    hit = 0
+    data = bulletin.find({"_id": ObjectId(id)})
+    for document in data:
+        if document['_id'] == ObjectId(id):
+            hit = document['hits']
+    bulletin.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
+    data = bulletin.find({"_id": ObjectId(id)})
+    return render_template('main_comunity_detail.html',data = data)
+
+@app.route('/oauth', methods=['GET', 'POST'])
+def index():
+    if 'userId' in session:         #구글회원 로그인 시 구글 로그인 정보가 세션에 담겨져있다면 세션에서 제거
+        session.pop('userId', None)
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        return render_template('main.html')
     else:
         return redirect(url_for('login'))
 
@@ -48,24 +120,41 @@ def index():
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
 
+@app.route('/commentEnroll', methods=['POST'])
+def commentEnroll():
+    if 'google_token' in session or 'userId' in session:
+        if request.method == 'POST':
+            bulletin = db.Bulletin
+            userName = ""
+            if 'google_token' in session:
+                me = google.get('userinfo')
+                userName = me.data['name']
+            elif 'userId' in session:
+                userName = db.Users
+                data = userName.find_one({"user_id": session['userId']})
+                userName = data['user_name']
+            now = datetime.datetime.now()
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            commentContent = request.form['comment']
+            objectId = request.form['objectId']
+            data = bulletin.find({"_id": ObjectId(objectId)})
+            commentNum = 0
+            for document in data:
+                if document['_id'] == ObjectId(objectId):
+                    commentNum = document['commentNum']
+            commentDict = {'commentNum':commentNum+1, 'userName':userName, 'Time':currentTime, 'comment':commentContent}
+            bulletin.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
+            bulletin.update({"_id": ObjectId(objectId)},{"$set": {"commentNum":commentNum+1}})
+            return "댓글 등록"
+        else:
+            return "잘못된 데이터 요청 입니다."
+    else:
+        return "로그인이 필요한 기능입니다."
+
 def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-@app.route('/enrollPaper', methods=['GET', 'POST'])
-def enrollPaper():
-    db = Connection().OpenJournal
-    fs = gridfs.GridFS(db)
-    if request.method == 'POST':
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_id = fs.put(file, content_type=file.content_type, filename=filename)
-            #return redirect(url_for('serve_gridfs_file', oid=str(oid)))\
-            return "file upload success"
-    return "file upload fail"
-
-"""
 @app.route('/files/<oid>')
 def serve_gridfs_file(oid):
     try:
@@ -75,15 +164,27 @@ def serve_gridfs_file(oid):
         return response
     except NoFile:
         abort(404)
-"""
 
-@app.route('/upload')
-def upload():
-    return render_template('upload.html')
+@app.route("/main_enroll")
+def mainEnroll():
+    return render_template('main_enroll.html')
 
-@app.route("/sub_enroll")
-def subEnroll():
-    return render_template('sub_enroll.html')
+@app.route("/main_comunity")
+def mainComunity():
+    client = MongoClient('localhost', 27017)
+    db = client.OpenJournal
+    collection = db.Bulletin
+    rows = collection.find().sort("writingNum",-1)
+    client.close()
+    return render_template('main_comunity.html', data=rows)
+
+@app.route("/main_enroll_for_check_journal")
+def mainEnrollForCheckJournal():
+    return render_template('main_enroll_for_check_journal.html')
+
+@app.route("/main_comunity_write")
+def mainComunityWrite():
+    return render_template('main_comunity_write.html')
 
 @app.route('/logout', methods = ['POST', 'GET'])
 def logout():
@@ -100,102 +201,88 @@ def authorized():
         )
     session['google_token'] = (resp['access_token'], '')
     me = google.get('userinfo')
-
     userId = me.data['email']
     userName = me.data['name']
     doc = {'user_id': userId, 'user_name': userName}
-
     client = MongoClient('localhost', 27017)
     db = client.OpenJournal
     collection = db.Oauth_Users
     cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
     for document in cursor:
-	if document['user_id'] == userId:
-	    return render_template('authorization.html', name=me.data['name'])
-
+        if document['user_id'] == userId:
+            return render_template('main.html')
     collection.insert(doc)
     client.close()
-    return "구글계정으로 처음 로그인. db에 oauth정보 추가"
+    return render_template('main.html')
 
 @google.tokengetter
 def get_google_oauth_token():
     return session.get('google_token')
 
-#mongo URI가 들어왔을 때 'GET'메소드를 통해 mongo.html에 data 전송
-@app.route('/board', methods=['GET'])
-def board():
-    client = MongoClient('localhost', 27017)
-    db = client.OpenJournal
-    collection = db.Article
-    rows = collection.find()
-    client.close()
-    return render_template('white_board.html', data=rows)
-
 @app.route('/enroll')
 def enroll():
    return render_template('enroll.html')
 
-#일반회원 가입. 데이터베이스에 User등록
-@app.route('/enrollUser', methods=['POST'])
-def enrollUser():
-    if request.method == 'POST':
-        userId = request.form['user_id']
-        userName = request.form['user_name']
-        userPw = request.form['user_pw']
-        doc = {'user_id': userId, 'user_name': userName, 'user_pw': userPw}
-        client = MongoClient('localhost', 27017)
-        db = client.OpenJournal
-        collection = db.Users
-        cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
-        for document in cursor:
-	    if document['user_id'] == userId:
-		return "이미 회원 가입 되었습니다."
-	collection.insert(doc)
-	client.close()
-	return render_template("main.html")
-    else:
-	return "잘못된 데이터 수신 에러 입니다."
-
-"""쿠키 설정"""
-@app.route('/login2')
-def login2():
-   return render_template('login2.html')
-
-@app.route('/setcookie', methods = ['POST', 'GET'])
-def setcookie():
-   if request.method == 'POST':
-	user = request.form['nm']
- 	resp = make_response(render_template('readcookie.html'))
-	resp.set_cookie('userID', user)
-   	return resp
-
-@app.route('/getcookie')
-def getcookie():
-   name = request.cookies.get('userID')
-   return '<h1>welcome '+name+'</h1>'
-
-@app.route('/enrollArticle')
-def enrollArticle():
-   return render_template('write.html')
-
-@app.route('/setArticle', methods=['POST'])
-def setArticle():
+@app.route('/enrollPaper', methods=['POST'])
+def enrollPaper():
     if 'google_token' in session:
         if request.method == 'POST':
             me = google.get('userinfo')
-            category = "article test"
             userId = me.data['email']
-            subject = request.form['subject']
-            content = request.form['content']
-            doc = {'user_id': userId, 'category':category,'subject':subject, 'content':content}
+            mainCategory = request.form['mainCat']
+            subCategory = request.form['subCat']
+            writer = request.form['name']
+            title = request.form['title']
+            abstract = request.form['abstract']
+            hits = 0
+            doc = {'user_id': userId, 'writer':writer,
+                   'mainCategory':mainCategory, 'subCategory':subCategory,
+                   'title':title, 'abstract':abstract, 'hits':hits}
             client = MongoClient('localhost', 27017)
             db = client.OpenJournal
-            collection = db.Article
+            fs = gridfs.GridFS(db)
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                fild_id = fs.put(file, content_type=file.content_type, filename=filename)
+                #return redirect(url_for('serve_gridfs_file', oid=str(oid)))
+            collection = db.PaperInformation
             collection.insert(doc)
             client.close()
-            return "글쓰기 성공"
-        else:
-            return "세션에 토큰정보없음"
+            return render_template('main_enroll.html')
+    else:
+        return "로그인 안돼있음"
+
+@app.route('/enrollWriting', methods=['POST', 'GET'])
+def enrollWriting():
+    if 'google_token' in session:
+        if request.method == 'POST':
+            me = google.get('userinfo')
+            userName = me.data['name']
+            mainCategory = request.form['mainCat']
+            subCategory = request.form['subCat']
+            title = request.form['title']
+            contents = request.form['contents']
+            hits = 0
+            like = 0
+            writingNum = 0
+            client = MongoClient('localhost', 27017)
+            db = client.OpenJournal
+            collection = db.BulletinNum
+            bulletinCollection = db.Bulletin
+            cursor = collection.find_one({"_id": ObjectId("5af1836db79ff2818f02efb0")})
+            writingNum = int(cursor['writingNum']+1)
+            now = datetime.datetime.now()
+            commentNum = 0
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            doc = {'userName': userName, 'mainCategory':mainCategory, 'subCategory':subCategory,
+                   'title':title, 'contents':contents, 'hits':hits, 'writingNum':writingNum,
+                   'time':currentTime, 'commentNum':commentNum}
+            bulletinCollection.insert(doc)
+            collection.update({"_id": ObjectId("5af1836db79ff2818f02efb0")}, {"_id": ObjectId("5af1836db79ff2818f02efb0"),
+            'writingNum':writingNum})
+            client.close()
+            return mainComunity()
     else:
         return "로그인 안돼있음"
 

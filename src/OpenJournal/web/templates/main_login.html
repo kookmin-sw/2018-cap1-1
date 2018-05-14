@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Open Journal</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="../static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../static/css/customize.css" type="text/css" rel="stylesheet"/>
+</head>
+<body style="background-color: #f5f5f5;">
+	<div class="container">
+		<div class="section">
+			<div class="row">
+				<div class="col s12 center">
+					<div class="vertical-container">
+						<div class="login-shadow vertical-subcontainer">
+							<div class="row">
+								<div class="col s12">
+									<p style="margin:7rem 0 0 0; font-size:2rem;" class="blue-text"> Open Journal <span class="black-text">로그인</span> </p>
+								</div>
+							</div>
+							<form action="userLogin" method="POST">
+								<div class="row">
+									<div class="col s12">
+										<div style="margin:50px 50px 0 50px; display:block" class="input-field inline">
+											<input style="margin-bottom: 0px;" id="email_inline" name='email_id' type="email" class="validate">
+											<label for="email_inline">Email</label>
+											<span class="helper-text" data-error="틀린 형식입니다." data-success="올바른 이메일 형식입니다."></span>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col s12">
+										<div style="margin:0 50px 0 50px; display:block" class="input-field inline">
+											<input style="margin-bottom:0px;" id="password" name="password" type="password" class="validate">
+											<label for="password">Password</label>
+										</div>
+									</div>
+								</div>
+								<input style="margin-top:5rem;" type="submit" class="center s12 btn blue darken-4" name="login" value="login" />
+								<input style="margin-top:5rem;" href="oauth" type="submit" class="center s12 btn red darken-4" name="googlelogin" value="Google 로그인" />
+                <li><a href="oauth" class="black-text">구글 로그인</a></li>
+              </form>
+							<div style="margin:3rem 0 0 0;  class="row">
+								<div class="col s12">
+									<p style="font-size:1rem;"> 아이디가 없으세요? <a href="main_new_member">회원가입 하러가기</a> </p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--  Scripts-->
+
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="../static/js/materialize.js"></script>
+	<script src="../static/js/init.js"></script>
+	<script src="../static/js/customize.js"></script>
+
+</body>
+</html>
