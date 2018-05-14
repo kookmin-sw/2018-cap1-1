@@ -3,7 +3,7 @@ const OpenJournal = artifacts.require("./OpenJournal.sol")
 
 const expect = require('chai').expect;
 
-contract('OpenJournal', function(accounts) {
+contract('OpenJournal Test', function(accounts) {
 
 	let journalToken;
   let openJournal;
@@ -23,8 +23,8 @@ contract('OpenJournal', function(accounts) {
 	beforeEach(async function () {       
     openJournal = await OpenJournal.new(0, 0, 30, 50);
     await openJournal.buyToken({from : master, value : 50});
-    signup1 = await openJournal.signUp(subscriber1, {from:master});
-    signup2 = await openJournal.signUp(subscriber2, {from:master});
+    signup1 = await openJournal.signUp({from:subscriber1});
+    signup2 = await openJournal.signUp({from:subscriber2});
     regist1 = await openJournal.registJournal(10, 'Journal 1', 'This is Journal 1', {from:register1}); 
     regist2 = await openJournal.registJournal(7, 'Journal 2', 'This is Journal 2', {from:register2});  
     subscribe1 = await openJournal.subscribeJournal(1, {from:subscriber1});
@@ -104,6 +104,26 @@ contract('OpenJournal', function(accounts) {
     expect(is_subscribed_1.toString()).to.equal('true');
     
   });
+
+  it('should be possible get journal register', async function() {
+    get_auth = await openJournal.getAuthorAddress(1);
+    let log_1 = get_auth.logs[0];
+    let number_1 = log_1.args._number;
+    let author_1 = log_1.args._author;
+
+    expect(number_1.toString()).to.equal('1');
+    expect(author_1.toString()).to.equal(register1);
+  })
+
+  it('should be possible get journal value', async function() {
+    get_value = await openJournal.getValue(1);
+    let log_1 = get_value.logs[0];
+    let number_1 = log_1.args._number;
+    let value_1 = log_1.args._value;
+
+    expect(number_1.toString()).to.equal('1');
+    expect(value_1.toString()).to.equal('10');
+  })
 /*
   it('should be possible to show journals of subscriber', async function () {
     let result1 = await openJournal.showSubscribedJournal({from:subscriber1});

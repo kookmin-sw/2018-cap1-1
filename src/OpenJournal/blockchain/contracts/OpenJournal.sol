@@ -24,26 +24,26 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     mapping (address => Subscriber) public subscribers;                         // 구독자 주소 : Subscriber
     mapping (address => mapping (uint => bool)) public is_subscribed;           // 구독자가 논문을 구독하였는지에 대한 여부
 
-    uint256 public subscriberNumber;       // Subscriber 번호(현재는 test 위해 2로 설정 해놓음)
-    uint256 public journalNumber;          // Journal 번호(현재는 test 위해 2로 설정 해놓음)
+    uint256 public subscriberNumber;       // Subscriber 번호
+    uint256 public journalNumber;          // Journal 번호
     uint8 public signUpCost;               // 회원가입시 주어질 토큰
     uint8 public upperbound_value;         // 저자가 논문 등록시 값의 상한선  
 
     event LogSignUp(
-        uint256 indexed _subscriber_number, 
-        address indexed _subscriber_address, 
+        uint256 _subscriber_number, 
+        address _subscriber_address, 
         uint[] _subscriber_journal
     );  
 
     event LogRegistJournal(
-        uint256 indexed _number, 
-        address indexed _author, 
+        uint256 _number, 
+        address _author, 
         string _title, 
         uint8 _value
     );  
 
     event LogSubscribeJournal(
-        address indexed _subscriber, 
+        address _subscriber, 
         uint[] _myjournals, 
         uint[] _subscribed,
         bool _is_subscribed
@@ -55,7 +55,17 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
 
     event LogShowJournalSubscriber(
         uint[] _subscriber
-    );     
+    );    
+
+    event LogGetAuthorAddress (
+        uint256 _number,
+        address _author
+    );
+
+    event LogGetValue (
+        uint256 _number,
+        uint8 _value
+    );
 
     function OpenJournal(
         uint256 _subscriberNumber,
@@ -69,15 +79,15 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         upperbound_value = _upperbound_value;
     }
 
-    function signUp(address _to) public onlyOwner returns (bool) {
+    function signUp() public returns (bool) {
         subscriberNumber = subscriberNumber.add(1);            
-        subscribers[_to] = Subscriber(
+        subscribers[msg.sender] = Subscriber(
             subscriberNumber,
-            _to,
+            msg.sender,
             new uint[](0)
         );
-        transfer(_to, signUpCost);   
-        emit LogSignUp(subscriberNumber, _to, subscribers[msg.sender].subscriber_journal);
+        transferFromOwner(msg.sender, signUpCost);   
+        emit LogSignUp(subscriberNumber, msg.sender, subscribers[msg.sender].subscriber_journal);
         return true;
     }
 
@@ -117,15 +127,19 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         return true;
     }
 
-    function showSubscribedJournal() public view returns (uint[]){
-        //emit LogShowSubscribedJournal(subscribers[msg.sender].subscriber_journal);
+    function getAuthorAddress(uint256 _journalNumber) public view returns (address){
+        return journals[_journalNumber].author;
+    }
 
+    function getValue(uint256 _journalNumber) public view returns (uint8){
+        return journals[_journalNumber].value;
+    }
+
+    function showSubscribedJournal() public view returns (uint[]){
         return subscribers[msg.sender].subscriber_journal;
     }
 
     function showJournalSubscriber(uint _journalNumber) public view returns (uint[]) {
-        //emit LogShowJournalSubscriber(journals[_journalNumber].subscribed);
-
         return journals[_journalNumber].subscribed;
     }
 }

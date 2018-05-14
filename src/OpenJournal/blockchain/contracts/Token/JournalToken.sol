@@ -60,10 +60,18 @@ contract JournalToken is EIP20Interface, Owned {
     }
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
-        require(balances[owner] >= _value);
+        require(balances[msg.sender] >= _value);
         balances[msg.sender] = balances[msg.sender].sub(_value);
         balances[_to] = balances[_to].add(_value);
         emit Transfer(msg.sender, _to, _value);
+        return true;
+    }
+
+    function transferFromOwner(address _to, uint256 _value) public returns (bool success) {
+        require(balances[owner] >= _value);
+        balances[owner] = balances[owner].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        emit Transfer(owner, _to, _value);
         return true;
     }
 
