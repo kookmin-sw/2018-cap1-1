@@ -24,31 +24,31 @@
 								</div>
 							</div>
 							<div style="margin:0;" class="row">
-								<form class="col s12" onsubmit="return tocheckpw1()">
+								<form name="enroll" method = "POST" action="enrollNewMember" class="col s12" onsubmit="return tocheckpw1()">
 									<div style="margin:0;" class="row">
 										<div class="input-field col s6">
-											<input id="first_name" type="text" class="validate" required>
+											<input id="first_name" name="first_name" type="text" class="validate" required>
 											<label for="first_name">First Name</label>
 										</div>
 										<div class="input-field col s6">
-											<input style="margin:0;" id="last_name" type="text" class="validate" required>
+											<input style="margin:0;" id="last_name" name="last_name" type="text" class="validate" required>
 											<label for="last_name">Last Name</label>
 										</div>
 									</div>
 									<div style="margin:0;" class="row">
 										<div class="input-field col s12">
-											<input style="margin:0;" id="email" type="email" class="validate" required>
-											<label for="email">Email</label>
+											<input style="margin:0;" id="email_id" type="email" name="email_id" class="validate" required>
+											<label for="email_id">Email</label>
 											<span class="helper-text" data-error="틀린 형식입니다." data-success="올바른 이메일 형식입니다."></span>
 										</div>
 									</div>
 									<div style="margin:0;" class="row">
 										<div class="input-field col s6">
-											<input style="margin:0;" id="new_password" type="password" class="validate" required>
+											<input style="margin:0;" id="new_password" name="new_password" type="password" class="validate" required>
 											<label for="new_password">비밀번호</label>
 										</div>
 										<div class="input-field col s6">
-											<input style="margin:0;" id="new_password_check" type="password" class="validate" required>
+											<input style="margin:0;" id="new_password_check" name="new_password_check" type="password" class="validate" required>
 											<label for="new_password_check">비밀번호 확인</label>
 										</div>
 									</div>
@@ -56,13 +56,13 @@
 									<div style="margin:0;" class="row">
 										<div class="input-field col s12">
 											<i class="material-icons prefix">phone</i>
-											<input id="icon_telephone" type="tel" class="validate" required>
+											<input id="icon_telephone" name="telephone" type="tel" class="validate" required>
 											<label for="icon_telephone">Telephone</label>
 										</div>
 									</div>
 									<div style="margin:0;" class="row">
 										<div class="input-field col s12">
-											<input id="birthday" type="text" class="datepicker">
+											<input id="birthday" name="birthday" type="text" class="datepicker">
 											<label for="birthday">Birthday</label>
 										</div>
 									</div>
@@ -91,7 +91,7 @@
 		  function tocheckpw1() {
         var pw = document.getElementById('new_password').value;
         var pwck = document.getElementById('new_password_check').value;
- 
+
         if (pw != pwck) {
             alert('비밀번호가 틀렸습니다. 다시 입력해 주세요');
             return false;
