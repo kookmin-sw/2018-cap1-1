@@ -4,7 +4,7 @@ from flask_oauthlib.client import OAuth
 from pymongo import MongoClient
 from pymongo import Connection
 from urllib2 import Request, urlopen, URLError
-import gridfs, datetime
+import gridfs, datetime, json
 from gridfs.errors import NoFile
 from bson.objectid import ObjectId
 from werkzeug import secure_filename
@@ -89,8 +89,9 @@ def enrollNewMember():
         newPassWordCheck = request.form['new_password_check']
         telephone = request.form['telephone']
         birthday = request.form['birthday']
+        fame = 0
         doc = {'user_id'  : userId,     'user_name': userName, 'password':newPassWord,
-               'telephone':telephone,   'birthday' :birthday}
+               'telephone':telephone,   'birthday' :birthday, 'fame': fame}
         collection = db.Users
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
@@ -160,7 +161,8 @@ def authorized():
     me = google.get('userinfo')
     userId = me.data['email']
     userName = me.data['name']
-    doc = {'user_id': userId, 'user_name': userName}
+    fame = 0
+    doc = {'user_id': userId, 'user_name': userName, 'fame': fame}
     client = MongoClient('localhost', 27017)
     db = client.OpenJournal
     collection = db.Oauth_Users
@@ -230,13 +232,19 @@ def getWriting():
     id = request.args.get("id")
     bulletin = db.Bulletin
     hit = 0
+    userId = ""
     data = bulletin.find({"_id": ObjectId(id)})
     for document in data:
         if document['_id'] == ObjectId(id):
             hit = document['hits']
     bulletin.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
     data = bulletin.find({"_id": ObjectId(id)})
-    return render_template('main_comunity_detail.html',data = data)
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        userId = me.data['email']
+    elif 'userId' in session:
+        userId = session['userId']
+    return render_template('main_comunity_detail.html',data = data, userId = userId)
 
 @app.route('/enrollWriting', methods=['POST', 'GET']) #작성한 글 등록기능 구현
 def enrollWriting():
@@ -245,13 +253,16 @@ def enrollWriting():
             collection = db.BulletinNum
             bulletinCollection = db.Bulletin
             userName = ""
+            userId   = ""
             if 'google_token' in session:
                 me = google.get('userinfo')
                 userName = me.data['name']
+                userId = me.data['email']
             elif 'userId' in session:
                 user = db.Users
                 userData = user.find_one({"user_id": session['userId']})
                 userName = userData['user_name']
+                userId   = session['userId']
             mainCategory = request.form['mainCat']
             subCategory = request.form['subCat']
             title = request.form['title']
@@ -264,9 +275,9 @@ def enrollWriting():
             now = datetime.datetime.now()
             commentNum = 0
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
-            doc = {'userName': userName, 'mainCategory':mainCategory, 'subCategory':subCategory,
-                   'title':title, 'contents':contents, 'hits':hits, 'writingNum':writingNum,
-                   'time':currentTime, 'commentNum':commentNum}
+            doc = {'userName': userName, 'userId': userId, 'mainCategory':mainCategory,
+                   'subCategory':subCategory, 'title':title, 'contents':contents, 'hits':hits,
+                   'writingNum':writingNum,'time':currentTime, 'commentNumber':commentNum}
             bulletinCollection.insert(doc)
             collection.update({"latestName": "latestName"}, {"latestName": "latestName",
             'writingNum':writingNum})
@@ -281,13 +292,16 @@ def commentEnroll():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             bulletin = db.Bulletin
+            userId = ""
             userName = ""
             if 'google_token' in session:
                 me = google.get('userinfo')
                 userName = me.data['name']
+                userId = me.data['email']
             elif 'userId' in session:
                 user = db.Users
                 userData = user.find_one({"user_id": session['userId']})
+                userId = session['userId']
                 userName = userData['user_name']
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
@@ -295,17 +309,58 @@ def commentEnroll():
             objectId = request.form['objectId']
             data = bulletin.find({"_id": ObjectId(objectId)})
             commentNum = 0
+            adaptFlag = 0
             for document in data:
                 if document['_id'] == ObjectId(objectId):
-                    commentNum = document['commentNum']
-            commentDict = {'commentNum':commentNum+1, 'userName':userName, 'Time':currentTime, 'comment':commentContent}
+                    commentNum = document['commentNumber']
+            commentDict = {'commentNum':commentNum+1, 'userId':userId,'userName':userName, 'Time':currentTime,
+            'comment':commentContent, 'adaptFlag': adaptFlag}
             bulletin.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
-            bulletin.update({"_id": ObjectId(objectId)},{"$set": {"commentNum":commentNum+1}})
-            return "댓글 등록"
+            bulletin.update({"_id": ObjectId(objectId)},{"$set": {"commentNumber":commentNum+1}})
+            data = bulletin.find({"_id": ObjectId(objectId)})
+            return render_template('main_comunity_detail.html',data = data, userId = userId)
         else:
             return "잘못된 데이터 요청 입니다."
     else:
         return "로그인이 필요한 기능입니다."
+
+@app.route("/adaptComment") #댓글 채택시 명성 부여
+def adaptComment():
+    data = request.args.get("data")
+    list = data.split(',') # 0번째 댓글번호, 1번째 문서객체아이디, 2번째 댓글 작성자 아이디, 3번째 채택flag, 4번째 글 작성자 아이디
+    writingCollection = db.Bulletin
+    userCollection = db.Users
+    userId = ""
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        userId = me.data['email']
+    elif 'userId' in session:
+        userId = session['userId']
+
+    cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
+    for document in cursor:
+        if document['user_id'] == list[2]:
+            userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
+            writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
+            commentN = list[0]
+            writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+            data = writingCollection.find({"_id": ObjectId(list[1])})
+            return render_template('main_comunity_detail.html',data = data, userId = userId)
+
+    oauthUserCollection = db.Oauth_Users
+    oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
+    for doc in oauthCursor:
+        if doc['user_id'] == list[2]:
+            oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
+            writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
+            commentN = list[0]
+            writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+            data = writingCollection.find({"_id": ObjectId(list[1])})
+            return render_template('main_comunity_detail.html',data = data, userId = userId)
+
+    return "fail"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
