@@ -31,7 +31,7 @@ App = {
       //Metamask 가 실행시 현 지갑을 리턴한다. 
       App.web3Provider = web3.currentProvider;
     } else {
-      //만약 지정된 지갑이 없는 경우 미리 설정된 Ganeche 지갑을 리턴한다. 
+      //만약 지정된 지갑이 없는 경우 미리 설정된 Ganeche 지갑을 리턴한다.
       App.web3Provider = new Web3.providers.HttpProvider(
         "http://localhost:7545"
       );
@@ -70,16 +70,54 @@ App = {
       // 1번째 : 0x9bee130db55d1493465c66655b837f16eab9dff4b465e44fa6ec2fc2c6b98297으로 등록됨
       // 2번째 : 
       
-      App.signUp();
+      // App.signUp();
+      // App.buyToken();
+      // App.getOwner();
+      App.getBalance();
 
     });
     return App.bindEvents();
   },
 
+  getOwner: function(){
+    App.contracts.OpenJournal.deployed().then(function(instance){
+      var owner = instance.getOwnerAddress();
+      console.log(owner);
+    });
+  },
+
+  getBalance: function(){
+    App.contracts.OpenJournal.deployed().then(function(instance){
+      web3.eth.getAccounts(function(error, accounts){
+        var subscriber = accounts[0];
+        // var currentBalance = instance.balanceOf(subscriber);
+        console.log(subscriber);
+        var currentBalance = instance.balanceOf(subscriber);
+        console.log(currentBalance);
+      });
+    });
+  },
+
+  buyToken: function(){
+    App.contracts.OpenJournal.deployed().then(function(instance){
+
+      web3.eth.getAccounts(function(error, accounts){
+        var subscriber = accounts[0];
+        console.log(subscriber);
+        instance.buyToken({from: subscriber, value : 30});
+        
+      });
+    });
+  },
+
   signUp: function(){
     App.contracts.OpenJournal.deployed().then(function(instance){
-      instance.signUp();
-      console.log("registed.");
+
+      web3.eth.getAccounts(function(error, accounts){
+        var subscriber = accounts[0];
+        console.log(subscriber);
+        instance.signUp({from: subscriber});
+      });
     });
   },
 
