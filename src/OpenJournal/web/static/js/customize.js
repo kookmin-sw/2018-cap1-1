@@ -1,4 +1,3 @@
-
 var category = ["engineering", "education", "AFO", "interdisciplinary", "social", "article_physication", "medicine", "humanities", "natural"]
 var categorySize = category.length;
 
@@ -110,10 +109,6 @@ function checkcheck(test){
     special_id.src = "../static/check.png"
     document.getElementById(img_id).classList.add('checked');
     document.getElementById(img_id).classList.remove('unchecked');
-
   }
-  
+
 }
-
-
-

@@ -259,7 +259,7 @@ def enrollWriting():
             hits = 0
             like = 0
             writingNum = 0
-            cursor = collection.find_one({"_id": ObjectId("5af9b87f83592fa4f907940d")})
+            cursor = collection.find_one({"latestName": "latestName"})
             writingNum = int(cursor['writingNum']+1)
             now = datetime.datetime.now()
             commentNum = 0
@@ -268,7 +268,7 @@ def enrollWriting():
                    'title':title, 'contents':contents, 'hits':hits, 'writingNum':writingNum,
                    'time':currentTime, 'commentNum':commentNum}
             bulletinCollection.insert(doc)
-            collection.update({"_id": ObjectId("5af9b87f83592fa4f907940d")}, {"_id": ObjectId("5af9b87f83592fa4f907940d"),
+            collection.update({"latestName": "latestName"}, {"latestName": "latestName",
             'writingNum':writingNum})
             client.close()
             return mainComunity()
