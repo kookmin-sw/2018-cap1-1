@@ -254,7 +254,7 @@ def moveUpdatePaper():
     elif 'userId' in session:
         userId = session['userId']
     data = paperInfo.find({"_id": ObjectId(id)})
-    return render_template('paper_update.html', data = data, userId = userId)
+    return render_template('main_journal_update.html', data = data, userId = userId)
 
 @app.route("/version_update", methods=['GET', 'POST'])
 def versionUpdate():
