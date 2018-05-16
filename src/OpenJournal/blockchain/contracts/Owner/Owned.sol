@@ -14,4 +14,8 @@ contract Owned {
     function changeOwner(address _newOwner) public onlyOwner {
         owner = _newOwner;
     }
+
+    function getOwnerAddress() public view returns (address ownerAddress) {
+        return owner;
+    }
 }
