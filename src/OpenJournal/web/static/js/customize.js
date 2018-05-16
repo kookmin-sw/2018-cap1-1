@@ -110,5 +110,23 @@ function checkcheck(test){
     document.getElementById(img_id).classList.add('checked');
     document.getElementById(img_id).classList.remove('unchecked');
   }
+}
 
+function on(){
+  document.getElementById("overlay").style.display = "block";
+}
+
+function off(){
+  document.getElementById("overlay").style.display = "none";
+}
+
+function viewAccount(){
+  document.getElementById("AccountList").style.display = "block";
+}
+
+
+function selectAccount(x){
+  var value = x.getElementsByTagName("td")[1].innerText;
+  document.getElementById("etherium_acc").value= value;
+  document.getElementById("overlay").style.display = "none";
 }
