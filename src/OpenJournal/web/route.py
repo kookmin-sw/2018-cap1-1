@@ -176,18 +176,93 @@ def mainEnroll():
     rows = collection.find().sort("writingPaperNum",-1)
     return render_template('main_enroll.html', data =rows)
 
+@app.route('/enrollPaperComment', methods=['POST'])
+def enrollPaperComment():
+    if 'google_token' in session or 'userId' in session:
+        if request.method == 'POST':
+            paperInfo = db.PaperInformation
+            userId = ""
+            userName = ""
+            if 'google_token' in session:
+                me = google.get('userinfo')
+                userName = me.data['name']
+                userId = me.data['email']
+            elif 'userId' in session:
+                user = db.Users
+                userData = user.find_one({"user_id": session['userId']})
+                userId = session['userId']
+                userName = userData['user_name']
+            now = datetime.datetime.now()
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            commentContent = request.form['comment']
+            objectId = request.form['objectId']
+            data = paperInfo.find({"_id": ObjectId(objectId)})
+            commentNum = 0
+            adaptFlag = 0
+            for document in data:
+                if document['_id'] == ObjectId(objectId):
+                    commentNum = document['commentNumber']
+            commentDict = {'commentNum':commentNum+1, 'userId':userId,'userName':userName, 'Time':currentTime,
+            'comment':commentContent, 'adaptFlag': adaptFlag}
+            paperInfo.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
+            paperInfo.update({"_id": ObjectId(objectId)},{"$set": {"commentNumber":commentNum+1}})
+            data = paperInfo.find({"_id": ObjectId(objectId)})
+            return render_template('main_view_journal.html',data = data, userId = userId)
+        else:
+            return "잘못된 데이터 요청 입니다."
+    else:
+        return "로그인이 필요한 기능입니다."
+
 @app.route("/main_view_journal", methods=['GET', 'POST'])
 def viewPaper():
     id = request.args.get("id") #현재 보려고 하는 논문의 ObjectId 값 get
-    paperInformation = db.PaperInformation
+    paperInfo = db.PaperInformation
     userId = ""
     if 'google_token' in session:
         me = google.get('userinfo')
         userId = me.data['email']
     elif 'userId' in session:
         userId = session['userId']
-    data = paperInformation.find({"_id": ObjectId(id)})
-    return render_template('main_view_journal.html')
+    data = paperInfo.find({"_id": ObjectId(id)})
+    return render_template('main_view_journal.html', data = data, userId = userId)
+
+@app.route("/adaptPaperComment") #댓글 채택시 명성 부여
+def adaptPaperComment():
+    data = request.args.get("data")
+    list = data.split(',') # 0번째 댓글번호, 1번째 문서객체아이디, 2번째 댓글 작성자 아이디, 3번째 채택flag, 4번째 글 작성자 아이디
+    paperCollection = db.PaperInformation
+    userCollection = db.Users
+    userId = ""
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        userId = me.data['email']
+    elif 'userId' in session:
+        userId = session['userId']
+
+    cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
+    for document in cursor:
+        if document['user_id'] == list[2]:
+            userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
+            paper = paperCollection.find_one({'_id': ObjectId(list[1])})
+            commentN = list[0]
+            paperCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+            data = paperCollection.find({"_id": ObjectId(list[1])})
+            return render_template('main_view_journal.html',data = data, userId = userId)
+
+    oauthUserCollection = db.Oauth_Users
+    oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
+    for doc in oauthCursor:
+        if doc['user_id'] == list[2]:
+            oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
+            writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
+            commentN = list[0]
+            writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+            data = writingCollection.find({"_id": ObjectId(list[1])})
+            return render_template('main_comunity_detail.html',data = data, userId = userId)
+
+    return "fail"
 
 @app.route('/enrollPaper', methods=['POST']) #논문 등록 버튼 클릭 시 처리 함수
 def enrollPaper():
@@ -211,6 +286,7 @@ def enrollPaper():
             hits = 0
             version = 1
             complete = 0
+            commentNum = 0
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             latestPaperNum = db.latestPaperNum
@@ -231,13 +307,13 @@ def enrollPaper():
                    'hits'        : hits,         'keyword'    : keyword,
                    'version'     : version,      'complete'   : complete,
                    'file_id'     : fileId,       'writingPaperNum' : writingPaperNum,
-                   'time'        : currentTime
+                   'time'        : currentTime,  'commentNumber' : commentNum
                    }
             collection = db.PaperInformation
             collection.insert(doc)
             return mainEnroll()
     else:
-        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
+        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워data = data, userId = userId주고 login 창으로 이동.
         return render_template('main_login.html')
 
 @app.route("/main_comunity") #커뮤니티 작성된 글 목록 구성
