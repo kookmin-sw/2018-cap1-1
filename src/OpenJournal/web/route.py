@@ -9,7 +9,7 @@ from gridfs.errors import NoFile
 from bson.objectid import ObjectId
 from werkzeug import secure_filename
 
-ALLOWED_EXTENSIONS = set(['pdf','txt'])
+ALLOWED_EXTENSIONS = set(['pdf'])
 
 app = Flask(__name__)
 app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
@@ -36,11 +36,13 @@ google = oauth.remote_app(
 
 @app.route("/") #메인 홈페이지 이동
 def home():
-    return render_template('main.html')
-
-@app.route("/main_enroll") #논문 등록 및 검수페이지 이동
-def mainEnroll():
-    return render_template('main_enroll.html')
+    userId = ""
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        userId = me.data['email']
+    elif 'userId' in session:
+        userId = session['userId']
+    return render_template('main.html', userId = userId)
 
 @app.route("/main_login") #로그인 페이지 이동
 def mainLogin():
@@ -76,7 +78,7 @@ def userLogin():
         if document['user_id'] == userId and document['password'] == password:
             session['userId'] = userId
             break
-    return render_template('main.html')
+    return render_template('main.html', userId = userId)
 
 @app.route("/enrollNewMember", methods=['POST']) #회원 가입 기능 구현
 def enrollNewMember():
@@ -171,8 +173,164 @@ def authorized():
         if document['user_id'] == userId:
             return render_template('main.html')
     collection.insert(doc)
-    client.close()
     return render_template('main.html')
+
+@app.route("/main_enroll") #검수중인 논문 리스트 페이지 뷰 구현
+def mainEnroll():
+    collection = db.PaperInformation
+    rows = collection.find().sort("writingPaperNum",-1)
+    return render_template('main_enroll.html', data =rows)
+
+@app.route('/enrollPaperComment', methods=['POST'])
+def enrollPaperComment():
+    if 'google_token' in session or 'userId' in session:
+        if request.method == 'POST':
+            paperInfo = db.PaperInformation
+            userId = ""
+            userName = ""
+            if 'google_token' in session:
+                me = google.get('userinfo')
+                userName = me.data['name']
+                userId = me.data['email']
+            elif 'userId' in session:
+                user = db.Users
+                userData = user.find_one({"user_id": session['userId']})
+                userId = session['userId']
+                userName = userData['user_name']
+            now = datetime.datetime.now()
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            commentContent = request.form['comment']
+            objectId = request.form['objectId']
+            data = paperInfo.find({"_id": ObjectId(objectId)})
+            commentNum = 0
+            adaptFlag = 0
+            validity = 0
+            for document in data:
+                if document['_id'] == ObjectId(objectId):
+                    commentNum = document['commentNumber']
+                    if document['commentNumber']>=5:
+                        validity = 1
+                        paperInfo.update({"_id": ObjectId(objectId)},{"$set": {"complete":validity}})
+            commentDict = {'commentNum':commentNum+1, 'userId':userId,'userName':userName, 'Time':currentTime,
+            'comment':commentContent, 'adaptFlag': adaptFlag}
+            paperInfo.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
+            paperInfo.update({"_id": ObjectId(objectId)},{"$set": {"commentNumber":commentNum+1}})
+            data = paperInfo.find({"_id": ObjectId(objectId)})
+            return render_template('main_view_journal.html',data = data, userId = userId)
+        else:
+            return "잘못된 데이터 요청 입니다."
+    else:
+        return "로그인이 필요한 기능입니다."
+
+@app.route("/main_view_journal", methods=['GET', 'POST'])
+def viewPaper():
+    id = request.args.get("id") #현재 보려고 하는 논문의 ObjectId 값 get
+    paperInfo = db.PaperInformation
+    userId = ""
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        userId = me.data['email']
+    elif 'userId' in session:
+        userId = session['userId']
+    data = paperInfo.find({"_id": ObjectId(id)})
+    """
+    for doc in data:
+        if doc['user_id'] == userId:
+            fs = gridfs.GridFS(db)
+            oid = doc['file_id']
+            file = fs.get(ObjectId(oid))
+    """
+    data = paperInfo.find({"_id": ObjectId(id)})
+    return render_template('main_view_journal.html', data = data, userId = userId)
+
+@app.route("/move_paper_update", methods=['GET', 'POST'])
+def moveUpdatePaper():
+    id = request.args.get("id")
+    paperInfo = db.PaperInformation
+    userId = ""
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        userId = me.data['email']
+    elif 'userId' in session:
+        userId = session['userId']
+    data = paperInfo.find({"_id": ObjectId(id)})
+    return render_template('main_journal_update.html', data = data, userId = userId)
+
+@app.route("/version_update", methods=['GET', 'POST'])
+def versionUpdate():
+    if 'google_token' in session or 'userId' in session:
+        if request.method == 'POST':
+            userId = ""
+            if 'google_token' in session:
+                me = google.get('userinfo')
+                userId = me.data['email']
+            elif 'userId' in session:
+                user = db.Users
+                data = user.find_one({"user_id": session['userId']})
+                userId = data['user_id']
+            collection = db.PaperInformation
+            writer = request.form['writerName']
+            mainCategory = request.form['mainCat']
+            subCategory = request.form['subCat']
+            title = request.form['title']
+            abstract = request.form['abstract']
+            keyword = request.form['keyword']
+            version = 1
+            now = datetime.datetime.now()
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            id = request.form['objectId']
+            data = collection.find_one({"_id": ObjectId(id)})
+            version = data['version']
+            fs = gridfs.GridFS(db)
+            file = request.files['file']
+            fileId = ""
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                fileId = fs.put(file, content_type=file.content_type, filename=filename)
+            collection.update({"_id": ObjectId(id)}, {"$set": {"writer":writer, "mainCategory":mainCategory, "subCategory":subCategory,
+                              "title":title, "abstract":abstract, "keyword": keyword, "version": version, "time": currentTime,
+                              "file_id":fileId}})
+            return mainEnroll()
+    else:
+        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워data = data, userId = userId주고 login 창으로 이동.
+        return render_template('main_login.html')
+
+@app.route("/adaptPaperComment") #댓글 채택시 명성 부여
+def adaptPaperComment():
+    data = request.args.get("data")
+    list = data.split(',') # 0번째 댓글번호, 1번째 문서객체아이디, 2번째 댓글 작성자 아이디, 3번째 채택flag, 4번째 글 작성자 아이디
+    paperCollection = db.PaperInformation
+    userCollection = db.Users
+    userId = ""
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        userId = me.data['email']
+    elif 'userId' in session:
+        userId = session['userId']
+
+    cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
+    for document in cursor:
+        if document['user_id'] == list[2]:
+            userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
+            paper = paperCollection.find_one({'_id': ObjectId(list[1])})
+            commentN = list[0]
+            paperCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+            data = paperCollection.find({"_id": ObjectId(list[1])})
+            return render_template('main_view_journal.html',data = data, userId = userId)
+
+    oauthUserCollection = db.Oauth_Users
+    oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
+    for doc in oauthCursor:
+        if doc['user_id'] == list[2]:
+            oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
+            writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
+            commentN = list[0]
+            writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+            data = writingCollection.find({"_id": ObjectId(list[1])})
+            return render_template('main_comunity_detail.html',data = data, userId = userId)
+    return "fail"
 
 @app.route('/enrollPaper', methods=['POST']) #논문 등록 버튼 클릭 시 처리 함수
 def enrollPaper():
@@ -193,9 +351,17 @@ def enrollPaper():
             abstract = request.form['abstract']
             keyword = request.form['keyword']
             hits = 0
-            doc = {'user_id': userId, 'writer':writer,
-                   'mainCategory':mainCategory, 'subCategory':subCategory,
-                   'title':title, 'abstract':abstract, 'hits':hits, 'keyword':keyword}
+            version = 1
+            complete = 0
+            commentNum = 0
+            paperNum = ""
+            now = datetime.datetime.now()
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            latestPaperNum = db.latestPaperNum
+            latestCursor = latestPaperNum.find_one({"latestfind": "latestfind"})
+            writingPaperNum = int(latestCursor['latestPaperNum']+1)
+            latestPaperNum.update({"latestfind": "latestfind"},
+                                  {"latestfind": "latestfind",'latestPaperNum':writingPaperNum})
             fs = gridfs.GridFS(db)
             file = request.files['file']
             fileId = ""
@@ -203,14 +369,20 @@ def enrollPaper():
                 filename = secure_filename(file.filename)
                 fileId = fs.put(file, content_type=file.content_type, filename=filename)
                 #return redirect(url_for('serve_gridfs_file', oid=str(oid)))
-            doc = {'user_id': userId, 'writer':writer,
-                   'mainCategory':mainCategory, 'subCategory':subCategory,'title':title,
-                   'abstract':abstract, 'hits':hits, 'keyword':keyword, 'file_id':fileId}
+            doc = {'user_id'     : userId,       'writer'     : writer,
+                   'mainCategory': mainCategory, 'subCategory': subCategory,
+                   'title'       : title,        'abstract'   : abstract,
+                   'hits'        : hits,         'keyword'    : keyword,
+                   'version'     : version,      'complete'   : complete,
+                   'file_id'     : fileId,       'writingPaperNum' : writingPaperNum,
+                   'time'        : currentTime,  'commentNumber' : commentNum,
+                   'paperNum'    : paperNum
+                   }
             collection = db.PaperInformation
             collection.insert(doc)
-            return render_template('main_enroll.html')
+            return mainEnroll()
     else:
-        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
+        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워data = data, userId = userId주고 login 창으로 이동.
         return render_template('main_login.html')
 
 @app.route("/main_comunity") #커뮤니티 작성된 글 목록 구성
@@ -225,7 +397,7 @@ def mainComunityWrite():
         return render_template('main_comunity_write.html')
     else:
         #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
-        return render_template('main_login.html')
+        return render_template('main_login.html', data = data, userId = userId)
 
 @app.route("/main_comunity_detail", methods=['GET', 'POST']) #커뮤니티 글 내용 불러오기 기능 구현
 def getWriting():
@@ -272,16 +444,15 @@ def enrollWriting():
             writingNum = 0
             cursor = collection.find_one({"latestName": "latestName"})
             writingNum = int(cursor['writingNum']+1)
-            now = datetime.datetime.now()
             commentNum = 0
+            now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             doc = {'userName': userName, 'userId': userId, 'mainCategory':mainCategory,
                    'subCategory':subCategory, 'title':title, 'contents':contents, 'hits':hits,
                    'writingNum':writingNum,'time':currentTime, 'commentNumber':commentNum}
             bulletinCollection.insert(doc)
-            collection.update({"latestName": "latestName"}, {"latestName": "latestName",
-            'writingNum':writingNum})
-            client.close()
+            collection.update({"latestName": "latestName"},
+                              {"latestName": "latestName",'writingNum':writingNum})
             return mainComunity()
     else:
         #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
