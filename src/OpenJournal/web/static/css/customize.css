@@ -154,3 +154,7 @@
     box-shadow: -60px 0px 100px -90px #000000,
         60px 0px 100px -90px #000000;
 }
+
+.hiddenPage{
+  display:none;
+}
