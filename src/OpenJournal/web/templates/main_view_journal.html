@@ -6,6 +6,10 @@
   <title>Open Journal</title>
 
   <script>
+
+  </script>
+
+  <script>
   function checkComment(comment){
     var img_id = comment;
     var split_arr = img_id.split("_");
@@ -22,7 +26,7 @@
   function adapt(test){
     var img_id = test.id;
     var split_arr = img_id.split("_");
-    
+
     var userId = '{{userId}}';
     if(document.getElementById(img_id).classList.contains('unchecked') && userId == split_arr[4] && userId != split_arr[2]){
       var special_id = document.getElementById(img_id).firstElementChild;
