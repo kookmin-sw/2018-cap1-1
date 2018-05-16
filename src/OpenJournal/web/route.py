@@ -38,10 +38,6 @@ google = oauth.remote_app(
 def home():
     return render_template('main.html')
 
-@app.route("/main_enroll") #논문 등록 및 검수페이지 이동
-def mainEnroll():
-    return render_template('main_enroll.html')
-
 @app.route("/main_login") #로그인 페이지 이동
 def mainLogin():
     return render_template('main_login.html')
@@ -174,6 +170,25 @@ def authorized():
     client.close()
     return render_template('main.html')
 
+@app.route("/main_enroll") #검수중인 논문 리스트 페이지 뷰 구현
+def mainEnroll():
+    collection = db.PaperInformation
+    rows = collection.find().sort("writingPaperNum",-1)
+    return render_template('main_enroll.html', data =rows)
+
+@app.route("/main_view_journal", methods=['GET', 'POST'])
+def viewPaper():
+    id = request.args.get("id") #현재 보려고 하는 논문의 ObjectId 값 get
+    paperInformation = db.PaperInformation
+    userId = ""
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        userId = me.data['email']
+    elif 'userId' in session:
+        userId = session['userId']
+    data = paperInformation.find({"_id": ObjectId(id)})
+    return render_template('main_view_journal.html')
+
 @app.route('/enrollPaper', methods=['POST']) #논문 등록 버튼 클릭 시 처리 함수
 def enrollPaper():
     if 'google_token' in session or 'userId' in session:
@@ -186,6 +201,7 @@ def enrollPaper():
                 user = db.Users
                 data = user.find_one({"user_id": session['userId']})
                 userId = data['user_id']
+
             writer = request.form['writerName']
             mainCategory = request.form['mainCat']
             subCategory = request.form['subCat']
@@ -193,9 +209,15 @@ def enrollPaper():
             abstract = request.form['abstract']
             keyword = request.form['keyword']
             hits = 0
-            doc = {'user_id': userId, 'writer':writer,
-                   'mainCategory':mainCategory, 'subCategory':subCategory,
-                   'title':title, 'abstract':abstract, 'hits':hits, 'keyword':keyword}
+            version = 1
+            complete = 0
+            now = datetime.datetime.now()
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            latestPaperNum = db.latestPaperNum
+            latestCursor = latestPaperNum.find_one({"latestfind": "latestfind"})
+            writingPaperNum = int(latestCursor['latestPaperNum']+1)
+            latestPaperNum.update({"latestfind": "latestfind"},
+                                  {"latestfind": "latestfind",'latestPaperNum':writingPaperNum})
             fs = gridfs.GridFS(db)
             file = request.files['file']
             fileId = ""
@@ -203,12 +225,17 @@ def enrollPaper():
                 filename = secure_filename(file.filename)
                 fileId = fs.put(file, content_type=file.content_type, filename=filename)
                 #return redirect(url_for('serve_gridfs_file', oid=str(oid)))
-            doc = {'user_id': userId, 'writer':writer,
-                   'mainCategory':mainCategory, 'subCategory':subCategory,'title':title,
-                   'abstract':abstract, 'hits':hits, 'keyword':keyword, 'file_id':fileId}
+            doc = {'user_id'     : userId,       'writer'     : writer,
+                   'mainCategory': mainCategory, 'subCategory': subCategory,
+                   'title'       : title,        'abstract'   : abstract,
+                   'hits'        : hits,         'keyword'    : keyword,
+                   'version'     : version,      'complete'   : complete,
+                   'file_id'     : fileId,       'writingPaperNum' : writingPaperNum,
+                   'time'        : currentTime
+                   }
             collection = db.PaperInformation
             collection.insert(doc)
-            return render_template('main_enroll.html')
+            return mainEnroll()
     else:
         #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
         return render_template('main_login.html')
@@ -225,7 +252,7 @@ def mainComunityWrite():
         return render_template('main_comunity_write.html')
     else:
         #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
-        return render_template('main_login.html')
+        return render_template('main_login.html', data = data, userId = userId)
 
 @app.route("/main_comunity_detail", methods=['GET', 'POST']) #커뮤니티 글 내용 불러오기 기능 구현
 def getWriting():
@@ -272,16 +299,15 @@ def enrollWriting():
             writingNum = 0
             cursor = collection.find_one({"latestName": "latestName"})
             writingNum = int(cursor['writingNum']+1)
-            now = datetime.datetime.now()
             commentNum = 0
+            now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             doc = {'userName': userName, 'userId': userId, 'mainCategory':mainCategory,
                    'subCategory':subCategory, 'title':title, 'contents':contents, 'hits':hits,
                    'writingNum':writingNum,'time':currentTime, 'commentNumber':commentNum}
             bulletinCollection.insert(doc)
-            collection.update({"latestName": "latestName"}, {"latestName": "latestName",
-            'writingNum':writingNum})
-            client.close()
+            collection.update({"latestName": "latestName"},
+                              {"latestName": "latestName",'writingNum':writingNum})
             return mainComunity()
     else:
         #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
