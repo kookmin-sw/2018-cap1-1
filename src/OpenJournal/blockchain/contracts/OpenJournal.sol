@@ -104,10 +104,6 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
             new uint[](0),
             new uint256[](0)            
         );
-<<<<<<< HEAD
-        emit LogRegistJournal(journalNumber, msg.sender, _title, _journalValue);   
-
-=======
 
         for(uint256 ref = 0; ref <_referenceJournal.length; ++ref)
             journals[journalNumber].reference_journal.push(_referenceJournal[ref]);
@@ -120,7 +116,6 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
             journals[journalNumber].reference_journal
         );   
  
->>>>>>> aca40751553dde05d66d88cf9bb4f1df695e4625
         return true;    
     }
 
