@@ -13,5 +13,4 @@ module.exports = {
 		from: "0xE7b358568Ee9A92264186AE4580D4647e877afBA",
 		gas: 4699999
 	  }
-	}
-  };
+};

@@ -104,6 +104,26 @@ contract('OpenJournal Test', function(accounts) {
     expect(is_subscribed_1.toString()).to.equal('true');
     
   });
+
+  it('should be possible get journal register', async function() {
+    get_auth = await openJournal.getAuthorAddress(1);
+    let log_1 = get_auth.logs[0];
+    let number_1 = log_1.args._number;
+    let author_1 = log_1.args._author;
+
+    expect(number_1.toString()).to.equal('1');
+    expect(author_1.toString()).to.equal(register1);
+  })
+
+  it('should be possible get journal value', async function() {
+    get_value = await openJournal.getValue(1);
+    let log_1 = get_value.logs[0];
+    let number_1 = log_1.args._number;
+    let value_1 = log_1.args._value;
+
+    expect(number_1.toString()).to.equal('1');
+    expect(value_1.toString()).to.equal('10');
+  })
 /*
   it('should be possible to show journals of subscriber', async function () {
     let result1 = await openJournal.showSubscribedJournal({from:subscriber1});

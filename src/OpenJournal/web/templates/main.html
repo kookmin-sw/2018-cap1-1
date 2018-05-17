@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
+
+
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="../static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -14,10 +16,10 @@
 <body>
   <nav class="white" role="navigation">
     <ul id="dropdown1" class="dropdown-content">
-      <li><a href="main_login" class="black-text">로그인</a></li>
+      <li id="nav_mypage" style="display:none;"><a href="main_mypage" class="black-text">마이 페이지</a></li>
+      <li id="nav_login" style="display:block;" ><a href="main_login" class="black-text">로그인</a></li>
       <li class="divider"></li>
-      <li><a href="main_new_member" class="black-text">회원가입</a></li>
-      <li class="hiddenPage"><a href="main_mypage" class="black-text">마이 페이지</a></li>
+      <li id="nav_new_member" style="display:block"><a href="main_new_member" class="black-text">회원가입</a></li>
     </ul>
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
@@ -25,7 +27,8 @@
       <li><a href="main_enroll">논문 검수 및 등록</a></li>
       <li><a href="main_view_fix_journal">논문 구독</a></li>
       <li><a href="main_comunity">커뮤니티</a></li>
-      <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li id="nav_login2" style="display:block;" ><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li id="nav_mypage2" style="display:none;" class="dropdown-trigger"><a href="main_mypage" data-target="dropdown1">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
       </ul>
       <ul id="nav-mobile" class="sidenav">
         <li><a href="main_enroll">논문 검수 및 등록</a></li>
@@ -161,6 +164,33 @@
     </div>
   </div>
   <!--  Scripts-->
+  <script>
+    var userId = '{{userId}}';
+    alert(userId);
+    if(userId != ""){ //login
+
+      var one = document.getElementById("nav_login");
+      one.style.display = one.style.display === 'none' ? 'block' : 'none';
+
+      var two = document.getElementById("nav_new_member");
+      two.style.display = two.style.display === 'none' ? 'block' : 'none';
+
+      var c = document.getElementById("nav_mypage");
+      c.style.display = c.style.display === 'none' ? 'block' : 'none';
+
+      var d = document.getElementById("nav_login2");
+      d.style.display = d.style.display === 'none' ? 'block' : 'none';
+
+      var e = document.getElementById("nav_mypage2");
+      e.style.display = e.style.display === 'none' ? 'block' : 'none';
+
+
+    }
+    else if(userId == ""){
+
+        alert("로그아웃");
+    }
+  </script>
 
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="../static/js/materialize.js"></script>
