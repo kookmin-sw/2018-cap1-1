@@ -118,11 +118,14 @@ function on(){
 
 function off(){
   document.getElementById("overlay").style.display = "none";
-}
-
-
-function selectAccount(x){
-  var value = x.innerText;
+  var value = document.getElementById("MetaAcc").innerText;
   document.getElementById("ethereum_acc").value= value;
   document.getElementById("overlay").style.display = "none";
 }
+
+
+// function selectAccount(x){
+//   var value = x.innerText;
+//   document.getElementById("ethereum_acc").value= value;
+//   document.getElementById("overlay").style.display = "none";
+// }

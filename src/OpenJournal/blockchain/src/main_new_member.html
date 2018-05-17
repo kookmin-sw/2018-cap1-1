@@ -78,7 +78,7 @@
                             <table >
                               <tr>
                                 <td style="width:50%; text-align:center; padding:0; cursor:auto;">Account</td>
-                                <td onclick="selectAccount(this)" id="MetaAcc" style="cursor:hand; font-weight:bold; width:50%; text-align:center; padding:0;"></td>
+                                <td id="MetaAcc" style="cursor:hand; font-weight:bold; width:50%; text-align:center; padding:0;"></td>
                               </tr>
                             </table>
                           </div>
@@ -97,7 +97,7 @@
 											<label for="birthday">Birthday</label>
 										</div>
 									</div>
-									<input style="margin-top:5rem;" type="submit" class="center s12 btn blue darken-4" name="newmember" value="입력완료" />
+									<input onclick=signUp() style="margin-top:5rem; margin-bottom:5rem;" type="submit" class="center s12 btn blue darken-4" name="newmember" value="입력완료" />
 								</form>
 							</div>
 						</div>

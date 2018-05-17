@@ -9,7 +9,7 @@ if(typeof web3 !== "undefined"){
 web3 = new Web3(web3Provider);
 
 function signUp(){
-
+    
     $.getJSON("OpenJournal.json", function(data){
         var Artifact = data;
         contracts.OpenJournal = TruffleContract(Artifact);
@@ -20,6 +20,7 @@ function signUp(){
         var newUser = getUserAccounts();
         instance.signUp({from: newUser});
     });
+
 }
 
 function getUserAccounts(){
@@ -27,9 +28,8 @@ function getUserAccounts(){
 
     web3.eth.getAccounts(function(err, accounts){
         acc = accounts[0];
+        document.getElementById("AccountList").style.display = "block";
+        document.getElementById("MetaAcc").innerText = acc;
     });
-
-    document.getElementById("AccountList").style.display = "block";
-    document.getElementById("MetaAcc").innerText = acc;
-
 }
+
