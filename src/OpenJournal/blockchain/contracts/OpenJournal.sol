@@ -11,7 +11,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         string description;     // 논문 해시값으로 대체해야 함
         uint8 value;
         uint[] subscribed;
-        //uint[] reference_journal;
+        uint256[] reference_journal;
     }
     
     struct Subscriber {
@@ -39,7 +39,8 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         uint256 _number, 
         address _author, 
         string _title, 
-        uint8 _value
+        uint8 _value,
+        uint256[] _reference
     );  
 
     event LogSubscribeJournal(
@@ -91,7 +92,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         return true;
     }
 
-    function registJournal(uint8 _journalValue, string _title, string _description) public returns (bool) {
+    function registJournal(uint8 _journalValue, string _title, string _description, uint256[] _referenceJournal) public returns (bool) {
         require(_journalValue <= upperbound_value);
         journalNumber = journalNumber.add(1);
         journals[journalNumber] = Journal(
@@ -100,9 +101,20 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
             _title,
             _description,
             _journalValue,
-            new uint[](0)            
+            new uint[](0),
+            new uint256[](0)            
         );
-        emit LogRegistJournal(journalNumber, msg.sender, _title, _journalValue);   
+
+        for(uint256 ref = 0; ref <_referenceJournal.length; ++ref)
+            journals[journalNumber].reference_journal.push(_referenceJournal[ref]);
+        
+        emit LogRegistJournal(
+            journalNumber, 
+            msg.sender, 
+            _title, 
+            _journalValue, 
+            journals[journalNumber].reference_journal
+        );   
  
         return true;    
     }
