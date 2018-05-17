@@ -101,9 +101,10 @@ def enrollNewMember():
         fame = 0
         subPaperNum = 0
         enrollPaperNum = 0
-        doc = {'user_id'    : userId,      'user_name'     : userName, 'password':newPassWord,
-               'telephone'  :telephone,    'birthday'      : birthday, 'fame'     : fame,
-               'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum}
+        tokenNum = 0
+        doc = {'user_id'    : userId,      'user_name'     : userName,       'password':newPassWord,
+               'telephone'  :telephone,    'birthday'      : birthday,       'fame'    : fame,
+               'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum, 'tokenNum': tokenNum}
         collection = db.Users
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
