@@ -72,7 +72,7 @@ App = {
       
       // App.signUp();
       // App.buyToken();
-      App.getOwner();
+      // App.getOwner();
       // App.getBalance();
 
     });
