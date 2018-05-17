@@ -6,6 +6,7 @@ from io import StringIO
 import os 
 import PyPDF2
 import json
+import hashlib
 
 def page_number_of_pdf(path):
 	pdfFileObj = open(path, 'rb')
@@ -69,11 +70,30 @@ def extract_reference_from_text(text):
 			reference_title = reference_title[0:reference_title_length-1]
 		reference_title_list.append(reference_title)
 
+	number_length = len(reference_number_list)
+	title_length = len(reference_title_list)
+
+	if number_length != title_length:
+		return -1, -1
+
 	return reference_number_list, reference_title_list
+
+def make_reference_hash_number(number_list, title_list):
+	hash_length = len(number_list)
+	hash_list = []
+	hash_password = "0504110310110711"
+
+	for i in range(0, hash_length):
+		new_str = str(number_list[i])+hash_password+title_list[i]
+		hash_list.append((hashlib.sha256(new_str.encode('utf-8')).hexdigest()))
+
+	return hash_list
 
 pdf_page = page_number_of_pdf("/Users/chaminjun/Desktop/Example.pdf")
 text = convert_pdf_to_txt("/Users/chaminjun/Desktop/Example.pdf",[pdf_page-3, pdf_page-2, pdf_page-1])
 
 reference_number_list, reference_title_list = extract_reference_from_text(text)
+reference_hash_list = make_reference_hash_number(reference_number_list, reference_title_list)
 print(reference_number_list)
 print(reference_title_list)
+print(reference_hash_list)
