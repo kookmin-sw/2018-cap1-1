@@ -1,24 +1,28 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify, send_from_directory
 from flask_oauthlib.client import OAuth
 from pymongo import MongoClient
 from pymongo import Connection
 from urllib2 import Request, urlopen, URLError
-import gridfs, datetime, json
+import gridfs, datetime, json, os
 from gridfs.errors import NoFile
 from bson.objectid import ObjectId
 from werkzeug import secure_filename
 
 ALLOWED_EXTENSIONS = set(['pdf'])
+UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
 
 app = Flask(__name__)
 app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
 app.config['GOOGLE_SECRET'] = "61w2EkT-lKN8eUkSRUBWIxMx"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 app.debug = True
 app.secret_key = 'development'
 oauth = OAuth(app)
 client = MongoClient('localhost', 27017)
 db = client.OpenJournal
+fs = gridfs.GridFS(db)
 
 google = oauth.remote_app(
     'google',
@@ -64,7 +68,6 @@ def mainLogin():
 @app.route("/main_new_member") #회원 가입 페이지 이동
 def mainNewMember():
     return render_template('main_new_member.html')
-
 @app.route('/logout')
 def logout():
     if 'google_token' in session:
@@ -144,15 +147,27 @@ def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-@app.route('/files/<oid>')
-def serve_gridfs_file(oid):
-    try:
-        file = fs.get(ObjectId(oid))
-        response = make_response(file.read())
-        response.mimetype = file.content_type
-        return response
-    except NoFile:
-        abort(404)
+@app.route('/uploadPaper', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return str(filename)
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],filename)
 
 @app.route("/main_enroll_for_check_journal")
 def mainEnrollForCheckJournal():
@@ -343,21 +358,15 @@ def enrollPaper():
             writingPaperNum = int(latestCursor['latestPaperNum']+1)
             latestPaperNum.update({"latestfind": "latestfind"},
                                   {"latestfind": "latestfind",'latestPaperNum':writingPaperNum})
-            fs = gridfs.GridFS(db)
-            file = request.files['file']
-            fileId = ""
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                fileId = fs.put(file, content_type=file.content_type, filename=filename)
-                #return redirect(url_for('serve_gridfs_file', oid=str(oid)))
+            fileName = upload_file()
             doc = {'user_id'     : userId,       'writer'     : writer,
                    'mainCategory': mainCategory, 'subCategory': subCategory,
                    'title'       : title,        'abstract'   : abstract,
                    'hits'        : hits,         'keyword'    : keyword,
                    'version'     : version,      'complete'   : complete,
-                   'file_id'     : fileId,       'writingPaperNum' : writingPaperNum,
+                   'paperNum'    : paperNum,     'writingPaperNum' : writingPaperNum,
                    'time'        : currentTime,  'commentNumber' : commentNum,
-                   'paperNum'    : paperNum
+                   'fileName'    : fileName
                    }
             collection = db.PaperInformation
             collection.insert(doc)
