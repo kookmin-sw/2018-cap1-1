@@ -11,7 +11,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         string description;     // 논문 해시값으로 대체해야 함
         uint8 value;
         uint[] subscribed;
-        //uint[] reference_journal;
+        //uint[] reference_journal; 
     }
     
     struct Subscriber {
@@ -103,7 +103,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
             new uint[](0)            
         );
         emit LogRegistJournal(journalNumber, msg.sender, _title, _journalValue);   
- 
+
         return true;    
     }
 
