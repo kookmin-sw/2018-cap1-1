@@ -34,15 +34,28 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
-@app.route("/") #메인 홈페이지 이동
-def home():
+def checkUserId():
     userId = ""
     if 'google_token' in session:
         me = google.get('userinfo')
         userId = me.data['email']
     elif 'userId' in session:
         userId = session['userId']
+    return userId
+
+@app.route("/") #메인 홈페이지 이동
+def home():
+    userId = checkUserId()
     return render_template('main.html', userId = userId)
+
+@app.route("/main_mypage") #메인 홈페이지 이동
+def mainMypage():
+    userId = checkUserId()
+    userCollection = db.Users
+    findedUserInfo = userCollection.find({"user_id": userId})
+    paperCollection = db.PaperInformation
+    findPaperInfo = paperCollection.find({"user_id": userId})
+    return render_template('main_mypage.html', userInfo = findedUserInfo, writePaper = findPaperInfo)
 
 @app.route("/main_login") #로그인 페이지 이동
 def mainLogin():
@@ -59,12 +72,6 @@ def logout():
     if 'userId' in session:
         session.pop('userId', None)
     return render_template('main.html')
-
-@app.route("/loginInformation", methods=['POST']) #로그인시 로그인 정보 상단 출력(구현중)
-def loginInformation():
-    if 'google_token' in session:
-        me = google.get('userinfo')
-        return str(me.data['email'])
 
 @app.route("/userLogin", methods=['POST'])
 def userLogin():
@@ -92,8 +99,11 @@ def enrollNewMember():
         telephone = request.form['telephone']
         birthday = request.form['birthday']
         fame = 0
-        doc = {'user_id'  : userId,     'user_name': userName, 'password':newPassWord,
-               'telephone':telephone,   'birthday' :birthday, 'fame': fame}
+        subPaperNum = 0
+        enrollPaperNum = 0
+        doc = {'user_id'    : userId,      'user_name'     : userName, 'password':newPassWord,
+               'telephone'  :telephone,    'birthday'      : birthday, 'fame'     : fame,
+               'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum}
         collection = db.Users
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
@@ -102,7 +112,7 @@ def enrollNewMember():
             if document['user_id'] == userId:
                 #구현은 중복검사로 구현하기
                 return "이미 회원 가입 되있습니다."
-        for oauthDocument in oauthCursor:        #일반 회원 등록 확
+        for oauthDocument in oauthCursor:        #일반 회원 등록 확인
             if oauthDocument['user_id'] == userId:
                 #구현은 중복검사로 구현하기
                 return "이미 회원 가입 되있습니다."
@@ -145,11 +155,8 @@ def serve_gridfs_file(oid):
 
 @app.route("/main_enroll_for_check_journal")
 def mainEnrollForCheckJournal():
-    if 'google_token' in session or 'userId' in session:
-        return render_template('main_enroll_for_check_journal.html')
-    else:
-        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
-        return render_template('main_login.html')
+    userId = checkUserId()
+    return render_template('main_enroll_for_check_journal.html', userId = userId)
 
 @app.route('/login/authorized')
 def authorized():
@@ -179,23 +186,22 @@ def authorized():
 def mainEnroll():
     collection = db.PaperInformation
     rows = collection.find().sort("writingPaperNum",-1)
-    return render_template('main_enroll.html', data =rows)
+    userId = checkUserId()
+    return render_template('main_enroll.html', data =rows, userId=userId)
 
 @app.route('/enrollPaperComment', methods=['POST'])
 def enrollPaperComment():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             paperInfo = db.PaperInformation
-            userId = ""
+            userId = checkUserId()
             userName = ""
             if 'google_token' in session:
                 me = google.get('userinfo')
                 userName = me.data['name']
-                userId = me.data['email']
             elif 'userId' in session:
                 user = db.Users
-                userData = user.find_one({"user_id": session['userId']})
-                userId = session['userId']
+                userData = user.find_one({"user_id": userId})
                 userName = userData['user_name']
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
@@ -204,15 +210,8 @@ def enrollPaperComment():
             data = paperInfo.find({"_id": ObjectId(objectId)})
             commentNum = 0
             adaptFlag = 0
-            validity = 0
-            for document in data:
-                if document['_id'] == ObjectId(objectId):
-                    commentNum = document['commentNumber']
-                    if document['commentNumber']>=5:
-                        validity = 1
-                        paperInfo.update({"_id": ObjectId(objectId)},{"$set": {"complete":validity}})
             commentDict = {'commentNum':commentNum+1, 'userId':userId,'userName':userName, 'Time':currentTime,
-            'comment':commentContent, 'adaptFlag': adaptFlag}
+                           'comment':commentContent, 'adaptFlag': adaptFlag}
             paperInfo.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
             paperInfo.update({"_id": ObjectId(objectId)},{"$set": {"commentNumber":commentNum+1}})
             data = paperInfo.find({"_id": ObjectId(objectId)})
@@ -226,12 +225,7 @@ def enrollPaperComment():
 def viewPaper():
     id = request.args.get("id") #현재 보려고 하는 논문의 ObjectId 값 get
     paperInfo = db.PaperInformation
-    userId = ""
-    if 'google_token' in session:
-        me = google.get('userinfo')
-        userId = me.data['email']
-    elif 'userId' in session:
-        userId = session['userId']
+    userId = checkUserId()
     data = paperInfo.find({"_id": ObjectId(id)})
     """
     for doc in data:
@@ -247,12 +241,7 @@ def viewPaper():
 def moveUpdatePaper():
     id = request.args.get("id")
     paperInfo = db.PaperInformation
-    userId = ""
-    if 'google_token' in session:
-        me = google.get('userinfo')
-        userId = me.data['email']
-    elif 'userId' in session:
-        userId = session['userId']
+    userId = checkUserId()
     data = paperInfo.find({"_id": ObjectId(id)})
     return render_template('main_journal_update.html', data = data, userId = userId)
 
@@ -260,14 +249,12 @@ def moveUpdatePaper():
 def versionUpdate():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
-            userId = ""
+            userId = checkUserId()
             if 'google_token' in session:
                 me = google.get('userinfo')
-                userId = me.data['email']
             elif 'userId' in session:
                 user = db.Users
-                data = user.find_one({"user_id": session['userId']})
-                userId = data['user_id']
+                data = user.find_one({"user_id": userId})
             collection = db.PaperInformation
             writer = request.form['writerName']
             mainCategory = request.form['mainCat']
@@ -301,12 +288,7 @@ def adaptPaperComment():
     list = data.split(',') # 0번째 댓글번호, 1번째 문서객체아이디, 2번째 댓글 작성자 아이디, 3번째 채택flag, 4번째 글 작성자 아이디
     paperCollection = db.PaperInformation
     userCollection = db.Users
-    userId = ""
-    if 'google_token' in session:
-        me = google.get('userinfo')
-        userId = me.data['email']
-    elif 'userId' in session:
-        userId = session['userId']
+    userId = checkUserId()
 
     cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
     for document in cursor:
@@ -336,14 +318,12 @@ def adaptPaperComment():
 def enrollPaper():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
-            userId = ""
+            userId = checkUserId()
             if 'google_token' in session:
                 me = google.get('userinfo')
-                userId = me.data['email']
             elif 'userId' in session:
                 user = db.Users
-                data = user.find_one({"user_id": session['userId']})
-                userId = data['user_id']
+                data = user.find_one({"user_id": userId})
             writer = request.form['writerName']
             mainCategory = request.form['mainCat']
             subCategory = request.form['subCat']
@@ -380,6 +360,10 @@ def enrollPaper():
                    }
             collection = db.PaperInformation
             collection.insert(doc)
+            userCollection = db.Users
+            userInfo = userCollection.find_one({"user_id": userId})
+            enrollPaperNum = userInfo['enrollPaperNum']
+            userCollection.update({"user_id": userId}, {"$set":{"enrollPaperNum":enrollPaperNum+1}})
             return mainEnroll()
     else:
         #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워data = data, userId = userId주고 login 창으로 이동.
@@ -404,18 +388,13 @@ def getWriting():
     id = request.args.get("id")
     bulletin = db.Bulletin
     hit = 0
-    userId = ""
+    userId = checkUserId()
     data = bulletin.find({"_id": ObjectId(id)})
     for document in data:
         if document['_id'] == ObjectId(id):
             hit = document['hits']
     bulletin.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
     data = bulletin.find({"_id": ObjectId(id)})
-    if 'google_token' in session:
-        me = google.get('userinfo')
-        userId = me.data['email']
-    elif 'userId' in session:
-        userId = session['userId']
     return render_template('main_comunity_detail.html',data = data, userId = userId)
 
 @app.route('/enrollWriting', methods=['POST', 'GET']) #작성한 글 등록기능 구현
@@ -425,16 +404,14 @@ def enrollWriting():
             collection = db.BulletinNum
             bulletinCollection = db.Bulletin
             userName = ""
-            userId   = ""
+            userId   = checkUserId()
             if 'google_token' in session:
                 me = google.get('userinfo')
                 userName = me.data['name']
-                userId = me.data['email']
             elif 'userId' in session:
                 user = db.Users
-                userData = user.find_one({"user_id": session['userId']})
+                userData = user.find_one({"user_id": userId})
                 userName = userData['user_name']
-                userId   = session['userId']
             mainCategory = request.form['mainCat']
             subCategory = request.form['subCat']
             title = request.form['title']
@@ -463,16 +440,14 @@ def commentEnroll():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             bulletin = db.Bulletin
-            userId = ""
+            userId = checkUserId()
             userName = ""
             if 'google_token' in session:
                 me = google.get('userinfo')
                 userName = me.data['name']
-                userId = me.data['email']
             elif 'userId' in session:
                 user = db.Users
                 userData = user.find_one({"user_id": session['userId']})
-                userId = session['userId']
                 userName = userData['user_name']
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
@@ -501,12 +476,7 @@ def adaptComment():
     list = data.split(',') # 0번째 댓글번호, 1번째 문서객체아이디, 2번째 댓글 작성자 아이디, 3번째 채택flag, 4번째 글 작성자 아이디
     writingCollection = db.Bulletin
     userCollection = db.Users
-    userId = ""
-    if 'google_token' in session:
-        me = google.get('userinfo')
-        userId = me.data['email']
-    elif 'userId' in session:
-        userId = session['userId']
+    userId = checkUserId()
 
     cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
     for document in cursor:
