@@ -23,8 +23,13 @@ function signUp(){
 }
 
 function getUserAccounts(){
+    var acc ="";
+
     web3.eth.getAccounts(function(err, accounts){
-        console.log(accounts);
-        return accounts[0];    
+        acc = accounts[0];
     });
+
+    document.getElementById("AccountList").style.display = "block";
+    document.getElementById("MetaAcc").innerText = acc;
+
 }
