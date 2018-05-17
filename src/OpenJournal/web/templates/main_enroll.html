@@ -100,25 +100,19 @@
           </div>
       </div>
 
+      {% for i in data %}
       <div class="col s12">
         <ul class="collection">
-          <li class="collection-item avatar">
+          <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
             <i class="material-icons circle">folder</i>
-            <span class="title">미국 화학물질 규제행정의 체계와 법제</span>
-            <p>저자 : 오성은, 윤혜선<br></p>
-            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 화학물질 규제체계 / 유해화학물질 관리 / 미국 유해화학물질관리법 / 미국 소비자제품안전개선법 / 캘리포니아 법령 65 / Chemical Regulation / Toxic Substance Management / U.S. Toxic Substance Control Act of 1976 / U.S. Consumer Product Safety Improvement Act / California Proposition 65 / 사회과학 / 법학
-            </p>
-          </li>
-
-          <li class="collection-item avatar">
-            <i class="material-icons circle blue">folder</i>
-            <span class="title">체육과 인간 형성에 관한 근대 일본의 연구 동향</span>
-            <p>저자 : 김기용<br></p>
-            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 체육개념 / 인간형성 / 연구동향
-            </p>
+            <span class="title" name="title">{{i.title}}</span>
+            <p>저자 : {{i.writer}}<br></p>
+            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 :{{i.keyword}} </p>
           </li>
         </ul>
       </div>
+      {% endfor %}
+
       <div class="col s12 center">
         <ul class="pagination">
           <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
