@@ -42,6 +42,7 @@
         <div style="margin:10px; padding-top:10px;" class="col s12 left">
           <p style="font-size:2rem; font-weight:bold; margin:0; padding:0;">기본정보</p>
         </div>
+        {% for i in userInfo %}
         <div class="col s12 center">
           <table class="journal_info">
             <tbody>
@@ -50,7 +51,7 @@
                   이름
                 </td>
                 <td>
-                  구민준
+                  {{i.user_name}}
                 </td>
               </tr>
               <tr>
@@ -58,7 +59,7 @@
                   이메일
                 </td>
                 <td>
-                  mjkoo711@gmail.com
+                  {{i.user_id}}
                 </td>
               </tr>
               <tr>
@@ -66,7 +67,7 @@
                   명성점수
                 </td>
                 <td>
-                  85
+                  {{i.fame}}
                 </td>
               </tr>
               <tr>
@@ -74,7 +75,7 @@
                   OpenJournal 토큰개수
                 </td>
                 <td>
-                  13
+                  {{i.tokenNum}}
                 </td>
               </tr>
               <tr>
@@ -82,7 +83,7 @@
                   등록한 논문
                 </td>
                 <td>
-                  1
+                  {{i.enrollPaperNum}}
                 </td>
               </tr>
               <tr>
@@ -96,6 +97,7 @@
             </tbody>
           </table>
         </div>
+        {% endfor %}
       </div>
 
       <div class="row" style="margin-bottom:0px;">
@@ -147,19 +149,22 @@
           </div>
         </div>
 
+
         <div style=" padding-top:10px;" class="col s6 left">
           <div style="margin:10px;">
             <p style="font-size:2rem; font-weight:bold; margin:0; padding:0;">등록한 논문</p>
           </div>
           <div style="overflow:scroll; min-height: 500px; max-height:700px;">
-            <div class="col s12">
+            {% for i in writePaper %}
+            <div class="col s12" onclick="location.href='/main_view_journal?id={{i._id}}'">
               <div class="card blue darken-4">
                 <div style="padding:15px;" class="card-content white-text">
-                  <span class="card-title">논문시장에 적용되는 블록체인</span>
-                  <p>구민준 | 공학 - 컴퓨터공학</p>
+                  <span class="card-title">{{i.title}}</span>
+                  <p>{{i.writer}} | {{i.mainCategory}} - {{i.subCategory}}</p>
                 </div>
               </div>
             </div>
+            {% endfor %}
           </div>
         </div>
       </div>
