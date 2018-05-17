@@ -6,10 +6,6 @@
   <title>Open Journal</title>
 
   <script>
-
-  </script>
-
-  <script>
   function checkComment(comment){
     var img_id = comment;
     var split_arr = img_id.split("_");
@@ -48,7 +44,7 @@
   <nav class="white" role="navigation">
     <ul id="dropdown1" class="dropdown-content">
       <li><a href="main_login" class="black-text">로그인</a></li>
-      <li class="divider"></li>
+      <li class="divider"></li>return str(filePath)
       <li><a href="main_new_member" class="black-text">회원가입</a></li>
       <li class="hiddenPage"><a href="main_mypage" class="black-text">마이 페이지</a></li>
     </ul>
@@ -89,7 +85,7 @@
           <div style="margin-bottom: 8px;" class="col s12 center">
           </div>
           <div class="s12 col center">
-            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="../static/journal_example_first.pdf">
+            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="../static/journal/{{i.fileName}}">
             </iframe>
 
             <table class="journal_info">
