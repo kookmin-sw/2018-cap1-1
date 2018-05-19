@@ -123,7 +123,6 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         return true;    
     }
 
-    // 다시짜야함
     function subscribeJournal(uint256 _journalNumber) public returns (bool){
         require(is_subscribed[msg.sender][_journalNumber] == false);  
 
@@ -134,6 +133,20 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         if(ref_length == 0){
             author_value = journals[_journalNumber].value;
         } else{
+
+            /*
+            author_value와 reference_num을 비교한다.
+            author_value가 reference_num으로 나누어 떨어지고 몫이 0이 아니라면 그냥 배분한다.
+            위의 조건을 만족하지 못하면 다음을 따른다.(참조 논문은 100개이하라고 가정한다.)
+                1) reference_token =  author_value / reference_num  ex) 20/3 = 6
+                2) reference_each_token = author_value - (reference_token * reference_num) ex) 20-(6*3) = 2
+                3) reference_each_token을 balances에 transfer해준다.
+                4) reference_mini_token = change_token * mini_token_rate    ex) 2 * 100 = 200
+                5) reference_each_mini_token = reference_mini_token / reference_num  ex) 200/3 = 66
+                6) author_change_mini_token = reference_mini_token - (reference_each_mini_token * reference_num) ex) 200 - (66*3) = 2
+                7) reference_each_mini_token을 mini_balances에 transfer해준다.
+                8) author_change_mini_token을 mini_balances[author]에 transfer해준다.
+            */
             author_value = journals[_journalNumber].value.mul(author_share).div(100);        
             uint256 ref_num;
             address ref_author;
