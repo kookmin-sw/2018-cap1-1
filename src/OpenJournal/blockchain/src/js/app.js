@@ -5,7 +5,7 @@ App = {
   //초기화
   init: function() {
 
-    //논문 배열을 가져와서 리스트를 만든다. 
+    //논문 배열을 가져와서 리스트를 만든다.
     $.getJSON("../journals.json", function(data) {
       var journalsRow = $("#journalsRow");
       var journalTemplate = $("#journalTemplate");
@@ -21,14 +21,14 @@ App = {
       }
     });
 
-    //지갑설정 함수를 실행한다. 
+    //지갑설정 함수를 실행한다.
     return App.initWeb3();
   },
-  
+
   initWeb3: function() {
     // web3 인스턴스가 있는지 확인
     if (typeof web3 !== "undefined") {
-      //Metamask 가 실행시 현 지갑을 리턴한다. 
+      //Metamask 가 실행시 현 지갑을 리턴한다.
       App.web3Provider = web3.currentProvider;
     } else {
       //만약 지정된 지갑이 없는 경우 미리 설정된 Ganeche 지갑을 리턴한다.
@@ -40,11 +40,11 @@ App = {
 
     return App.initContract();
   },
-  
+
   //계약 초기화
   initContract: function() {
     /*
-    OpenJournal.JSON 형태 
+    OpenJournal.JSON 형태
     {
     "contractName": "OpenJournal",
     "abi": [
@@ -54,7 +54,7 @@ App = {
         "name": "name",
        ...............
     */
-    //OpenJournal 은 컴파일 시 나온 ABI JSON이다 여기에 기본 함수들이 표시가 된다. 
+    //OpenJournal 은 컴파일 시 나온 ABI JSON이다 여기에 기본 함수들이 표시가 된다.
     //웹에서는 이 ABI JSON을 보고 실행을 할 수 있다.
     $.getJSON("OpenJournal.json", function(data) {
 
@@ -62,14 +62,14 @@ App = {
       var Artifact = data;
       //미리 제공된 truffleContract 를 통해 Subscribe 인스턴스 생성
       App.contracts.OpenJournal = TruffleContract(Artifact);
-      
+
       //지갑 설정
       App.contracts.OpenJournal.setProvider(App.web3Provider);
 
-      // App.enrollJournal(); 
+      // App.enrollJournal();
       // 1번째 : 0x9bee130db55d1493465c66655b837f16eab9dff4b465e44fa6ec2fc2c6b98297으로 등록됨
-      // 2번째 : 
-      
+      // 2번째 :
+
       // App.signUp();
       // App.buyToken();
       // App.getOwner();
@@ -105,7 +105,7 @@ App = {
         var subscriber = accounts[0];
         console.log(subscriber);
         instance.buyToken({from: subscriber, value : 30});
-        
+
       });
     });
   },
@@ -131,7 +131,7 @@ App = {
       console.log("registed.");
     });
   },
-  
+
   //이벤트 바인딩
   bindEvents: function() {
     $(document).on("click", ".btn-subscribe", App.handleSubscribe);
@@ -146,16 +146,16 @@ App = {
     var journalNumber = parseInt($(event.target).data("id"));
 
     var subscriptionInstance;
-    
-    //지갑상에 주소를 가져온다. 
+
+    //지갑상에 주소를 가져온다.
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
         console.log(error);
       }
 
-      //처음 주소를 가져온다. 
+      //처음 주소를 가져온다.
       var account = accounts[0];
-      
+
       App.contracts.OpenJournal.deployed().then(function(instance) {
           var authorAddress;
           authorAddress = instance.getAuthorAddress.call(journalNumber);
@@ -178,3 +178,16 @@ $(function() {
   });
 });
 
+
+/*
+//형근이 형이 쓰게 될 것
+//loading 중일 때 써야하는 것 (첫줄에)
+document.getElementById("loading_journal").style.display = "block";
+
+//loading이 완료되고 완료됬다는 것을 보여줄 때 (순서대로 쓸것)) - 함수의 마지막줄에
+document.getElementById("loading_journal").style.display = "none";
+document.getElementById("complete_journal").style.display = "block";
+setTimeout(function(){
+  document.getElementById("complete_journal").style.display = "none";
+}, 3000);
+*/
