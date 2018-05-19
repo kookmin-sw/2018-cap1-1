@@ -10,13 +10,15 @@ contract JournalToken is EIP20Interface, Owned {
 
     uint256 constant private MAX_UINT256 = 2**256 - 1;
     mapping (address => uint256) public balances;
+    mapping (address => uint256) public mini_balances;
     mapping (address => mapping (address => uint256)) public allowed; 
     
-    string public name;                     // Token name
-    uint8 public decimals;                  // How many decimals to show.
-    string public symbol;                   // Token unit
+    string public name;                                 // Token name
+    uint8 public decimals;                              // How many decimals to show.
+    string public symbol;                               // Token unit
     address public owner;                  
-    uint256 constant public rate = 1000;    // The ratio of our token to Ether
+    uint256 constant public rate = 1000;                // The ratio of our token to Ether
+    uint256 constant public mini_token_rate = 100;        // The ratio of our mini token to token
 
     event BuyToken(
         uint256 _msgValue,
@@ -26,6 +28,12 @@ contract JournalToken is EIP20Interface, Owned {
         uint8 _decimals,
         string _symbol
     );    
+
+    event TokenToMini(
+        address _msgSender,
+        uint256 _token,
+        uint256 _mini_token
+    ); 
 
     function JournalToken(
         uint256 _initialAmount,
@@ -59,6 +67,28 @@ contract JournalToken is EIP20Interface, Owned {
         emit BuyToken(msg.value, amount, totalSupply, msg.sender, decimals, symbol);
     }
 
+    function tokenToMini(uint256 _value) public returns (bool) {
+        require(balances[msg.sender] >= _value && balances[msg.sender] >= 0);
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+
+        uint256 mini_value = _value.mul(mini_token_rate);
+        mini_balances[msg.sender] = mini_balances[msg.sender].add(mini_value);
+
+        emit TokenToMini(msg.sender, balances[msg.sender], mini_balances[msg.sender]);
+        return true;
+    }
+
+    function miniToToken(uint256 _mini_value) public returns (bool) {
+        require(mini_balances[msg.sender] >= _mini_value && mini_balances[msg.sender] >= 100); 
+        uint256 value = _mini_value.div(mini_token_rate);
+
+        mini_balances[msg.sender] = mini_balances[msg.sender].sub(value.mul(mini_token_rate));
+        balances[msg.sender] = balances[msg.sender].add(value); 
+
+        emit TokenToMini(msg.sender, balances[msg.sender], mini_balances[msg.sender]);
+        return true;
+    }
+
     function transfer(address _to, uint256 _value) public returns (bool success) {
         require(balances[msg.sender] >= _value);
         balances[msg.sender] = balances[msg.sender].sub(_value);
@@ -89,6 +119,10 @@ contract JournalToken is EIP20Interface, Owned {
 
     function balanceOf(address _owner) public view returns (uint256 balance) {
         return balances[_owner];
+    }
+
+    function balanceOfMini(address _owner) public view returns (uint256 balance) {
+        return mini_balances[_owner];
     }
 
     function approve(address _spender, uint256 _value) public returns (bool success) {
