@@ -3,6 +3,8 @@ pragma solidity ^0.4.21;
 import "./Token/JournalToken.sol";
 
 contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
+
+// 내가 등록한 논문을 추가해야 함
     
     struct Journal {
         uint256 number;

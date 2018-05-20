@@ -1,7 +1,7 @@
 const JournalToken = artifacts.require("./Token/JournalToken.sol");
 const OpenJournal = artifacts.require("./OpenJournal.sol")
 
-const expect = require('chai').expect;
+const expe을t = require('chai').expect;
 
 contract('OpenJournal Test', function(accounts) {
 
