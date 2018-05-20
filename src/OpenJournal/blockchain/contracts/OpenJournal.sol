@@ -196,19 +196,29 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         return journals[_journalNumber].author;
     }
 
+    function getJournalTitle(uint256 _journalNumber) public view returns (string){
+        return journals[_journalNumber].title;
+    }
+
     function getValue(uint256 _journalNumber) public view returns (uint256){
         return journals[_journalNumber].value;
-    }
-
-    function getUserRegistedJournals() public view returns (uint[]) {
-        return users[msg.sender].user_regist_journal;
-    }
-
-    function getUserSubscribedJournals() public view returns (uint[]) {
-        return users[msg.sender].user_subscribe_journal;
     }
 
     function getJournalSubscriber(uint _journalNumber) public view returns (uint[]) {
         return journals[_journalNumber].subscribed;
     }
+
+    function getReferenceJournal(uint _journalNumber) public view returns (uint256[]) {
+        return journals[_journalNumber].reference_journal;
+    }
+
+    function getUserSubscribedJournals() public view returns (uint[]) {
+        return users[msg.sender].user_subscribe_journal;
+    }    
+
+    function getUserRegistedJournals() public view returns (uint[]) {
+        return users[msg.sender].user_regist_journal;
+    }    
+
+    
 }
