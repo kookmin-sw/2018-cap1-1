@@ -108,8 +108,6 @@ contract('OpenJournal Test', function(accounts) {
   });
 
   it('should be possible to subscribe1 journal', async function () {
-    subscribe1.logs[12];
-
     let log_1 = subscribe1.logs[0];
     let msgSender_1 = log_1.args._msgSender;
     let token_1 = log_1.args._token;
@@ -159,10 +157,55 @@ contract('OpenJournal Test', function(accounts) {
     expect(reference_mini_token_12.toString()).to.equal('66');
   });
 
-  /*it('should be possible to subscribe2 journal', async function () {
+  it('should be possible to subscribe2 journal', async function () {
+    let log_1 = subscribe2.logs[0];
+    let msgSender_1 = log_1.args._msgSender;
+    let token_1 = log_1.args._token;
+    let mini_token_1 = log_1.args._mini_token;
 
-    });
-  */
+    let log_2 = subscribe2.logs[1];
+    let msgSender_2 = log_2.args._msgSender;
+    let token_2 = log_2.args._token;
+    let mini_token_2 = log_2.args._mini_token;
+
+    let log_3 = subscribe2.logs[2];
+    let from_3 = log_3.args._from;
+    let to_3 = log_3.args._to;
+    let value_3 = log_3.args._value;
+    let mini_value_3 = log_3.args._mini_value;
+
+    let log_4 = subscribe2.logs[3];
+    let subscriber_4 = log_4.args._subscriber;
+    let myjournals_4 = log_4.args._myjournals;
+    let subscribed_4 = log_4.args._subscribed;
+    let is_subscribed_4 = log_4.args._is_subscribed;
+    let author_value_4 = log_4.args._author_value;
+    let author_mini_token_4 = log_4.args._author_mini_token;
+    let ref_value_4 = log_4.args._ref_value;
+    let reference_mini_token_4 = log_4.args._reference_mini_token;
+
+    expect(msgSender_1.toString()).to.equal(subscriber1);
+    expect(token_1.toString()).to.equal('0');
+    expect(mini_token_1.toString()).to.equal('2000');
+
+    expect(msgSender_2.toString()).to.equal(subscriber1);
+    expect(token_2.toString()).to.equal('10');
+    expect(mini_token_2.toString()).to.equal('0');
+
+    expect(from_3.toString()).to.equal(subscriber1);
+    expect(to_3.toString()).to.equal(register2);
+    expect(value_3.toString()).to.equal('10');
+    expect(mini_value_3.toString()).to.equal('0');
+
+    expect(subscriber_4.toString()).to.equal(subscriber1);
+    expect(myjournals_4.toString()).to.equal('2017010020,2018030120');
+    expect(subscribed_4.toString()).to.equal('1');
+    expect(is_subscribed_4.toString()).to.equal('true');
+    expect(author_value_4.toString()).to.equal('10');
+    expect(author_mini_token_4.toString()).to.equal('0');
+    expect(ref_value_4.toString()).to.equal('0');
+    expect(reference_mini_token_4.toString()).to.equal('0');
+  });
 /*
   it('should be possible get journal register', async function() {
     get_auth = await openJournal.getAuthorAddress(1);
