@@ -10,7 +10,7 @@ from bson.objectid import ObjectId
 from werkzeug import secure_filename
 
 ALLOWED_EXTENSIONS = set(['pdf'])
-UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
+UPLOAD_FOLDER = '/home/ubuntu/captone/2018-cap1-1/src/OpenJournal/web/static/journal'
 
 app = Flask(__name__)
 app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
