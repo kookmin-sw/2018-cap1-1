@@ -130,3 +130,28 @@ function selectAccount(x){
   document.getElementById("etherium_acc").value= value;
   document.getElementById("overlay").style.display = "none";
 }
+
+function modifyInfo(x){
+  var inputString1 = prompt('변경할 번호를 입력하세요', x.parentElement.firstElementChild.getElementsByTagName("span")[1].innerText);
+  var inputString2 = prompt('변경할 제목을 입력하세요', x.parentElement.firstElementChild.getElementsByTagName("span")[3].innerText);
+
+  x.parentElement.firstElementChild.getElementsByTagName("span")[1].innerText = inputString1;
+  x.parentElement.firstElementChild.getElementsByTagName("span")[3].innerText = inputString2;
+}
+
+function checkReference(x){
+  var journalNum =   x.parentElement.firstElementChild.getElementsByTagName("span")[1].innerText;
+  var journalTitle =   x.parentElement.firstElementChild.getElementsByTagName("span")[3].innerText;
+
+  journalTitle = journalTitle.replace(/(\s*)/g,""); //띄워쓰기 다 붙임
+
+  // if(문자열 같으면)
+  //   x.parentElement.children[3].getElementById("correspond").style.display="block";
+  //   x.parentElement.children[3].getElementById("notcorrespond").style.display="none";
+
+  // else (문자열 다르면)
+  x.parentElement.children[3].getElementsByTagName("p")[0].style.display="none";
+  x.parentElement.children[3].getElementsByTagName("p")[1].style.display="block";
+
+  //형이 비교해올 것//
+}

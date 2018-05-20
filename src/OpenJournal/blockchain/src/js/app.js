@@ -178,4 +178,3 @@ $(function() {
     App.init();
   });
 });
-
