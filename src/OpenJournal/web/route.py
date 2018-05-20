@@ -307,7 +307,10 @@ def viewPaper():
             file = fs.get(ObjectId(oid))
     """
     data = paperInfo.find({"_id": ObjectId(id)})
-    return render_template('main_view_journal.html', data = data, userId = userId)
+    data2 = paperInfo.find_one({"_id": ObjectId(id)})
+    enrollUserId = data2['user_id']
+    complete = data2['complete']
+    return render_template('main_view_journal.html', data = data, userId = userId, enrollUserId = enrollUserId, complete = complete)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
@@ -386,11 +389,14 @@ def enrollPaper():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             userId = checkUserId()
+            userName = ""
             if 'google_token' in session:
                 me = google.get('userinfo')
+                userName = me.data['name']
             elif 'userId' in session:
                 user = db.Users
                 data = user.find_one({"user_id": userId})
+                userName = data['user_name']
             writer = request.form['writerName']
             mainCategory = request.form['mainCat']
             subCategory = request.form['subCat']
@@ -417,7 +423,7 @@ def enrollPaper():
                    'version'     : version,      'complete'   : complete,
                    'paperNum'    : paperNum,     'writingPaperNum' : writingPaperNum,
                    'time'        : currentTime,  'commentNumber' : commentNum,
-                   'fileName'    : fileName
+                   'fileName'    : fileName,     'userName'   : userName
                    }
             collection = db.PaperInformation
             collection.insert(doc)
