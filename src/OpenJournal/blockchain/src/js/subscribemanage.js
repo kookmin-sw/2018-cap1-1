@@ -8,8 +8,8 @@ if(typeof web3 !== "undefined"){
 }
 web3 = new Web3(web3Provider);
 
-function subscribeJournal(){
-    
+function subscribeJournal(callback){
+
     $.getJSON("OpenJournal.json", function(data){
         var Artifact = data;
         contracts.OpenJournal = TruffleContract(Artifact);
@@ -20,8 +20,14 @@ function subscribeJournal(){
             console.log("subscriber : " + subscriber + ", number : " + journalNumber);
             instance.subscribeJournal(journalNumber, { from: subscriber });
         });
-    })
+    });
+
+    callback();
 }
+
+subscribeJournal(function () {
+    
+});
 
 function getJournalNumber(){
     var number = document.getElementById("journal_number").value;
