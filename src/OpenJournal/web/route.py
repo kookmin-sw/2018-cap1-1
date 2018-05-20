@@ -10,7 +10,7 @@ from bson.objectid import ObjectId
 from werkzeug import secure_filename
 
 ALLOWED_EXTENSIONS = set(['pdf'])
-UPLOAD_FOLDER = '/home/ubuntu/captone/2018-cap1-1/src/OpenJournal/web/static/journal'
+UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
 
 app = Flask(__name__)
 app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
@@ -38,6 +38,13 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
+
+
+@app.route("/") #메인 홈페이지 이동
+def home():
+    userId = checkUserId()
+    return render_template('main.html', userId = userId)
+
 def checkUserId():
     userId = ""
     if 'google_token' in session:
@@ -47,10 +54,39 @@ def checkUserId():
         userId = session['userId']
     return userId
 
-@app.route("/") #메인 홈페이지 이동
-def home():
-    userId = checkUserId()
-    return render_template('main.html', userId = userId)
+def checkTime(month):   #월이 바뀌는 경우를 판단해주는 함수
+    paperNumInfo = db.PaperNum
+    data = paperNumInfo.find_one({"name": "latestNum"})
+    storedMonth = data['month']
+    if(storedMonth != month): #월이 다른 경우
+        return 0
+    else:
+        return 1 #월이 같은 경우 1 리턴
+
+@app.route("/papernum")
+def papernum():
+    paperNumInfo = db.PaperNum
+    now   = datetime.datetime.now()
+    year  = str(now.strftime("%Y"))
+    month = str(now.strftime("%m"))
+    flag  = checkTime(month)
+    paper = paperNumInfo.find_one({"name":"latestNum"})
+    createdPaperNum = 0
+
+    if(flag == 1):
+        if(paper['updatedPaperNum']>=0 and paper['updatedPaperNum']<=8):
+            createdPaperNum = year+month+"000"+str(int(paper['updatedPaperNum']+1))
+        elif(paper['updatedPaperNum']>=9 and paper['updatedPaperNum']<=98):
+            createdPaperNum = year+month+"00"+str(int(paper['updatedPaperNum']+1))
+        elif(paper['updatedPaperNum']>=99 and paper['updatedPaperNum']<=998):
+            createdPaperNum = year+month+"0"+str(int(paper['updatedPaperNum']+1))
+        elif(paper['updatedPaperNum']>=999 and paper['updatedPaperNum']<=9998):
+            createdPaperNum = year+month+str(int(paper['updatedPaperNum']+1))
+    elif(flag == 0):
+        paperNumInfo.update({"name":"latestNum"}, {"$set": {"year":year,"month":month,"updatedPaperNum":0}})
+        createdPaperNum = year+month+"000"+"1"
+
+    return createdPaperNum
 
 @app.route("/main_mypage") #메인 홈페이지 이동
 def mainMypage():
@@ -68,6 +104,30 @@ def mainLogin():
 @app.route("/main_new_member") #회원 가입 페이지 이동
 def mainNewMember():
     return render_template('main_new_member.html')
+
+@app.route("/main_final_paper_enroll", methods = ['GET', 'POST'])
+def enrollFinalPaper():
+    userId = checkUserId()
+    return render_template('main_final_paper_enroll.html', userId=userId)
+
+@app.route("/final_enroll_blockChain", methods = ['GET', 'POST'])
+def enrollBlockChain():
+    id = request.args.get("id")
+    userId = checkUserId()
+    if userId != "":
+        paperInfo = db.PaperInformation
+        paperInfo.update({"_id": ObjectId(objectId)},{"$set": {"complete":1}})
+        return render_template('main_enroll.html', userId=userId)
+    else:
+        return "로그인 이후 이용해 주시기 바랍니다."
+
+@app.route("/main_view_fix_journal")
+def moveToSubPaper():
+    userId = checkUserId()
+    completePaperCollection = db.PaperInformation
+    data = completePaperCollection.find({"complete":1}).sort("time", -1)
+    return render_template('main_view_fix_journal.html', data = data, userId=userId)
+
 @app.route('/logout')
 def logout():
     if 'google_token' in session:
@@ -201,7 +261,7 @@ def authorized():
 @app.route("/main_enroll") #검수중인 논문 리스트 페이지 뷰 구현
 def mainEnroll():
     collection = db.PaperInformation
-    rows = collection.find().sort("writingPaperNum",-1)
+    rows = collection.find({"complete": 0}).sort("writingPaperNum",-1)
     userId = checkUserId()
     return render_template('main_enroll.html', data =rows, userId=userId)
 
@@ -284,15 +344,10 @@ def versionUpdate():
             id = request.form['objectId']
             data = collection.find_one({"_id": ObjectId(id)})
             version = data['version']
-            fs = gridfs.GridFS(db)
-            file = request.files['file']
-            fileId = ""
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                fileId = fs.put(file, content_type=file.content_type, filename=filename)
+            fileName = upload_file()
             collection.update({"_id": ObjectId(id)}, {"$set": {"writer":writer, "mainCategory":mainCategory, "subCategory":subCategory,
-                              "title":title, "abstract":abstract, "keyword": keyword, "version": version, "time": currentTime,
-                              "file_id":fileId}})
+                              "title":title, "abstract":abstract, "keyword": keyword, "version": version+1, "time": currentTime,
+                              "fileName": fileName}})
             return mainEnroll()
     else:
         #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워data = data, userId = userId주고 login 창으로 이동.
@@ -350,7 +405,7 @@ def enrollPaper():
             version = 1
             complete = 0
             commentNum = 0
-            paperNum = ""
+            paperNum = "" #최종 논문 등록시 논문 번호
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             latestPaperNum = db.latestPaperNum
