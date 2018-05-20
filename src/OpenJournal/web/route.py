@@ -293,24 +293,30 @@ def enrollPaperComment():
     else:
         return "로그인이 필요한 기능입니다."
 
+
+def enrollBlockChain(obId):
+    paperInfo = db.PaperInformation
+    paper = paperInfo.find_one({"_id":ObjectId(obId)})
+    filepath = pdf_path_without_filename + paper['fileName']
+    pdf_page = page_number_of_pdf(filepath)
+    text = convert_pdf_to_txt(str(filepath))
+    reference_number_list, reference_title_list = extract_reference_from_text(text)
+    reference_dic = {
+    reference_number_list : reference_title_list for reference_number_list, reference_title_list in zip(reference_number_list, reference_title_list)
+    }
+    return reference_dic
+
 @app.route("/main_view_journal", methods=['GET', 'POST'])
 def viewPaper():
     id = request.args.get("id") #현재 보려고 하는 논문의 ObjectId 값 get
     paperInfo = db.PaperInformation
     userId = checkUserId()
     data = paperInfo.find({"_id": ObjectId(id)})
-    """
-    for doc in data:
-        if doc['user_id'] == userId:
-            fs = gridfs.GridFS(db)
-            oid = doc['file_id']
-            file = fs.get(ObjectId(oid))
-    """
-    data = paperInfo.find({"_id": ObjectId(id)})
     data2 = paperInfo.find_one({"_id": ObjectId(id)})
     enrollUserId = data2['user_id']
     complete = data2['complete']
-    return render_template('main_view_journal.html', data = data, userId = userId, enrollUserId = enrollUserId, complete = complete)
+    paperNumDic = enrollBlockChain(id)
+    return render_template('main_view_journal.html', data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
@@ -569,23 +575,6 @@ def adaptComment():
             return render_template('main_comunity_detail.html',data = data, userId = userId)
 
     return "fail"
-
-@app.route("/final_enroll_blockChain", methods = ['GET', 'POST'])
-def enrollBlockChain():
-    id = request.args.get("id")
-    userId = checkUserId()
-    if userId != "":
-        paperInfo = db.PaperInformation
-        paper = paperInfo.find_one({"_id":ObjectId(id)})
-        filepath = pdf_path_without_filename + paper['fileName']
-        pdf_page = page_number_of_pdf(filepath)
-        text = convert_pdf_to_txt(str(filepath))
-        reference_number_list, reference_title_list = extract_reference_from_text(text)
-        print(reference_number_list)
-        print(reference_title_list)
-        return render_template('main_enroll.html', userId=userId)
-    else:
-        return "로그인 이후 이용해 주시기 바랍니다."
 
 def page_number_of_pdf(path):       # PDF의 page 수
     pdfFileObj = open(path, 'rb')

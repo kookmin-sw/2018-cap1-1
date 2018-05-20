@@ -203,33 +203,15 @@
                     <span style=" font-size:1.5rem; font-weight:bold;">Reference</span>
                   </div>
                   <div>
+                    {% for key, value in paperNumDic.items() %}
                     <div class="col s12">
                       <div class="card blue darken-4">
                         <div style="padding:1px;" class="card-content white-text">
-                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span name="OJjournal">#1&nbsp;</span>오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
-                          <p id="journal_author">이준표</p>
-                          <p id="journal_hash" style="display:none;">해쉬</p>
+                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span name="OJjournal">#{{key}}&nbsp;</span>{{value}}</span>
                         </div>
                       </div>
                     </div>
-                    <div class="col s12">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span name="OJjournal">#2&nbsp;</span>오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
-                          <p id="journal_author">이준표</p>
-                          <p id="journal_hash" style="display:none;">해쉬</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col s12">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span name="OJjournal">#3&nbsp;</span>오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
-                          <p id="journal_author">이준표</p>
-                          <p id="journal_hash" style="display:none;">해쉬</p>
-                        </div>
-                      </div>
-                    </div>
+                    {% endfor %}
                   </div>
                 </div>
 
