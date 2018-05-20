@@ -6,7 +6,6 @@
   <title>Open Journal</title>
 
   <script>
-
     var userId = '{{userId}}';
     alert(userId);
   </script>
@@ -50,7 +49,7 @@
   <nav class="white" role="navigation">
     <ul id="dropdown1" class="dropdown-content">
       <li><a href="main_login" class="black-text">로그인</a></li>
-      <li class="divider"></li>return str(filePath)
+      <li class="divider"></li>
       <li><a href="main_new_member" class="black-text">회원가입</a></li>
       <li class="hiddenPage"><a href="main_mypage" class="black-text">마이 페이지</a></li>
     </ul>
@@ -106,16 +105,6 @@
                 </tr>
                 <tr>
                   <td style="font-weight: bold;">
-                    출처
-                  </td>
-                  <td>
-                    파싱해 오거나 해야함 일단은 냅둠
-                    전자공학회지 43(3), 2016.3. 64-71 (8 pages)<br>
-                    The Magazine of the IEEE 43(3), 2016.3. 64-71 (8 pages)
-                  </td>
-                </tr>
-                <tr>
-                  <td style="font-weight: bold;">
                     Abstract
                   </td>
                   <td>
@@ -125,6 +114,157 @@
               </tbody>
             </table>
           </div>
+
+          <div style="margin-top:50px;" class="right">
+            <div onclick="location.href='/move_paper_update?id={{i._id}}'" class="col center">
+              <a href="#" id="" class="btn waves-effect waves-light blue darken-4">논문 업데이트</a>
+            </div>
+
+            <div onclick="on()" class="col center">
+              <a href="#" id="" class="btn waves-effect waves-light blue darken-4">최종 등록</a>
+            </div>
+          </div>
+
+
+          <div id="overlay">
+            <div style="overflow:scroll; background-color:white; width:80%; height:80%;" class="uploadFinalJournal">
+              <div style="color:black;" class="row">
+
+                <div class="col center s12">
+                  <p style="text-align: center; margin:20px; border:1px solid #9e9e9e;">
+                    <span style="font-size:1.5rem;">주의사항</span><br><br>
+
+                    Open Journal은 블록체인에 계약이 걸리는 것을 자동화하고 있습니다.<br>
+                    따라서, 한번 체결된 계약은 취소나 수정이 불가능합니다.<br>
+                    이를 참고하시어 신중하게 계약을 진행하시기 바랍니다.<br>
+
+                  </p>
+                </div>
+
+                <div class="col center s12">
+                  <table class="view_final_info">
+                    <tbody>
+                      <tr>
+                        <td style="font-weight: bold;">
+                          대분류
+                        </td>
+                        <td style="padding-left:10px;">
+                          {{i.mainCategory}}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="font-weight: bold;">
+                          소분류
+                        </td>
+                        <td style="padding-left:10px;">
+                          {{i.subCategory}}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="font-weight: bold;">
+                          제목
+                        </td>
+                        <td id="journal_title" style="padding-left:10px;">
+                          {{i.title}}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="font-weight: bold;">
+                          저자
+                        </td>
+                        <td style="padding-left:10px;">
+                          {{i.writer}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: bold;">
+                          Abstract
+                        </td>
+                        <td id="journal_abstract" style="padding-left:10px;">
+                          {{i.abstract}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-weight: bold;">
+                          파일명
+                        </td>
+                        <td id="journal_abstract" style="padding-left:10px;">
+                          {{i.fileName}}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="col s12 center">
+                  <div style="margin:20px; margin-bottom:0px; text-align:left;">
+                    <span style=" font-size:1.5rem; font-weight:bold;">Reference</span>
+                  </div>
+                  <div>
+                    <div class="col s12">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span name="OJjournal">#1&nbsp;</span>오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
+                          <p id="journal_author">이준표</p>
+                          <p id="journal_hash" style="display:none;">해쉬</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span name="OJjournal">#2&nbsp;</span>오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
+                          <p id="journal_author">이준표</p>
+                          <p id="journal_hash" style="display:none;">해쉬</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col s12">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span name="OJjournal">#3&nbsp;</span>오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
+                          <p id="journal_author">이준표</p>
+                          <p id="journal_hash" style="display:none;">해쉬</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col s5 center">
+                  <div style="margin-bottom:0px; text-align:right;">
+                    <span style=" font-size:1.5rem; font-weight:bold;">논문 가격</span>
+                  </div>
+                </div>
+
+                <div class="col s2 center">
+                  <select id="journal_price" class="browser-default">
+                    <option value="journal_price_1">1</option>
+                    <option value="journal_price_2">2</option>
+                    <option value="journal_price_3">3</option>
+                    <option value="journal_price_4">4</option>
+                  </select>
+                </div>
+
+                <div class="col s2 center">
+                  <div style="margin-bottom:0px; text-align:left;">
+                    <span style=" font-size:1.5rem; font-weight:bold;">토큰</span>
+                  </div>
+                </div>
+
+
+                <div class="col s12 center">
+                  <a onclick="finalEnroll()" id="load_metamask" class="btn-small waves-effect waves-light blue darken-4">확인</a>
+                  <a onclick="off()" id="load_metamask" class="btn-small waves-effect waves-light blue darken-4">취소</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
 
           <div class="comment-window s12 col center">
             <ul>
@@ -182,24 +322,6 @@
                 </tbody>
               </table>
           </form>
-
-          <table>
-       	    <tbody>
-              <tr>
-                <td class="s12 center">
-                  <div onclick='openTotalJournal()' class="center btn blue darken-4">
-                    <span>구독</span>
-                  </div>
-                </td>
-                <td class="s12 center">
-                  <div onclick="location.href='/move_paper_update?id={{i._id}}'" class="center btn blue darken-4">
-                    <span>버전 업데이트</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
         </div>
       </div>
     </div>
