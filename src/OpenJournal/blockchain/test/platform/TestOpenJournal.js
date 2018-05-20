@@ -30,10 +30,15 @@ contract('OpenJournal Test', function(accounts) {
     await openJournal.buyToken({from : master, value : 50});
     signup1 = await openJournal.signUp({from:subscriber1});
     signup2 = await openJournal.signUp({from:subscriber2});
+    signup3 = await openJournal.signUp({from:register1});
+    signup4 = await openJournal.signUp({from:register2});
+    signup5 = await openJournal.signUp({from:register3});
+    signup6 = await openJournal.signUp({from:register4});
     regist1 = await openJournal.registJournal(2017010020, 'Journal 1', 10, reference1, {from:register1}); 
     regist2 = await openJournal.registJournal(2018030120, 'Journal 2', 10, reference2, {from:register2});
     regist3 = await openJournal.registJournal(2018050006, 'Journal 3', 10, reference2, {from:register3});
     regist4 = await openJournal.registJournal(2018050012, 'Journal 4', 10, reference2, {from:register4});   
+    regist5 = await openJournal.registJournal(2018050032, 'Journal 5', 10, reference2, {from:register1});
     subscribe1 = await openJournal.subscribeJournal(2017010020, {from:subscriber1});
     subscribe2 = await openJournal.subscribeJournal(2018030120, {from:subscriber1});
     subscribe3 = await openJournal.subscribeJournal(2018030120, {from:subscriber2});
@@ -60,15 +65,16 @@ contract('OpenJournal Test', function(accounts) {
     let value_1 = log_1.args._value;  
 
     let log_2 = signup2.logs[1];
-    let subscriber_number_2 = log_2.args._subscriber_number;
-    let subscriber_address_2 = log_2.args._subscriber_address;
-    let subscriber_journal_2 = log_2.args._subscriber_journal;
+    let user_number_2 = log_2.args._user_number;
+    let user_address_2 = log_2.args._user_address;
+    let user_subscribe_journal_2 = log_2.args._user_subscribe_journal;
+    let user_regist_journal_2 = log_2.args._user_regist_journal;
 
-    expect(balance0.toString()).to.equal('49940');
-    expect(balance1.toString()).to.equal('8');
-    expect(balance2.toString()).to.equal('20');
-    expect(balance3.toString()).to.equal('0');
-    expect(balance4.toString()).to.equal('0');
+    expect(balance0.toString()).to.equal('49820');
+    expect(balance1.toString()).to.equal('38');
+    expect(balance2.toString()).to.equal('50');
+    expect(balance3.toString()).to.equal('30');
+    expect(balance4.toString()).to.equal('30');
     expect(balance5.toString()).to.equal('10');
     expect(balance6.toString()).to.equal('20');
     
@@ -81,9 +87,11 @@ contract('OpenJournal Test', function(accounts) {
     expect(to_1.toString()).to.equal(accounts[6]);
     expect(value_1.toString()).to.equal('30');
 
-    expect(subscriber_number_2.toString()).to.equal('2');
-    expect(subscriber_address_2.toString()).to.equal(accounts[6]);
-    expect(subscriber_journal_2.toString()).to.equal('');
+    expect(user_number_2.toString()).to.equal('2');
+    expect(user_address_2.toString()).to.equal(accounts[6]);
+    expect(user_subscribe_journal_2.toString()).to.equal('');
+    expect(user_regist_journal_2.toString()).to.equal('');
+    
   });
 
   it('should be possible to regist journal', async function () {
@@ -92,19 +100,34 @@ contract('OpenJournal Test', function(accounts) {
     let author_1 = log_1.args._author;
     let title_1 = log_1.args._title;
     let value_1 = log_1.args._value;
-    let reference_1 = log_1.args._reference;    
+    let reference_journal_1 = log_1.args._reference_journal;    
+    let user_regist_journal_1 = log_1.args._user_regist_journal;
 
     let log_2 = regist2.logs[0];
     let number_2 = log_2.args._number;
     let author_2 = log_2.args._author;
     let title_2 = log_2.args._title;
     let value_2 = log_2.args._value;
-    let reference_2 = log_2.args._reference;
+    let reference_journal_2 = log_2.args._reference_journal;
+    let user_regist_journal_2 = log_2.args._user_regist_journal;
+
+    let log_5 = regist5.logs[0];
+    let number_5 = log_5.args._number;
+    let author_5 = log_5.args._author;
+    let title_5 = log_5.args._title;
+    let value_5 = log_5.args._value;
+    let reference_journal_5 = log_5.args._reference_journal;
+    let user_regist_journal_5 = log_5.args._user_regist_journal;
 
     expect(author_1.toString()).to.equal(accounts[1]);
     expect(author_2.toString()).to.equal(accounts[2]);
-    expect(reference_1.toString()).to.equal('2018030120,2018050006,2018050012');
-    expect(reference_2.toString()).to.equal('');
+    expect(author_5.toString()).to.equal(accounts[1]);
+    expect(reference_journal_1.toString()).to.equal('2018030120,2018050006,2018050012');
+    expect(reference_journal_2.toString()).to.equal('');
+    expect(reference_journal_5.toString()).to.equal('');
+    expect(user_regist_journal_1.toString()).to.equal('2017010020');
+    expect(user_regist_journal_2.toString()).to.equal('2018030120');
+    expect(user_regist_journal_5.toString()).to.equal('2017010020,2018050032');
   });
 
   it('should be possible to subscribe1 journal', async function () {
@@ -206,6 +229,8 @@ contract('OpenJournal Test', function(accounts) {
     expect(ref_value_4.toString()).to.equal('0');
     expect(reference_mini_token_4.toString()).to.equal('0');
   });
+
+  
 /*
   it('should be possible get journal register', async function() {
     get_auth = await openJournal.getAuthorAddress(1);
