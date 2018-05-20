@@ -5,12 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
-  <script>
-    var userId = '{{userId}}';
-    //alert(userId);
-  </script>
-
-  <script>
+ <script>
   function checkComment(comment){
     var img_id = comment;
     var split_arr = img_id.split("_");
@@ -21,7 +16,7 @@
       document.getElementById(img_id).classList.remove('unchecked');
     }
   }
-  </script>
+ </script>
 
   <script>
   function adapt(test){
@@ -116,11 +111,15 @@
           </div>
 
           <div style="margin-top:50px;" class="right">
-            <div onclick="location.href='/move_paper_update?id={{i._id}}'" class="col center">
+            <div id="btn_read" style="display:block;" onclick="" class="col center">
+              <a href="#" id="" class="btn waves-effect waves-light blue darken-4">구독</a>
+            </div>
+
+            <div id="btn_update" style="display:block;" onclick="location.href='/move_paper_update?id={{i._id}}'" class="col center">
               <a href="#" id="" class="btn waves-effect waves-light blue darken-4">논문 업데이트</a>
             </div>
 
-            <div onclick="on()" class="col center">
+            <div id="btn_enroll" style="display:block;" onclick="on()" class="col center">
               <a href="#" id="" class="btn waves-effect waves-light blue darken-4">최종 등록</a>
             </div>
           </div>
@@ -418,10 +417,44 @@
   {% endfor %}
 
   <!--  Scripts-->
+  <script>
+    var userId = '{{userId}}';
+    var enrollUserId = '{{enrollUserId}}';
+    var complete = '{{complete}}';
+
+    if(userId == enrollUserId && complete == 0){
+      alert("작성자와 현재 사용자가 같음");
+      //업데이트 버튼, 최종 등록 버튼 나오고, 구독은 안나옴
+      document.getElementById("btn_update").style.display = "block";
+      document.getElementById("btn_enroll").style.display = "block";
+      document.getElementById("btn_read").style.display = "none";
+
+    }
+    else if(userId == enrollUserId && complete == 1){
+      alert("작성자와 현재 사용자가 같음");
+      //아무 버튼도 안나옴
+      document.getElementById("btn_update").style.display = "none";
+      document.getElementById("btn_enroll").style.display = "none";
+      document.getElementById("btn_read").style.display = "none";
+    }
+    else if(userId != enrollUserId && complete == 0){
+      alert("작성자와 현재 사용자가 다름");
+      //아무 버튼도 나오지 않음
+      document.getElementById("btn_update").style.display = "none";
+      document.getElementById("btn_enroll").style.display = "none";
+      document.getElementById("btn_read").style.display = "none";
+    }
+    else if(userId != enrollUserId && complete == 1){
+      alert("작성자와 현재 사용자가 다름");
+      //구독버튼만 나와야함
+      document.getElementById("btn_update").style.display = "none";
+      document.getElementById("btn_enroll").style.display = "none";
+      document.getElementById("btn_read").style.display = "block";
+    }
+  </script>
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="../static/js/materialize.js"></script>
   <script src="../static/js/init.js"></script>
   <script src="../static/js/customize.js"></script>
-
   </body>
 </html>
