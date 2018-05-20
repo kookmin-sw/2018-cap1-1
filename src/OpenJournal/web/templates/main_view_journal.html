@@ -273,66 +273,64 @@
               </div>
             </div>
           </div>
+        </div>
 
-
-
-          <div class="comment-window s12 col center">
-            <ul>
-              {% for j in i.commentDicts %}
-              <li id={{j.commentNum}} class="comment-list">
-                <table>
-                  <tbody>
-                    <tr id={{j.userId}}>
-                      <td class="comment-name">
-                        {{j.userName}}
-                      </td>
-                      <td class="comment-date">
-                        {{j.Time}}
-                      </td>
-
-                      <td id="{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.user_id}}" onclick="adapt(this)" class="comment-check unchecked">
-                        <img  style="height:10px; width:10px;" src="../static/uncheck.png"/>
-                      </td>
-
-                      <script>
-                        checkComment("{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.user_id}}");
-                      </script>
-
-                      <td class="comment-blank">
-                      </td>
-                      <td class="comment-cancel">
-                        <i class="tiny material-icons">cancel</i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="4" class="comment-contents">
-                        {{j.comment}}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </li>
-                {% endfor %}
-            </ul>
-
-            <form action="enrollPaperComment" method="POST">
-              <textarea style="display:none", name="objectId", id = "objectId">{{i._id}}</textarea>
+        <div class="comment-window s12 col center">
+          <ul>
+            {% for j in i.commentDicts %}
+            <li id={{j.commentNum}} class="comment-list">
               <table>
                 <tbody>
-                  <tr>
-                    <td class="comment-window-first-td">
-                      <div class="input-field col s12">
-                        <textarea id="comment" name="comment" class="materialize-textarea"></textarea>
-                      </div>
+                  <tr id={{j.userId}}>
+                    <td class="comment-name">
+                      {{j.userName}}
                     </td>
-                    <td class="comment-window-second-td" name="enroll">
-                        <input type="submit" class="center btn blue darken-4" name="enrollBtn" value="등록" />
+                    <td class="comment-date">
+                      {{j.Time}}
+                    </td>
+
+                    <td id="{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.user_id}}" onclick="adapt(this)" class="comment-check unchecked">
+                      <img  style="height:10px; width:10px;" src="../static/uncheck.png"/>
+                    </td>
+
+                    <script>
+                      checkComment("{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.user_id}}");
+                    </script>
+
+                    <td class="comment-blank">
+                    </td>
+                    <td class="comment-cancel">
+                      <i class="tiny material-icons">cancel</i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" class="comment-contents">
+                      {{j.comment}}
                     </td>
                   </tr>
                 </tbody>
               </table>
+            </li>
+              {% endfor %}
+          </ul>
+
+          <form action="enrollPaperComment" method="POST">
+            <textarea style="display:none", name="objectId", id = "objectId">{{i._id}}</textarea>
+            <table>
+              <tbody>
+                <tr>
+                  <td class="comment-window-first-td">
+                    <div class="input-field col s12">
+                      <textarea id="comment" name="comment" class="materialize-textarea"></textarea>
+                    </div>
+                  </td>
+                  <td class="comment-window-second-td" name="enroll">
+                      <input type="submit" class="center btn blue darken-4" name="enrollBtn" value="등록" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </form>
-        </div>
       </div>
     </div>
   </div>

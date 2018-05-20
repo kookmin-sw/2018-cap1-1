@@ -287,7 +287,12 @@ def enrollPaperComment():
             paperInfo.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
             paperInfo.update({"_id": ObjectId(objectId)},{"$set": {"commentNumber":commentNum+1}})
             data = paperInfo.find({"_id": ObjectId(objectId)})
-            return render_template('main_view_journal.html',data = data, userId = userId)
+
+            data2 = paperInfo.find_one({"_id": ObjectId(objectId)})
+            enrollUserId = data2['user_id']
+            complete = data2['complete']
+            paperNumDic = enrollBlockChain(objectId)
+            return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
         else:
             return "잘못된 데이터 요청 입니다."
     else:
