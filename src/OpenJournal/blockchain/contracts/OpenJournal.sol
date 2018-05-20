@@ -19,7 +19,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         uint[] subscriber_journal;          // 구독자가 구독한 리스트
     }    
 
-    mapping (uint => Journal) public journals;                                  // 논문 번호 : Journal
+    mapping (uint256 => Journal) public journals;                                  // 논문 번호 : Journal
     mapping (address => Subscriber) public subscribers;                         // 구독자 주소 : Subscriber
     mapping (address => mapping (uint => bool)) public is_subscribed;           // 구독자가 논문을 구독하였는지에 대한 여부
 
@@ -28,6 +28,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     uint256 public upperbound_value;         // 저자가 논문 등록시 값의 상한선
     uint256 public lowerbound_value;         // 저자가 논문 등록시 값의 하한선
     uint256 public author_share;             // 논문 저자 지분   
+    uint256 public reference_temp_token;
 
     event LogSignUp(
         uint256 _subscriber_number, 
@@ -49,8 +50,9 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         uint[] _subscribed,
         bool _is_subscribed,
         uint256 _author_value,
+        uint256 _author_mini_token,
         uint256 _ref_value,
-        uint256 _ref_length
+        uint256 _ref_num
     );
 
     event LogShowSubscribedJournal(
@@ -126,40 +128,43 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     function subscribeJournal(uint256 _journalNumber) public returns (bool){
         require(is_subscribed[msg.sender][_journalNumber] == false);  
 
-        uint256 ref_length = journals[_journalNumber].reference_journal.length;
-        uint256 ref_value;
-        uint256 author_value;
+        uint256 author_token;
+        uint256 author_mini_token;
+        uint256 reference_token;
+        uint256 reference_mini_token;
+        uint256 reference_temp_token;
+        uint256 reference_num = journals[_journalNumber].reference_journal.length;
 
-        if(ref_length == 0){
-            author_value = journals[_journalNumber].value;
+        if(reference_num == 0){
+            author_token = journals[_journalNumber].value;
         } else{
+            author_token = journals[_journalNumber].value.mul(author_share).div(mini_token_rate);
+            reference_token = journals[_journalNumber].value.sub(author_token);
 
-            /*
-            author_value와 reference_num을 비교한다.
-            author_value가 reference_num으로 나누어 떨어지고 몫이 0이 아니라면 그냥 배분한다.
-            위의 조건을 만족하지 못하면 다음을 따른다.(참조 논문은 100개이하라고 가정한다.)
-                1) reference_token =  author_value / reference_num  ex) 20/3 = 6
-                2) reference_each_token = author_value - (reference_token * reference_num) ex) 20-(6*3) = 2
-                3) reference_each_token을 balances에 transfer해준다.
-                4) reference_mini_token = change_token * mini_token_rate    ex) 2 * 100 = 200
-                5) reference_each_mini_token = reference_mini_token / reference_num  ex) 200/3 = 66
-                6) author_change_mini_token = reference_mini_token - (reference_each_mini_token * reference_num) ex) 200 - (66*3) = 2
-                7) reference_each_mini_token을 mini_balances에 transfer해준다.
-                8) author_change_mini_token을 mini_balances[author]에 transfer해준다.
-            */
-            author_value = journals[_journalNumber].value.mul(author_share).div(100);        
-            uint256 ref_num;
-            address ref_author;
+            if(reference_token % reference_num == 0 && reference_token / reference_num != 0){
+                reference_token = reference_token.div(reference_num);
+            } else{               
+                reference_temp_token = reference_token;
+                if(reference_token.div(reference_num) != 0){
+                    reference_token = reference_token.div(reference_num);  
+                } else{
+                    reference_token = 0;
+                }
 
-            ref_value = journals[_journalNumber].value.mul(referenceShare(ref_length, 100-author_share)).div(100);
-            for(uint256 ref = 0; ref < ref_length; ref++){
-                ref_num = journals[_journalNumber].reference_journal[ref];
-                ref_author = journals[ref_num].author;
-                transfer(ref_author, ref_value);
+                reference_temp_token = reference_temp_token.sub(reference_token.mul(reference_num)).mul(mini_token_rate);
+
+                reference_mini_token = reference_temp_token.div(reference_num); 
+
+                author_mini_token = reference_temp_token.sub(reference_mini_token.mul(reference_num));  
             }
+
+            for(uint256 ref = 0; ref < reference_num; ref++)
+                transferAll(journals[journals[_journalNumber].reference_journal[ref]].author, reference_token, reference_mini_token);
+                    
         }
 
-        transfer(journals[_journalNumber].author, author_value);        
+        transferAll(journals[_journalNumber].author, author_token, author_mini_token); 
+
         uint sub_id = subscribers[msg.sender].subscriber_number;
 
         subscribers[msg.sender].subscriber_journal.push(_journalNumber);  
@@ -171,16 +176,13 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
             subscribers[msg.sender].subscriber_journal, 
             journals[_journalNumber].subscribed, 
             is_subscribed[msg.sender][_journalNumber],
-            author_value,
-            ref_value,
-            ref_length
+            author_token,
+            author_mini_token,
+            reference_token, 
+            reference_num
         );
 
         return true;
-    }
-
-    function referenceShare(uint256 _ref_length, uint256 _ref_share) public pure returns (uint256) {
-        return _ref_share.div(_ref_length);
     }
 
     function getAuthorAddress(uint256 _journalNumber) public view returns (address){

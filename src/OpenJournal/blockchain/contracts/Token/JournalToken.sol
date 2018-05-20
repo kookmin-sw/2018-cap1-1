@@ -90,10 +90,15 @@ contract JournalToken is EIP20Interface, Owned {
     }
 
     function transferAll(address _to, uint256 _value, uint256 _mini_value) public returns (bool success) {
-        require(balances[msg.sender] >= _value && mini_balances[msg.sender] >= _mini_value);
-        balances[msg.sender] = balances[msg.sender].sub(_value);
+        require(balances[msg.sender].mul(mini_token_rate)+mini_balances[msg.sender] >= _value.mul(mini_token_rate) + _mini_value);
+        tokenToMini(balances[msg.sender]);
+        uint256 tempAmount = _value.mul(mini_token_rate).add(_mini_value);
+        mini_balances[msg.sender] = mini_balances[msg.sender].sub(tempAmount);
+
+        if(mini_balances[msg.sender].div(mini_token_rate) != 0)
+            miniToToken(mini_balances[msg.sender]);
+        
         balances[_to] = balances[_to].add(_value);
-        mini_balances[msg.sender] = mini_balances[msg.sender].sub(_mini_value);
         mini_balances[_to] = mini_balances[_to].add(_mini_value);
         emit TransferAll(msg.sender, _to, _value, _mini_value);
         return true;

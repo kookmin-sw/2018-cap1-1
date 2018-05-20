@@ -18,10 +18,11 @@ contract('OpenJournal Test', function(accounts) {
   let register1 = accounts[1];
   let register2 = accounts[2];
   let register3 = accounts[3];
-  let subscriber1= accounts[4];
-  let subscriber2= accounts[5];
+  let register4 = accounts[4];
+  let subscriber1= accounts[5];
+  let subscriber2= accounts[6];
 
-  let reference1 = [201803210120,201805190006];
+  let reference1 = [2018030120,2018050006,2018050012];
   let reference2 = [];
 
 	beforeEach(async function () {       
@@ -29,12 +30,13 @@ contract('OpenJournal Test', function(accounts) {
     await openJournal.buyToken({from : master, value : 50});
     signup1 = await openJournal.signUp({from:subscriber1});
     signup2 = await openJournal.signUp({from:subscriber2});
-    regist1 = await openJournal.registJournal(201701050020, 'Journal 1', 10, reference1, {from:register1}); 
-    regist2 = await openJournal.registJournal(201803210120, 'Journal 2', 10, reference2, {from:register2});
-    regist3 = await openJournal.registJournal(201805190006, 'Journal 3', 10, reference2, {from:register3});   
-    subscribe1 = await openJournal.subscribeJournal(201701050020, {from:subscriber1});
-    subscribe2 = await openJournal.subscribeJournal(201803210120, {from:subscriber1});
-    subscribe3 = await openJournal.subscribeJournal(201803210120, {from:subscriber2});
+    regist1 = await openJournal.registJournal(2017010020, 'Journal 1', 10, reference1, {from:register1}); 
+    regist2 = await openJournal.registJournal(2018030120, 'Journal 2', 10, reference2, {from:register2});
+    regist3 = await openJournal.registJournal(2018050006, 'Journal 3', 10, reference2, {from:register3});
+    regist4 = await openJournal.registJournal(2018050012, 'Journal 4', 10, reference2, {from:register4});   
+    subscribe1 = await openJournal.subscribeJournal(2017010020, {from:subscriber1});
+    subscribe2 = await openJournal.subscribeJournal(2018030120, {from:subscriber1});
+    subscribe3 = await openJournal.subscribeJournal(2018030120, {from:subscriber2});
   
 	});
 
@@ -45,6 +47,12 @@ contract('OpenJournal Test', function(accounts) {
     let balance3 = await openJournal.balanceOf.call(accounts[3]); 
     let balance4 = await openJournal.balanceOf.call(accounts[4]); 
     let balance5 = await openJournal.balanceOf.call(accounts[5]); 
+    let balance6 = await openJournal.balanceOf.call(accounts[6]);
+    
+    let minibalance1 = await openJournal.balanceOfMini.call(accounts[1]); 
+    let minibalance2 = await openJournal.balanceOfMini.call(accounts[2]); 
+    let minibalance3 = await openJournal.balanceOfMini.call(accounts[3]); 
+    let minibalance4 = await openJournal.balanceOfMini.call(accounts[4]);
 
     let log_1 = signup2.logs[0];
     let from_1 = log_1.args._from;
@@ -58,17 +66,23 @@ contract('OpenJournal Test', function(accounts) {
 
     expect(balance0.toString()).to.equal('49940');
     expect(balance1.toString()).to.equal('8');
-    expect(balance2.toString()).to.equal('21');
-    expect(balance3.toString()).to.equal('1');
-    expect(balance4.toString()).to.equal('10');
-    expect(balance5.toString()).to.equal('20');
+    expect(balance2.toString()).to.equal('20');
+    expect(balance3.toString()).to.equal('0');
+    expect(balance4.toString()).to.equal('0');
+    expect(balance5.toString()).to.equal('10');
+    expect(balance6.toString()).to.equal('20');
+    
+    expect(minibalance1.toString()).to.equal('2');
+    expect(minibalance2.toString()).to.equal('66');
+    expect(minibalance3.toString()).to.equal('66');
+    expect(minibalance4.toString()).to.equal('66');    
 
     expect(from_1.toString()).to.equal(accounts[0]);
-    expect(to_1.toString()).to.equal(accounts[5]);
+    expect(to_1.toString()).to.equal(accounts[6]);
     expect(value_1.toString()).to.equal('30');
 
     expect(subscriber_number_2.toString()).to.equal('2');
-    expect(subscriber_address_2.toString()).to.equal(accounts[5]);
+    expect(subscriber_address_2.toString()).to.equal(accounts[6]);
     expect(subscriber_journal_2.toString()).to.equal('');
   });
 
@@ -89,12 +103,48 @@ contract('OpenJournal Test', function(accounts) {
 
     expect(author_1.toString()).to.equal(accounts[1]);
     expect(author_2.toString()).to.equal(accounts[2]);
-    expect(reference_1.toString()).to.equal("201803210120,201805190006");
-    expect(reference_2.toString()).to.equal("");
+    expect(reference_1.toString()).to.equal('2018030120,2018050006,2018050012');
+    expect(reference_2.toString()).to.equal('');
   });
 
-  it('should be possible to subscribe journal', async function () {
-    let log_1 = subscribe2.logs[0];
+  it('should be possible to subscribe1 journal', async function () {
+    console.log(subscribe1.logs[6]);
+    console.log(subscribe1.logs[7]);
+    console.log(subscribe1.logs[8]);
+
+    /*let log_1 = subscribe1.logs[0];
+    let msgSender_1 = log_1.args._msgSender;
+    let token_1 = log_1.args._token;
+    let mini_token_1 = log_1.args._mini_token;
+
+    let log_2 = subscribe1.logs[1];
+    let msgSender_2 = log_2.args._msgSender;
+    let token_2 = log_2.args._token;
+    let mini_token_2 = log_2.args._mini_token;
+
+    let log_3 = subscribe1.logs[2];
+    let from_3 = log_3.args._from;
+    let to_3 = log_3.args._to;
+    let value_3 = log_3.args._value;
+    let mini_value_3 = log_3.args._mini_value;
+
+    expect(msgSender_1.toString()).to.equal(subscriber1);
+    expect(token_1.toString()).to.equal('0');
+    expect(mini_token_1.toString()).to.equal('3000');
+
+    expect(msgSender_2.toString()).to.equal(subscriber1);
+    expect(token_2.toString()).to.equal('29');
+    expect(mini_token_2.toString()).to.equal('34');
+
+    expect(from_3.toString()).to.equal(subscriber1);
+    expect(to_3.toString()).to.equal(register2);
+    expect(value_3.toString()).to.equal('0');
+    expect(mini_value_3.toString()).to.equal('66');
+*/
+
+
+
+    /*let log_1 = subscribe2.logs[0];
     let from_1 = log_1.args._from;
     let to_1 = log_1.args._to;
     let value_1 = log_1.args._value;
@@ -105,17 +155,19 @@ contract('OpenJournal Test', function(accounts) {
     let subscribed_1 = log_2.args._subscribed;
     let is_subscribed_1 = log_2.args._is_subscribed;
     let author_value_1 = log_2.args._author_value;
+    let author_mini_token_1 = log_2.args._author_mini_token;
     let ref_value_1 = log_2.args._ref_value;
-    let ref_length_1 = log_2.args._ref_length;
+    let ref_num_1 = log_2.args._ref_num;
 
     let log_3 = subscribe2.logs[1];
     let subscriber_2 = log_3.args._subscriber;
     let myjournals_2 = log_3.args._myjournals;
     let subscribed_2 = log_3.args._subscribed;
     let is_subscribed_2 = log_3.args._is_subscribed;
-    let author_value_2 = log_3.args._author_value;
-    let ref_value_2 = log_3.args._ref_value;
-    let ref_length_2 = log_3.args._ref_length;
+    let author_value_2 = log_2.args._author_value;
+    let author_mini_token_2 = log_3.args._author_mini_token;
+    let ref_value_2 = log_2.args._ref_value;
+    let ref_num_2 = log_3.args._ref_num;
 
     expect(from_1.toString()).to.equal(subscriber1);
     expect(to_1.toString()).to.equal(register2);
@@ -126,18 +178,26 @@ contract('OpenJournal Test', function(accounts) {
     expect(subscribed_1.toString()).to.equal("1");
     expect(is_subscribed_1.toString()).to.equal("true");
     expect(author_value_1.toString()).to.equal("0.8");
+    expect(author_mini_token_1.toString()).to.equal("0.8");
     expect(ref_value_1.toString()).to.equal("0.2");
-    expect(ref_length_1.toString()).to.equal("2");
+    expect(ref_num_1.toString()).to.equal('2');
 
     expect(subscriber_2.toString()).to.equal(subscriber2);
     expect(myjournals_2.toString()).to.equal('2');
     expect(subscribed_2.toString()).to.equal('1,2');
     expect(is_subscribed_2.toString()).to.equal('true');
-    expect(author_value_2.toString()).to.equal('0.8');
-    expect(ref_value_2.toString()).to.equal('0.2');
-    expect(ref_length_2.toString()).to.equal('0');
+    expect(author_value_2.toString()).to.equal("0.8");
+    expect(author_mini_token_2.toString()).to.equal("0.8");
+    expect(ref_value_2.toString()).to.equal("0.2");
+    expect(ref_num_2.toString()).to.equal('2');
+    */
     
   });
+
+  /*it('should be possible to subscribe2 journal', async function () {
+
+    });
+  */
 /*
   it('should be possible get journal register', async function() {
     get_auth = await openJournal.getAuthorAddress(1);
