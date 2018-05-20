@@ -108,11 +108,9 @@ contract('OpenJournal Test', function(accounts) {
   });
 
   it('should be possible to subscribe1 journal', async function () {
-    console.log(subscribe1.logs[6]);
-    console.log(subscribe1.logs[7]);
-    console.log(subscribe1.logs[8]);
+    subscribe1.logs[12];
 
-    /*let log_1 = subscribe1.logs[0];
+    let log_1 = subscribe1.logs[0];
     let msgSender_1 = log_1.args._msgSender;
     let token_1 = log_1.args._token;
     let mini_token_1 = log_1.args._mini_token;
@@ -128,6 +126,16 @@ contract('OpenJournal Test', function(accounts) {
     let value_3 = log_3.args._value;
     let mini_value_3 = log_3.args._mini_value;
 
+    let log_12 = subscribe1.logs[12];
+    let subscriber_12 = log_12.args._subscriber;
+    let myjournals_12 = log_12.args._myjournals;
+    let subscribed_12 = log_12.args._subscribed;
+    let is_subscribed_12 = log_12.args._is_subscribed;
+    let author_value_12 = log_12.args._author_value;
+    let author_mini_token_12 = log_12.args._author_mini_token;
+    let ref_value_12 = log_12.args._ref_value;
+    let reference_mini_token_12 = log_12.args._reference_mini_token;
+
     expect(msgSender_1.toString()).to.equal(subscriber1);
     expect(token_1.toString()).to.equal('0');
     expect(mini_token_1.toString()).to.equal('3000');
@@ -140,58 +148,15 @@ contract('OpenJournal Test', function(accounts) {
     expect(to_3.toString()).to.equal(register2);
     expect(value_3.toString()).to.equal('0');
     expect(mini_value_3.toString()).to.equal('66');
-*/
 
-
-
-    /*let log_1 = subscribe2.logs[0];
-    let from_1 = log_1.args._from;
-    let to_1 = log_1.args._to;
-    let value_1 = log_1.args._value;
-
-    let log_2 = subscribe1.logs[1];
-    let subscriber_1 = log_2.args._subscriber;
-    let myjournals_1 = log_2.args._myjournals;
-    let subscribed_1 = log_2.args._subscribed;
-    let is_subscribed_1 = log_2.args._is_subscribed;
-    let author_value_1 = log_2.args._author_value;
-    let author_mini_token_1 = log_2.args._author_mini_token;
-    let ref_value_1 = log_2.args._ref_value;
-    let ref_num_1 = log_2.args._ref_num;
-
-    let log_3 = subscribe2.logs[1];
-    let subscriber_2 = log_3.args._subscriber;
-    let myjournals_2 = log_3.args._myjournals;
-    let subscribed_2 = log_3.args._subscribed;
-    let is_subscribed_2 = log_3.args._is_subscribed;
-    let author_value_2 = log_2.args._author_value;
-    let author_mini_token_2 = log_3.args._author_mini_token;
-    let ref_value_2 = log_2.args._ref_value;
-    let ref_num_2 = log_3.args._ref_num;
-
-    expect(from_1.toString()).to.equal(subscriber1);
-    expect(to_1.toString()).to.equal(register2);
-    expect(value_1.toString()).to.equal('10');
-
-    expect(subscriber_1.toString()).to.equal(subscriber1);
-    expect(myjournals_1.toString()).to.equal("1,2");
-    expect(subscribed_1.toString()).to.equal("1");
-    expect(is_subscribed_1.toString()).to.equal("true");
-    expect(author_value_1.toString()).to.equal("0.8");
-    expect(author_mini_token_1.toString()).to.equal("0.8");
-    expect(ref_value_1.toString()).to.equal("0.2");
-    expect(ref_num_1.toString()).to.equal('2');
-
-    expect(subscriber_2.toString()).to.equal(subscriber2);
-    expect(myjournals_2.toString()).to.equal('2');
-    expect(subscribed_2.toString()).to.equal('1,2');
-    expect(is_subscribed_2.toString()).to.equal('true');
-    expect(author_value_2.toString()).to.equal("0.8");
-    expect(author_mini_token_2.toString()).to.equal("0.8");
-    expect(ref_value_2.toString()).to.equal("0.2");
-    expect(ref_num_2.toString()).to.equal('2');
-    */
-    
+    expect(subscriber_12.toString()).to.equal(subscriber1);
+    expect(myjournals_12.toString()).to.equal('2017010020');
+    expect(subscribed_12.toString()).to.equal('1');
+    expect(is_subscribed_12.toString()).to.equal('true');
+    expect(author_value_12.toString()).to.equal('8');
+    expect(author_mini_token_12.toString()).to.equal('2');
+    expect(ref_value_12.toString()).to.equal('0');
+    expect(reference_mini_token_12.toString()).to.equal('66');
   });
 
   /*it('should be possible to subscribe2 journal', async function () {

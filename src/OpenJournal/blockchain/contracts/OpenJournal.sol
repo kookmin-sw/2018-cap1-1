@@ -52,7 +52,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         uint256 _author_value,
         uint256 _author_mini_token,
         uint256 _ref_value,
-        uint256 _ref_num
+        uint256 _reference_mini_token
     );
 
     event LogShowSubscribedJournal(
@@ -179,7 +179,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
             author_token,
             author_mini_token,
             reference_token, 
-            reference_num
+            reference_mini_token
         );
 
         return true;
