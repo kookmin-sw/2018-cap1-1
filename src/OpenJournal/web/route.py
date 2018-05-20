@@ -8,9 +8,18 @@ import gridfs, datetime, json, os
 from gridfs.errors import NoFile
 from bson.objectid import ObjectId
 from werkzeug import secure_filename
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+import PyPDF2
+import hashlib
+from pdfminer.pdfdocument import PDFDocument
+from pdfminer.pdfparser import PDFParser
+from cStringIO import StringIO
 
 ALLOWED_EXTENSIONS = set(['pdf'])
-UPLOAD_FOLDER = '/home/ubuntu/captone/2018-cap1-1/src/OpenJournal/web/static/journal'
+UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
 
 app = Flask(__name__)
 app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
@@ -38,6 +47,14 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
+hash_password = "0504110310110711"
+pdf_path_without_filename = "/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal/"
+
+@app.route("/") #메인 홈페이지 이동
+def home():
+    userId = checkUserId()
+    return render_template('main.html', userId = userId)
+
 def checkUserId():
     userId = ""
     if 'google_token' in session:
@@ -47,10 +64,39 @@ def checkUserId():
         userId = session['userId']
     return userId
 
-@app.route("/") #메인 홈페이지 이동
-def home():
-    userId = checkUserId()
-    return render_template('main.html', userId = userId)
+def checkTime(month):   #월이 바뀌는 경우를 판단해주는 함수
+    paperNumInfo = db.PaperNum
+    data = paperNumInfo.find_one({"name": "latestNum"})
+    storedMonth = data['month']
+    if(storedMonth != month): #월이 다른 경우
+        return 0
+    else:
+        return 1 #월이 같은 경우 1 리턴
+
+@app.route("/papernum")
+def papernum():
+    paperNumInfo = db.PaperNum
+    now   = datetime.datetime.now()
+    year  = str(now.strftime("%Y"))
+    month = str(now.strftime("%m"))
+    flag  = checkTime(month)
+    paper = paperNumInfo.find_one({"name":"latestNum"})
+    createdPaperNum = 0
+
+    if(flag == 1):
+        if(paper['updatedPaperNum']>=0 and paper['updatedPaperNum']<=8):
+            createdPaperNum = year+month+"000"+str(int(paper['updatedPaperNum']+1))
+        elif(paper['updatedPaperNum']>=9 and paper['updatedPaperNum']<=98):
+            createdPaperNum = year+month+"00"+str(int(paper['updatedPaperNum']+1))
+        elif(paper['updatedPaperNum']>=99 and paper['updatedPaperNum']<=998):
+            createdPaperNum = year+month+"0"+str(int(paper['updatedPaperNum']+1))
+        elif(paper['updatedPaperNum']>=999 and paper['updatedPaperNum']<=9998):
+            createdPaperNum = year+month+str(int(paper['updatedPaperNum']+1))
+    elif(flag == 0):
+        paperNumInfo.update({"name":"latestNum"}, {"$set": {"year":year,"month":month,"updatedPaperNum":0}})
+        createdPaperNum = year+month+"000"+"1"
+
+    return createdPaperNum
 
 @app.route("/main_mypage") #메인 홈페이지 이동
 def mainMypage():
@@ -68,6 +114,16 @@ def mainLogin():
 @app.route("/main_new_member") #회원 가입 페이지 이동
 def mainNewMember():
     return render_template('main_new_member.html')
+#################
+
+
+@app.route("/main_view_fix_journal")
+def moveToSubPaper():
+    userId = checkUserId()
+    completePaperCollection = db.PaperInformation
+    data = completePaperCollection.find({"complete":1}).sort("time", -1)
+    return render_template('main_view_fix_journal.html', data = data, userId=userId)
+
 @app.route('/logout')
 def logout():
     if 'google_token' in session:
@@ -201,7 +257,7 @@ def authorized():
 @app.route("/main_enroll") #검수중인 논문 리스트 페이지 뷰 구현
 def mainEnroll():
     collection = db.PaperInformation
-    rows = collection.find().sort("writingPaperNum",-1)
+    rows = collection.find({"complete": 0}).sort("writingPaperNum",-1)
     userId = checkUserId()
     return render_template('main_enroll.html', data =rows, userId=userId)
 
@@ -284,15 +340,10 @@ def versionUpdate():
             id = request.form['objectId']
             data = collection.find_one({"_id": ObjectId(id)})
             version = data['version']
-            fs = gridfs.GridFS(db)
-            file = request.files['file']
-            fileId = ""
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                fileId = fs.put(file, content_type=file.content_type, filename=filename)
+            fileName = upload_file()
             collection.update({"_id": ObjectId(id)}, {"$set": {"writer":writer, "mainCategory":mainCategory, "subCategory":subCategory,
-                              "title":title, "abstract":abstract, "keyword": keyword, "version": version, "time": currentTime,
-                              "file_id":fileId}})
+                              "title":title, "abstract":abstract, "keyword": keyword, "version": version+1, "time": currentTime,
+                              "fileName": fileName}})
             return mainEnroll()
     else:
         #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워data = data, userId = userId주고 login 창으로 이동.
@@ -350,7 +401,7 @@ def enrollPaper():
             version = 1
             complete = 0
             commentNum = 0
-            paperNum = ""
+            paperNum = "" #최종 논문 등록시 논문 번호
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             latestPaperNum = db.latestPaperNum
@@ -512,6 +563,107 @@ def adaptComment():
             return render_template('main_comunity_detail.html',data = data, userId = userId)
 
     return "fail"
+
+@app.route("/final_enroll_blockChain", methods = ['GET', 'POST'])
+def enrollBlockChain():
+    id = request.args.get("id")
+    userId = checkUserId()
+    if userId != "":
+        paperInfo = db.PaperInformation
+        paper = paperInfo.find_one({"_id":ObjectId(id)})
+        filepath = pdf_path_without_filename + paper['fileName']
+        pdf_page = page_number_of_pdf(filepath)
+        text = convert_pdf_to_txt(str(filepath))
+        reference_number_list, reference_title_list = extract_reference_from_text(text)
+        print(reference_number_list)
+        print(reference_title_list)
+        return render_template('main_enroll.html', userId=userId)
+    else:
+        return "로그인 이후 이용해 주시기 바랍니다."
+
+def page_number_of_pdf(path):       # PDF의 page 수
+    pdfFileObj = open(path, 'rb')
+    pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+    return pdfReader.numPages
+
+def convert_pdf_to_txt(path, pages=None):
+    if not pages:
+        pagenums = set()
+    else:
+        pagenums = set(pages)
+
+    output = StringIO()
+    manager = PDFResourceManager()
+    converter = TextConverter(manager, output, laparams=LAParams())
+    interpreter = PDFPageInterpreter(manager, converter)
+
+    infile = file(path, 'rb')
+    for page in PDFPage.get_pages(infile, pagenums):
+        interpreter.process_page(page)
+    infile.close()
+    converter.close()
+    text = output.getvalue()
+    output.close
+    return text
+
+def extract_reference_from_text(text):      # text로부터 reference를 추출
+    start = text.find('REFERENCES:')
+    reference_text = " ".join(text[start:].split("\n"))
+
+    reference_list = reference_text.split("[")
+    reference_number_list = []
+    reference_title_list = []
+
+    for reference in reference_list:
+        is_valid = reference.find("]")
+        try:
+            int(reference[:is_valid])
+        except:
+            continue
+
+        reference = reference[is_valid+1:]
+        reference_detail_list = reference.split(",")
+        is_openjournal_number = reference_detail_list[0].strip()
+
+        try:
+            reference_number_list.append(int(is_openjournal_number))
+        except:
+            continue
+
+        start_title = reference.find("“")
+        end_title = reference.find("”")
+
+        reference_title = reference[start_title+3:end_title]
+        reference_title_length = len(reference_title)
+
+        if reference_title[reference_title_length-1] == ",":
+            reference_title = reference_title[0:reference_title_length-1]
+        reference_title_list.append(reference_title)
+
+    number_length = len(reference_number_list)
+    title_length = len(reference_title_list)
+
+    # length가 다르면 오류 발생
+    if number_length != title_length:
+        return -1, -1
+
+    return reference_number_list, reference_title_list
+
+def make_reference_hash_string(number_list, title_list):    # reference를 hash string으로 변환
+    hash_length = len(number_list)
+    hash_list = []
+
+    for i in range(0, hash_length):
+        new_str = str(number_list[i])+hash_password+title_list[i]
+        hash_list.append((hashlib.sha256(new_str.encode('utf-8')).hexdigest()))
+
+    return hash_list
+
+def make_hash_string(journal_number, journal_title):        # number와 title을 이용하여 hast string으로 변환
+    new_str = str(journal_number)+hash_password+journal_title
+    journal_hash = hashlib.sha256(new_str.encode('utf-8')).hexdigest()
+
+    return journal_hash
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

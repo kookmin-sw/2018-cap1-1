@@ -63,4 +63,25 @@ contract('JournalToken Test', function(accounts) {
     let balance2 = await journalToken.balanceOf.call(buyer1);
     expect(balance2.toString()).to.equal('30000');
   });
+
+  it("should return correct balances after converting from token amount to mini token amount", async function () {
+    await journalToken.tokenToMini(5000, {from: buyer1});
+
+    let tokenBalence = await journalToken.balanceOf.call(buyer1);
+    let miniTokenBalance = await journalToken.balanceOfMini.call(buyer1);
+    
+    expect(tokenBalence.toString()).to.equal('25000');
+    expect(miniTokenBalance.toString()).to.equal('500000');
+  });
+
+  it("should return correct balances after converting from mini token amount to token amount", async function () {
+    await journalToken.tokenToMini(5000, {from: buyer1});
+    await journalToken.miniToToken(450005, {from: buyer1});
+
+    let tokenBalence = await journalToken.balanceOf.call(buyer1);
+    let miniTokenBalance = await journalToken.balanceOfMini.call(buyer1);
+    
+    expect(tokenBalence.toString()).to.equal('29500');
+    expect(miniTokenBalance.toString()).to.equal('50000');
+  });
 });
