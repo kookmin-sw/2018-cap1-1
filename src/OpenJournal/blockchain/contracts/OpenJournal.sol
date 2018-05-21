@@ -14,21 +14,21 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     }
     
     struct User {
-        uint256 user_number;                    // 사용자 number(주소로 매칭시키기에는 무리가 있으므로)
-        address user_address;                   // 사용자 주소
-        uint[] user_subscribe_journal;          // 사용자가 구독한 리스트
-        uint[] user_regist_journal;             // 사용자가 등록한 리스트
+        uint256 user_number;                    
+        address user_address;                   
+        uint[] user_subscribe_journal;          
+        uint[] user_regist_journal;             
     }    
 
-    mapping (uint256 => Journal) public journals;                               // 논문 번호 : Journal
-    mapping (address => User) public users;                                     // 구독자 주소 : User
-    mapping (address => mapping (uint => bool)) public is_subscribed;           // 구독자가 논문을 구독하였는지에 대한 여부
+    mapping (uint256 => Journal) public journals;                               
+    mapping (address => User) public users;                                     
+    mapping (address => mapping (uint => bool)) public is_subscribed;           
 
-    uint256 public userNumber;               // User 번호
-    uint256 public signUpCost;               // 회원가입시 주어질 토큰
-    uint256 public upperbound_value;         // 저자가 논문 등록시 값의 상한선
-    uint256 public lowerbound_value;         // 저자가 논문 등록시 값의 하한선
-    uint256 public author_share;             // 논문 저자 지분   
+    uint256 public userNumber;               
+    uint256 public signUpCost;               
+    uint256 public upperbound_value;         
+    uint256 public lowerbound_value;         
+    uint256 public author_share;             
     uint256 public reference_temp_token;
 
     event LogSignUp(
@@ -212,13 +212,15 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         return journals[_journalNumber].reference_journal;
     }
 
+    function getIsSubscribedJournal(uint _journalNumber) public view returns (bool) {
+        return is_subscribed[msg.sender][_journalNumber];
+    }
+
     function getUserSubscribedJournals() public view returns (uint[]) {
         return users[msg.sender].user_subscribe_journal;
     }    
 
     function getUserRegistedJournals() public view returns (uint[]) {
         return users[msg.sender].user_regist_journal;
-    }    
-
-    
+    } 
 }
