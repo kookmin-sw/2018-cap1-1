@@ -27,6 +27,13 @@ contract JournalToken is EIP20Interface, Owned {
         address _msgSender,
         uint8 _decimals,
         string _symbol
+    );
+
+    event SellToken(
+        uint256 _msgValue,
+        uint256 _amount,
+        uint256 _totalSupply,
+        address _msgSender
     );    
 
     event TokenToMini(
@@ -55,7 +62,6 @@ contract JournalToken is EIP20Interface, Owned {
     }
 
     // @dev Buys tokens with Ether, exchanging them 1:rate
-    // msg.sender가 msg.value만큼의 이더를 owner에게 주고 msg.value * rate만큼의 토큰을 가져감
     function buyToken() public payable {
         require(msg.value > 0);
 
@@ -63,8 +69,21 @@ contract JournalToken is EIP20Interface, Owned {
         balances[msg.sender] = balances[msg.sender].add(amount);
         totalSupply = totalSupply.add(amount);
 
-        owner.transfer(msg.value);
+        //owner.transfer(msg.value);
         emit BuyToken(msg.value, amount, totalSupply, msg.sender, decimals, symbol);
+    }
+
+    // Sells tokens with Ether
+    function sellToken(uint256 _value) public {    // 1000으로 나누었을때 나머지가 0인 수만 받자.
+        require(balances[msg.sender] >= _value && totalSupply >= _value && _value != 0);
+
+        uint256 amount = _value.div(rate);
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+        totalSupply = totalSupply.sub(_value);
+
+        if (!msg.sender.send(amount)) throw;
+
+        emit SellToken(_value, amount, totalSupply, msg.sender);
     }
 
     function tokenToMini(uint256 _value) public returns (bool) {
