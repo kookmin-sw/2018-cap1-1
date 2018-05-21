@@ -74,6 +74,7 @@ App = {
       // App.buyToken();
       // App.getOwner();
       // App.getBalance();
+      // App.enrollJournal();
 
     });
     return App.bindEvents();
@@ -127,7 +128,7 @@ App = {
       let register;
       register = "0x23A2c86ca20B8700F9517A88C20a46C5a85D209b"; // 1번계좌: "0xC29dcebbcA87357F24963383024c8eDdDb4396E7"
       console.log(instance);
-      instance.registJournal(4, 'Title : test2', 'Desc : This is Journal for test2', {from:register});
+      instance.registJournal(2018050003, "Title:test3", 8, [2018050001, 2018050002] , {from:register});
       console.log("registed.");
     });
   },
@@ -177,16 +178,3 @@ $(function() {
     App.init();
   });
 });
-
-/*
-//형근이 형이 쓰게 될 것
-//loading 중일 때 써야하는 것 (첫줄에)
-document.getElementById("loading_journal").style.display = "block";
-
-//loading이 완료되고 완료됬다는 것을 보여줄 때 (순서대로 쓸것)) - 함수의 마지막줄에
-document.getElementById("loading_journal").style.display = "none";
-document.getElementById("complete_journal").style.display = "block";
-setTimeout(function(){
-  document.getElementById("complete_journal").style.display = "none";
-}, 3000);
-*/

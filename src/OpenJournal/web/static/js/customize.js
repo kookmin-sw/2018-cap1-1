@@ -130,15 +130,3 @@ function selectAccount(x){
   document.getElementById("etherium_acc").value= value;
   document.getElementById("overlay").style.display = "none";
 }
-
-
-//형근이 형이 쓰게 될 것
-//loading 중일 때 써야하는 것
-document.getElementById("loading_journal").style.display = "block";
-
-//loading이 완료되고 완료됬다는 것을 보여줄 때 (순서대로 쓸것))
-document.getElementById("loading_journal").style.display = "none";
-document.getElementById("complete_journal").style.display = "block";
-setTimeout(function(){
-  document.getElementById("complete_journal").style.display = "none";
-}, 3000);

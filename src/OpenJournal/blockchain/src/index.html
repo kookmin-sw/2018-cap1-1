@@ -6,11 +6,6 @@
   <title>Open Journal</title>
 
   <script>
-    var userId = '{{userId}}';
-    //alert(userId);
-  </script>
-
-  <script>
   function checkComment(comment){
     var img_id = comment;
     var split_arr = img_id.split("_");
@@ -90,7 +85,7 @@
           <div style="margin-bottom: 8px;" class="col s12 center">
           </div>
           <div class="s12 col center">
-            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="../static/journal_example_first.pdf">
+            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="../static/journal/{{i.fileName}}">
             </iframe>
 
             <table class="journal_info">
@@ -116,11 +111,15 @@
           </div>
 
           <div style="margin-top:50px;" class="right">
-            <div onclick="location.href='/move_paper_update?id={{i._id}}'" class="col center">
+            <div id="btn_read" style="display:block;" onclick="" class="col center">
+              <a href="#" id="" class="btn waves-effect waves-light blue darken-4">구독</a>
+            </div>
+
+            <div id="btn_update" style="display:block;" onclick="location.href='/move_paper_update?id={{i._id}}'" class="col center">
               <a href="#" id="" class="btn waves-effect waves-light blue darken-4">논문 업데이트</a>
             </div>
 
-            <div onclick="on()" class="col center">
+            <div id="btn_enroll" style="display:block;" onclick="on()" class="col center">
               <a href="#" id="" class="btn waves-effect waves-light blue darken-4">최종 등록</a>
             </div>
           </div>
@@ -149,7 +148,7 @@
                           대분류
                         </td>
                         <td style="padding-left:10px;">
-                          공학
+                          {{i.mainCategory}}
                         </td>
                       </tr>
 
@@ -158,7 +157,7 @@
                           소분류
                         </td>
                         <td style="padding-left:10px;">
-                          컴퓨터공학
+                          {{i.subCategory}}
                         </td>
                       </tr>
 
@@ -167,7 +166,7 @@
                           제목
                         </td>
                         <td id="journal_title" style="padding-left:10px;">
-                          논문시장과 블록체인
+                          {{i.title}}
                         </td>
                       </tr>
 
@@ -176,7 +175,7 @@
                           저자
                         </td>
                         <td style="padding-left:10px;">
-                          엄형근
+                          {{i.writer}}
                         </td>
                       </tr>
                       <tr>
@@ -184,7 +183,7 @@
                           Abstract
                         </td>
                         <td id="journal_abstract" style="padding-left:10px;">
-                          나는 이 논문을 매우 열심히 썼다. Abstract다.
+                          {{i.abstract}}
                         </td>
                       </tr>
                       <tr>
@@ -192,7 +191,7 @@
                           파일명
                         </td>
                         <td id="journal_abstract" style="padding-left:10px;">
-                          openjournal_ver3.pdf
+                          {{i.fileName}}
                         </td>
                       </tr>
                     </tbody>
@@ -205,29 +204,118 @@
                   </div>
                   <div>
                     <div class="col s12">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span>#</span><span name="OJjournal">1</span><span>&nbsp;</span>오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
-                          <p id="journal_author">이준표</p>
-                          <p id="journal_hash" style="display:none;">해쉬</p>
+                      <div class="col s8">
+                        <div class="card blue darken-4">
+                          <div style="padding:1px;" class="card-content white-text">
+                            <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title">#<span name="OJjournal">1</span><span>&nbsp;</span><span id="journal_name">오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span></span>
+                            <p id="journal_author">이준표</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col s1" onclick="modifyInfo(this)">
+                        <div class="card blue darken-4">
+                          <div style="padding:1px;" class="card-content white-text">
+                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
+                            <p id="">클릭</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col s1" onclick="checkReference(this)">
+                        <div class="card blue darken-4">
+                          <div style="padding:1px;" class="card-content white-text">
+                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
+                            <p id="">클릭</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col s2">
+                        <div class="card">
+                          <div style="padding:1px;" class="card-content white-text">
+                            <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">번호&제목 일치여부</span>
+                            <p id="correspond" style="color:green;">일치합니다.</p>
+                            <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
+                          </div>
                         </div>
                       </div>
                     </div>
+
                     <div class="col s12">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span>#</span><span name="OJjournal">2</span><span>&nbsp;</span>오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
-                          <p id="journal_author">이준표</p>
-                          <p id="journal_hash" style="display:none;">해쉬</p>
+                      <div class="col s8">
+                        <div class="card blue darken-4">
+                          <div style="padding:1px;" class="card-content white-text">
+                            <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title">#<span name="OJjournal">2</span><span>&nbsp;</span><span id="journal_name">나는 지금 이게 너무 하기 싫다.</span></span>
+                            <p id="journal_author">이준표</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col s1" onclick="modifyInfo(this)">
+                        <div class="card blue darken-4">
+                          <div style="padding:1px;" class="card-content white-text">
+                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
+                            <p id="">클릭</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col s1" onclick="checkReference(this)">
+                        <div class="card blue darken-4">
+                          <div style="padding:1px;" class="card-content white-text">
+                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
+                            <p id="">클릭</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col s2">
+                        <div class="card">
+                          <div style="padding:1px;" class="card-content white-text">
+                            <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">번호&제목 일치여부</span>
+                            <p id="correspond" style="color:green;">일치합니다.</p>
+                            <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div class="col s12">
+                  </div>
+
+                  <div class="col s12">
+                    <div class="col s8">
                       <div class="card blue darken-4">
                         <div style="padding:1px;" class="card-content white-text">
-                          <span id="journal_name" style="margin-bottom:0px; font-size:1.3rem;" class="card-title"><span>#</span><span name="OJjournal">3</span><span>&nbsp;</span>오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
+                          <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title">#<span name="OJjournal">2</span><span>&nbsp;</span><span id="journal_name">나는 지금 이게 너무 하기 싫다.</span></span>
                           <p id="journal_author">이준표</p>
-                          <p id="journal_hash" style="display:none;">해쉬</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col s1" onclick="modifyInfo(this)">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
+                          <p id="">클릭</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col s1" onclick="checkReference(this)">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
+                          <p id="">클릭</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col s2">
+                      <div class="card">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">번호&제목 일치여부</span>
+                          <p id="correspond" style="color:green;">일치합니다.</p>
+                          <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
                         </div>
                       </div>
                     </div>
@@ -242,10 +330,10 @@
 
                 <div class="col s2 center">
                   <select id="journal_price" class="browser-default">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
+                    <option value="journal_price_1">1</option>
+                    <option value="journal_price_2">2</option>
+                    <option value="journal_price_3">3</option>
+                    <option value="journal_price_4">4</option>
                   </select>
                 </div>
 
@@ -328,6 +416,40 @@
   </div>
   {% endfor %}
 
+  <script>
+    var userId = '{{userId}}';
+    var enrollUserId = '{{enrollUserId}}';
+    var complete = '{{complete}}';
+    if(userId == enrollUserId && complete == 0){
+      alert("작성자와 현재 사용자가 같음");
+      //업데이트 버튼, 최종 등록 버튼 나오고, 구독은 안나옴
+      document.getElementById("btn_update").style.display = "block";
+      document.getElementById("btn_enroll").style.display = "block";
+      document.getElementById("btn_read").style.display = "none";
+    }
+    else if(userId == enrollUserId && complete == 1){
+      alert("작성자와 현재 사용자가 같음");
+      //아무 버튼도 안나옴
+      document.getElementById("btn_update").style.display = "none";
+      document.getElementById("btn_enroll").style.display = "none";
+      document.getElementById("btn_read").style.display = "none";
+    }
+    else if(userId != enrollUserId && complete == 0){
+      alert("작성자와 현재 사용자가 다름");
+      //아무 버튼도 나오지 않음
+      document.getElementById("btn_update").style.display = "none";
+      document.getElementById("btn_enroll").style.display = "none";
+      document.getElementById("btn_read").style.display = "none";
+    }
+    else if(userId != enrollUserId && complete == 1){
+      alert("작성자와 현재 사용자가 다름");
+      //구독버튼만 나와야함
+      document.getElementById("btn_update").style.display = "none";
+      document.getElementById("btn_enroll").style.display = "none";
+      document.getElementById("btn_read").style.display = "block";
+    }
+  </script>
+
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
@@ -336,7 +458,9 @@
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
 	<script src="js/app.js"></script>
-	<script src="js/finalenroll.js"></script>
+  <script src="js/finalenroll.js"></script>
+  <script src="js/loadmypage.js"></script>
+  <script src="js/web3newmember.js"></script>
 
   </body>
 </html>
