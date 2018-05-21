@@ -139,7 +139,6 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         uint256 author_mini_token;
         uint256 reference_token;
         uint256 reference_mini_token;
-        uint256 reference_temp_token;
         uint256 reference_num = journals[_journalNumber].reference_journal.length;
 
         if(reference_num == 0){
@@ -223,4 +222,36 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     function getUserRegistedJournals() public view returns (uint[]) {
         return users[msg.sender].user_regist_journal;
     } 
-}
+
+    function getSignupCost() public view returns (uint256) {
+        return signUpCost;
+    }
+
+    function getUpperboundValue() public view returns (uint256) {
+        return upperbound_value;
+    }
+
+    function getLowerboundValue() public view returns (uint256) {
+        return lowerbound_value;
+    }
+
+    function getAuthorShare() public view returns (uint256) {
+        return author_share;
+    }
+
+    function setSignupCost(uint256 _signUpCost) public onlyOwner{
+        signUpCost = _signUpCost;
+    }
+
+    function setUpperboundValue(uint256 _upperbound_value) public onlyOwner{
+        upperbound_value = _upperbound_value;
+    }
+
+    function setLowerboundValue(uint256 _lowerbound_value) public onlyOwner{
+        lowerbound_value = _lowerbound_value;
+    }
+
+    function setAuthorShare(uint256 _author_share) public onlyOwner{
+        author_share = _author_share;
+    } 
+ }
