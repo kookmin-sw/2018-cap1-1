@@ -58,6 +58,12 @@ def home():
     userId = checkUserId()
     return render_template('main.html', userId = userId)
 
+def passwordTohash(password):
+    hash_object = hashlib.sha256(password)
+    hex_dig = hash_object.hexdigest()
+    return hex_dig
+
+
 def checkUserId():
     userId = ""
     if 'google_token' in session:
@@ -77,7 +83,7 @@ def checkTime(month):   #월이 바뀌는 경우를 판단해주는 함수
         return 1 #월이 같은 경우 1 리턴
 
 @app.route("/papernum")
-def papernum():
+def papernum():                      #논문 번호 생성
     paperNumInfo = db.PaperNum
     now   = datetime.datetime.now()
     year  = str(now.strftime("%Y"))
@@ -85,7 +91,6 @@ def papernum():
     flag  = checkTime(month)
     paper = paperNumInfo.find_one({"name":"latestNum"})
     createdPaperNum = 0
-
     if(flag == 1):
         if(paper['updatedPaperNum']>=0 and paper['updatedPaperNum']<=8):
             createdPaperNum = year+month+"000"+str(int(paper['updatedPaperNum']+1))
@@ -98,7 +103,6 @@ def papernum():
     elif(flag == 0):
         paperNumInfo.update({"name":"latestNum"}, {"$set": {"year":year,"month":month,"updatedPaperNum":0}})
         createdPaperNum = year+month+"000"+"1"
-
     return createdPaperNum
 
 @app.route("/main_mypage") #메인 홈페이지 이동
@@ -117,8 +121,6 @@ def mainLogin():
 @app.route("/main_new_member") #회원 가입 페이지 이동
 def mainNewMember():
     return render_template('main_new_member.html')
-#################
-
 
 @app.route("/main_view_fix_journal")
 def moveToSubPaper():
@@ -140,14 +142,19 @@ def userLogin():
     if 'google_token' in session:         #일반회원 로그인 시 구글 로그인 정보가 세션에 담겨져있다면 세션에서 제거
         session.pop('google_token', None)
     userId = request.form['email_id']
-    password = request.form['password']
+    password = passwordTohash(request.form['password'])
     collection = db.Users
     cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
+    loginFlag = 0
     for document in cursor:
         if document['user_id'] == userId and document['password'] == password:
             session['userId'] = userId
+            loginFlag = 1
             break
-    return render_template('main.html', userId = userId)
+    if loginFlag == 0:
+        return render_template('main_login.html', userId = userId, loginFlag = loginFlag)
+    elif loginFlag == 1:
+        return render_template('main.html')
 
 @app.route("/enrollNewMember", methods=['POST']) #회원 가입 기능 구현
 def enrollNewMember():
@@ -156,7 +163,7 @@ def enrollNewMember():
         userLastName = request.form['last_name']
         userName = userLastName+userFirstName
         userId = request.form['email_id']
-        newPassWord = request.form['new_password']
+        newPassWord = passwordTohash(request.form['new_password'])
         newPassWordCheck = request.form['new_password_check']
         telephone = request.form['telephone']
         birthday = request.form['birthday']
