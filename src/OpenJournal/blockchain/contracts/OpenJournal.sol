@@ -2,7 +2,7 @@ pragma solidity ^0.4.21;
 
 import "./Token/JournalToken.sol";
 
-contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
+contract OpenJournal is JournalToken(1000, "OJToken", 18, "OJ") {
     
     struct Journal {
         uint256 number;
@@ -81,7 +81,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
         uint256 _author_share
     ) public {
         userNumber = _userNumber;
-        signUpCost = _signUpCost.mul(10**uint256(4));   // signUpCost = _signUpCost.mul(10**uint256(decimals))
+        signUpCost = _signUpCost.mul(10**uint256(decimals));        // 테스트 할 때 : signUpCost = _signUpCost.mul(10**uint256(4));
         upperbound_value = _upperbound_value;
         lowerbound_value = _lowerbound_value;
         author_share = _author_share;
@@ -114,7 +114,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
             _journalNumber,
             msg.sender,
             _title,
-            _journalValue.mul(10**uint256(4)),     // _journalValue.mul(10**uint256(decimals))
+            _journalValue.mul(10**uint256(decimals)),     // 테스트 할 떄 : _journalValue.mul(10**uint256(4))
             new uint[](0),
             new uint256[](0)
         );

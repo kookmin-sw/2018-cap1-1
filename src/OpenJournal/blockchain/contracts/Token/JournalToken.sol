@@ -18,7 +18,7 @@ contract JournalToken is EIP20Interface, Owned {
     string public symbol;                               // Token unit
     address public owner;                  
     uint256 constant public rate = 10000;                       // The ratio of our token to Ether
-    uint256 public constant tokenGenerationMax = 1 * (10**7) * 10**uint256(decimals);
+    uint256 public constant tokenGenerationMax = 1 * (10**7) * (10**uint256(decimals));
 
     event BuyToken(
         uint256 _msgValue,
@@ -46,7 +46,7 @@ contract JournalToken is EIP20Interface, Owned {
         name = _tokenName;                                          // Set the name for display purposes
         symbol = _tokenSymbol;
         decimals = _decimalUnits;                                   // Amount of decimals for display purrposes
-        totalSupply = _initialAmount * 10**uint256(decimals);       // Update total supply
+        totalSupply = _initialAmount.mul(10**uint256(decimals));    // Update total supply
         balances[msg.sender] = totalSupply;                         // Give the creator all initial tokens 
     }   
 
@@ -59,7 +59,7 @@ contract JournalToken is EIP20Interface, Owned {
     function buyToken() public payable {
         require(msg.value > 0);
 
-        uint256 amount = msg.value.mul(10**uint256(4)).mul(rate);   // 현재 테스트 중이므로 이걸로 바꿔야 함 uint256 amount = msg.value.mul(rate);
+        uint256 amount = msg.value.mul(rate);                       // 테스트할 때 : uint256 amount = msg.value.mul(10**uint256(4)).mul(rate);
         balances[msg.sender] = balances[msg.sender].add(amount);
         totalSupply = totalSupply.add(amount);
 
