@@ -62,11 +62,11 @@ contract('OpenJournal Test', function(accounts) {
     let user_regist_journal_2 = log_2.args._user_regist_journal;
 
     expect(balance0.toString()).to.equal('498200000');
-    expect(balance1.toString()).to.equal('380000');
+    expect(balance1.toString()).to.equal('380002');
     expect(balance2.toString()).to.equal('506666');
     expect(balance3.toString()).to.equal('306666');
     expect(balance4.toString()).to.equal('306666');
-    expect(balance5.toString()).to.equal('100002');
+    expect(balance5.toString()).to.equal('100000');
     expect(balance6.toString()).to.equal('200000');
     
     expect(from_1.toString()).to.equal(accounts[0]);
@@ -141,13 +141,13 @@ contract('OpenJournal Test', function(accounts) {
 
     expect(from_2.toString()).to.equal(subscriber1);
     expect(to_2.toString()).to.equal(register1);
-    expect(value_2.toString()).to.equal('80000');    
+    expect(value_2.toString()).to.equal('80002');    
 
     expect(subscriber_4.toString()).to.equal(subscriber1);
     expect(myjournals_4.toString()).to.equal('2017010020');
     expect(subscribed_4.toString()).to.equal('1');
     expect(is_subscribed_4.toString()).to.equal('true');
-    expect(author_value_4.toString()).to.equal('80000');
+    expect(author_value_4.toString()).to.equal('80002');
     expect(ref_value_4.toString()).to.equal('6666');
   });
 

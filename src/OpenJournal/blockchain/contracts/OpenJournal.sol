@@ -141,16 +141,21 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
 
         uint256 author_token;
         uint256 reference_token;
+        uint256 reference_each_token;
+        uint256 reference_total_token;
         uint256 reference_num = journals[_journalNumber].reference_journal.length;
 
         if(reference_num == 0){
             author_token = journals[_journalNumber].value;
         } else{
             author_token = journals[_journalNumber].value.mul(author_share).div(100);
-            reference_token = journals[_journalNumber].value.sub(author_token).div(reference_num);            
+            reference_token = journals[_journalNumber].value.sub(author_token);
+            reference_each_token = reference_token.div(reference_num);
+            reference_total_token = reference_each_token.mul(reference_num);
+            author_token = author_token.add(reference_token.sub(reference_total_token));
 
             for(uint256 ref = 0; ref < reference_num; ref++)
-                transfer(journals[journals[_journalNumber].reference_journal[ref]].author, reference_token);                    
+                transfer(journals[journals[_journalNumber].reference_journal[ref]].author, reference_each_token);                    
         }
 
         transfer(journals[_journalNumber].author, author_token); 
@@ -167,7 +172,7 @@ contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
             journals[_journalNumber].subscribed, 
             is_subscribed[msg.sender][_journalNumber],
             author_token,
-            reference_token
+            reference_each_token
         );
 
         return true;
