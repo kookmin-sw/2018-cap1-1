@@ -2,7 +2,7 @@ pragma solidity ^0.4.21;
 
 import "./Token/JournalToken.sol";
 
-contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
+contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
     
     struct Journal {
         uint256 number;
@@ -28,8 +28,7 @@ contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
     uint256 public signUpCost;               
     uint256 public upperbound_value;         
     uint256 public lowerbound_value;         
-    uint256 public author_share;             
-    uint256 public reference_temp_token;
+    uint256 public author_share;
 
     event LogSignUp(
         uint256 _user_number, 
@@ -82,7 +81,7 @@ contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
         uint256 _author_share
     ) public {
         userNumber = _userNumber;
-        signUpCost = _signUpCost;
+        signUpCost = _signUpCost.mul(10**uint256(4));   // signUpCost = _signUpCost.mul(10**uint256(decimals))
         upperbound_value = _upperbound_value;
         lowerbound_value = _lowerbound_value;
         author_share = _author_share;
@@ -97,7 +96,14 @@ contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
             new uint[](0)
         );
         transferFromOwner(msg.sender, signUpCost);   
-        emit LogSignUp(userNumber, msg.sender, users[msg.sender].user_subscribe_journal, users[msg.sender].user_regist_journal);
+
+        emit LogSignUp(
+            userNumber, 
+            msg.sender, 
+            users[msg.sender].user_subscribe_journal, 
+            users[msg.sender].user_regist_journal
+        );
+
         return true;
     }
 
@@ -108,7 +114,7 @@ contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
             _journalNumber,
             msg.sender,
             _title,
-            _journalValue,
+            _journalValue.mul(10**uint256(4)),     // _journalValue.mul(10**uint256(decimals))
             new uint[](0),
             new uint256[](0)
         );
@@ -140,8 +146,8 @@ contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
         if(reference_num == 0){
             author_token = journals[_journalNumber].value;
         } else{
-            author_token = journals[_journalNumber].value.mul(author_share).div(mini_token_rate);
-            reference_token = journals[_journalNumber].value.sub(author_token);            
+            author_token = journals[_journalNumber].value.mul(author_share).div(100);
+            reference_token = journals[_journalNumber].value.sub(author_token).div(reference_num);            
 
             for(uint256 ref = 0; ref < reference_num; ref++)
                 transfer(journals[journals[_journalNumber].reference_journal[ref]].author, reference_token);                    
