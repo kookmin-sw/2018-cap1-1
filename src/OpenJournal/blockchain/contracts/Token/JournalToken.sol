@@ -17,8 +17,9 @@ contract JournalToken is EIP20Interface, Owned {
     uint8 public decimals;                              // How many decimals to show.
     string public symbol;                               // Token unit
     address public owner;                  
-    uint256 constant public rate = 1000;                // The ratio of our token to Ether
+    uint256 constant public rate = 10000;                // The ratio of our token to Ether
     uint256 constant public mini_token_rate = 100;        // The ratio of our mini token to token
+    uint256 public constant tokenGenerationMax = 1 * (10**7) * 10**decimals;
 
     event BuyToken(
         uint256 _msgValue,
@@ -48,12 +49,11 @@ contract JournalToken is EIP20Interface, Owned {
         uint8 _decimalUnits,
         string _tokenSymbol
     ) public {
-        balances[msg.sender] = _initialAmount;                // Give the creator all initial tokens
-        totalSupply = _initialAmount;                         // Update total supply
         name = _tokenName;                                    // Set the name for display purposes
-        decimals = _decimalUnits;                             // Amount of decimals for display purrposes
         symbol = _tokenSymbol;
-        owner = msg.sender;
+        decimals = _decimalUnits;                             // Amount of decimals for display purrposes
+        totalSupply = _initialAmount * 10**uint(decimals);    // Update total supply
+        balances[owner] = totalSupply;                        // Give the creator all initial tokens  
     }   
 
     /// @dev Fallback to calling deposit when ether is sent directly to contract.
@@ -69,12 +69,13 @@ contract JournalToken is EIP20Interface, Owned {
         balances[msg.sender] = balances[msg.sender].add(amount);
         totalSupply = totalSupply.add(amount);
 
-        //owner.transfer(msg.value);
+        require(totalSupply <= tokenGenerationMax);
+
         emit BuyToken(msg.value, amount, totalSupply, msg.sender, decimals, symbol);
     }
 
     // Sells tokens with Ether
-    function sellToken(uint256 _value) public {    // 1000으로 나누었을때 나머지가 0인 수만 받자.
+    function sellToken(uint256 _value) public {    
         require(balances[msg.sender] >= _value && totalSupply >= _value && _value != 0);
 
         uint256 amount = _value.div(rate);
@@ -85,6 +86,9 @@ contract JournalToken is EIP20Interface, Owned {
 
         emit SellToken(_value, amount, totalSupply, msg.sender);
     }
+
+    //TODO:Contract에 있는 이더 owner가 받기
+
 
     function tokenToMini(uint256 _value) public returns (bool) {
         require(balances[msg.sender] >= _value && balances[msg.sender] >= 0);
