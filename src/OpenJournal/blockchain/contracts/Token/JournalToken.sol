@@ -19,7 +19,7 @@ contract JournalToken is EIP20Interface, Owned {
     address public owner;                  
     uint256 constant public rate = 10000;                // The ratio of our token to Ether
     uint256 constant public mini_token_rate = 100;        // The ratio of our mini token to token
-    uint256 public constant tokenGenerationMax = 1 * (10**7) * 10**decimals;
+    uint256 public constant tokenGenerationMax = 1 * (10**7) * 10**uint256(decimals);
 
     event BuyToken(
         uint256 _msgValue,
@@ -49,11 +49,12 @@ contract JournalToken is EIP20Interface, Owned {
         uint8 _decimalUnits,
         string _tokenSymbol
     ) public {
+        owner = msg.sender;
         name = _tokenName;                                    // Set the name for display purposes
         symbol = _tokenSymbol;
         decimals = _decimalUnits;                             // Amount of decimals for display purrposes
-        totalSupply = _initialAmount * 10**uint(decimals);    // Update total supply
-        balances[owner] = totalSupply;                        // Give the creator all initial tokens  
+        totalSupply = _initialAmount;// * 10**uint256(decimals);    // Update total supply
+        balances[msg.sender] = totalSupply;                        // Give the creator all initial tokens 
     }   
 
     /// @dev Fallback to calling deposit when ether is sent directly to contract.
@@ -82,13 +83,15 @@ contract JournalToken is EIP20Interface, Owned {
         balances[msg.sender] = balances[msg.sender].sub(_value);
         totalSupply = totalSupply.sub(_value);
 
-        if (!msg.sender.send(amount)) throw;
+        if (!msg.sender.send(amount)) revert();
 
         emit SellToken(_value, amount, totalSupply, msg.sender);
     }
 
-    //TODO:Contract에 있는 이더 owner가 받기
-
+    // Withdraw Ether form contracts
+    function withdrawEther() public onlyOwner {
+        owner.transfer(this.balance);
+    }
 
     function tokenToMini(uint256 _value) public returns (bool) {
         require(balances[msg.sender] >= _value && balances[msg.sender] >= 0);
@@ -171,5 +174,9 @@ contract JournalToken is EIP20Interface, Owned {
 
     function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
         return allowed[_owner][_spender];
+    }
+
+    function balanceOfEther(address _to) public constant returns (uint256) { 
+        return _to.balance; 
     }
 }
