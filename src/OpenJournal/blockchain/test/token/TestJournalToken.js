@@ -62,28 +62,7 @@ contract('JournalToken Test', function(accounts) {
 
     let balance2 = await journalToken.balanceOf.call(buyer1);
     expect(balance2.toString()).to.equal('300000');
-  });
-
-  it("should return correct balances after converting from token amount to mini token amount", async function () {
-    await journalToken.tokenToMini(50000, {from: buyer1});
-
-    let tokenBalence = await journalToken.balanceOf.call(buyer1);
-    let miniTokenBalance = await journalToken.balanceOfMini.call(buyer1);
-    
-    expect(tokenBalence.toString()).to.equal('250000');
-    expect(miniTokenBalance.toString()).to.equal('5000000');
-  });
-
-  it("should return correct balances after converting from mini token amount to token amount", async function () {
-    await journalToken.tokenToMini(50000, {from: buyer1});
-    await journalToken.miniToToken(4500005, {from: buyer1});
-
-    let tokenBalence = await journalToken.balanceOf.call(buyer1);
-    let miniTokenBalance = await journalToken.balanceOfMini.call(buyer1);
-    
-    expect(tokenBalence.toString()).to.equal('295000');
-    expect(miniTokenBalance.toString()).to.equal('500000');
-  });
+  }); 
 
   it("should return correct balances after sell tokens", async function () {
     let etherBalance1 = await journalToken.balanceOfEther.call(buyer1);
@@ -106,5 +85,27 @@ contract('JournalToken Test', function(accounts) {
     expect(totalSupply_1.toString()).to.equal('550000');
     expect(msgSender_1.toString()).to.equal(buyer1);       
   });
+/*
+  it("should return correct balances after converting from token amount to mini token amount", async function () {
+    await journalToken.tokenToMini(50000, {from: buyer1});
+
+    let tokenBalence = await journalToken.balanceOf.call(buyer1);
+    let miniTokenBalance = await journalToken.balanceOfMini.call(buyer1);
+    
+    expect(tokenBalence.toString()).to.equal('250000');
+    expect(miniTokenBalance.toString()).to.equal('5000000');
+  });
+
+  it("should return correct balances after converting from mini token amount to token amount", async function () {
+    await journalToken.tokenToMini(50000, {from: buyer1});
+    await journalToken.miniToToken(4500005, {from: buyer1});
+
+    let tokenBalence = await journalToken.balanceOf.call(buyer1);
+    let miniTokenBalance = await journalToken.balanceOfMini.call(buyer1);
+    
+    expect(tokenBalence.toString()).to.equal('295000');
+    expect(miniTokenBalance.toString()).to.equal('500000');
+  });
+*/
   
 });

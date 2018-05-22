@@ -17,8 +17,8 @@ contract JournalToken is EIP20Interface, Owned {
     uint8 public decimals;                              // How many decimals to show.
     string public symbol;                               // Token unit
     address public owner;                  
-    uint256 constant public rate = 10000;                // The ratio of our token to Ether
-    uint256 constant public mini_token_rate = 100;        // The ratio of our mini token to token
+    uint256 constant public rate = 10000;                       // The ratio of our token to Ether
+    uint256 constant public mini_token_rate = 100;              // The ratio of our mini token to token
     uint256 public constant tokenGenerationMax = 1 * (10**7) * 10**uint256(decimals);
 
     event BuyToken(
@@ -50,11 +50,11 @@ contract JournalToken is EIP20Interface, Owned {
         string _tokenSymbol
     ) public {
         owner = msg.sender;
-        name = _tokenName;                                    // Set the name for display purposes
+        name = _tokenName;                                          // Set the name for display purposes
         symbol = _tokenSymbol;
-        decimals = _decimalUnits;                             // Amount of decimals for display purrposes
-        totalSupply = _initialAmount;// * 10**uint256(decimals);    // Update total supply
-        balances[msg.sender] = totalSupply;                        // Give the creator all initial tokens 
+        decimals = _decimalUnits;                                   // Amount of decimals for display purrposes
+        totalSupply = _initialAmount * 10**uint256(decimals);       // Update total supply
+        balances[msg.sender] = totalSupply;                         // Give the creator all initial tokens 
     }   
 
     /// @dev Fallback to calling deposit when ether is sent directly to contract.
@@ -93,6 +93,56 @@ contract JournalToken is EIP20Interface, Owned {
         owner.transfer(this.balance);
     }
 
+    function transfer(address _to, uint256 _value) public returns (bool success) {
+        require(balances[msg.sender] >= _value);
+        balances[msg.sender] = balances[msg.sender].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        emit Transfer(msg.sender, _to, _value);
+        return true;
+    } 
+
+    function transferFromOwner(address _to, uint256 _value) public returns (bool success) {
+        require(balances[owner] >= _value);
+        balances[owner] = balances[owner].sub(_value);
+        balances[_to] = balances[_to].add(_value);
+        emit Transfer(owner, _to, _value);
+        return true;
+    }
+
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+        uint256 allowance = allowed[_from][msg.sender];
+        require(balances[_from] >= _value && allowance >= _value);
+        balances[_to] = balances[_to].add(_value);
+        balances[_from] = balances[_from].sub(_value);
+        if (allowance < MAX_UINT256) {
+            allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+        }
+        emit Transfer(_from, _to, _value);
+        return true;
+    }
+
+    function balanceOf(address _owner) public view returns (uint256 balance) {
+        return balances[_owner];
+    }
+
+    function balanceOfEther(address _to) public constant returns (uint256) { 
+        return _to.balance; 
+    }
+
+    
+    function approve(address _spender, uint256 _value) public returns (bool success) {
+        allowed[msg.sender][_spender] = _value;
+        emit Approval(msg.sender, _spender, _value);
+        return true;
+    }
+
+    function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
+        return allowed[_owner][_spender];
+    }
+
+    
+
+/*
     function tokenToMini(uint256 _value) public returns (bool) {
         require(balances[msg.sender] >= _value && balances[msg.sender] >= 0);
         balances[msg.sender] = balances[msg.sender].sub(_value);
@@ -128,55 +178,11 @@ contract JournalToken is EIP20Interface, Owned {
         mini_balances[_to] = mini_balances[_to].add(_mini_value);
         emit TransferAll(msg.sender, _to, _value, _mini_value);
         return true;
-    }  
-
-    function transfer(address _to, uint256 _value) public returns (bool success) {
-        require(balances[msg.sender] >= _value);
-        balances[msg.sender] = balances[msg.sender].sub(_value);
-        balances[_to] = balances[_to].add(_value);
-        emit Transfer(msg.sender, _to, _value);
-        return true;
     } 
-
-    function transferFromOwner(address _to, uint256 _value) public returns (bool success) {
-        require(balances[owner] >= _value);
-        balances[owner] = balances[owner].sub(_value);
-        balances[_to] = balances[_to].add(_value);
-        emit Transfer(owner, _to, _value);
-        return true;
-    }
-
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        uint256 allowance = allowed[_from][msg.sender];
-        require(balances[_from] >= _value && allowance >= _value);
-        balances[_to] = balances[_to].add(_value);
-        balances[_from] = balances[_from].sub(_value);
-        if (allowance < MAX_UINT256) {
-            allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
-        }
-        emit Transfer(_from, _to, _value);
-        return true;
-    }
-
-    function balanceOf(address _owner) public view returns (uint256 balance) {
-        return balances[_owner];
-    }
 
     function balanceOfMini(address _owner) public view returns (uint256 balance) {
         return mini_balances[_owner];
     }
-
-    function approve(address _spender, uint256 _value) public returns (bool success) {
-        allowed[msg.sender][_spender] = _value;
-        emit Approval(msg.sender, _spender, _value);
-        return true;
-    }
-
-    function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
-        return allowed[_owner][_spender];
-    }
-
-    function balanceOfEther(address _to) public constant returns (uint256) { 
-        return _to.balance; 
-    }
+*/
+ 
 }

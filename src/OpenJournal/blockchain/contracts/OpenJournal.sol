@@ -53,9 +53,7 @@ contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
         uint[] _subscribed,
         bool _is_subscribed,
         uint256 _author_value,
-        uint256 _author_mini_token,
-        uint256 _ref_value,
-        uint256 _reference_mini_token
+        uint256 _ref_value
     );
 
     event LogGetUserRegistedJournals(
@@ -133,43 +131,23 @@ contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
     }
 
     function subscribeJournal(uint256 _journalNumber) public returns (bool){
-        require(is_subscribed[msg.sender][_journalNumber] == false);  
+        require(is_subscribed[msg.sender][_journalNumber] == false); 
 
         uint256 author_token;
-        uint256 author_mini_token;
         uint256 reference_token;
-        uint256 reference_mini_token;
         uint256 reference_num = journals[_journalNumber].reference_journal.length;
 
         if(reference_num == 0){
             author_token = journals[_journalNumber].value;
         } else{
             author_token = journals[_journalNumber].value.mul(author_share).div(mini_token_rate);
-            reference_token = journals[_journalNumber].value.sub(author_token);
-
-            if(reference_token % reference_num == 0 && reference_token / reference_num != 0){
-                reference_token = reference_token.div(reference_num);
-            } else{               
-                reference_temp_token = reference_token;
-                if(reference_token.div(reference_num) != 0){
-                    reference_token = reference_token.div(reference_num);  
-                } else{
-                    reference_token = 0;
-                }
-
-                reference_temp_token = reference_temp_token.sub(reference_token.mul(reference_num)).mul(mini_token_rate);
-
-                reference_mini_token = reference_temp_token.div(reference_num); 
-
-                author_mini_token = reference_temp_token.sub(reference_mini_token.mul(reference_num));  
-            }
+            reference_token = journals[_journalNumber].value.sub(author_token);            
 
             for(uint256 ref = 0; ref < reference_num; ref++)
-                transferAll(journals[journals[_journalNumber].reference_journal[ref]].author, reference_token, reference_mini_token);
-                    
+                transfer(journals[journals[_journalNumber].reference_journal[ref]].author, reference_token);                    
         }
 
-        transferAll(journals[_journalNumber].author, author_token, author_mini_token); 
+        transfer(journals[_journalNumber].author, author_token); 
 
         uint sub_id = users[msg.sender].user_number;
 
@@ -183,9 +161,7 @@ contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
             journals[_journalNumber].subscribed, 
             is_subscribed[msg.sender][_journalNumber],
             author_token,
-            author_mini_token,
-            reference_token, 
-            reference_mini_token
+            reference_token
         );
 
         return true;
