@@ -2,7 +2,7 @@ pragma solidity ^0.4.21;
 
 import "./Token/JournalToken.sol";
 
-contract OpenJournal is JournalToken(0, "OJToken", 18, "OJ") {
+contract OpenJournal is JournalToken(10000, "OJToken", 18, "OJ") {
     
     struct Journal {
         uint256 number;

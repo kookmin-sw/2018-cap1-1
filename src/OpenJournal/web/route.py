@@ -1,30 +1,32 @@
 # -*- coding: utf-8 -*-
+from bson.objectid import ObjectId
+from cStringIO import StringIO
 from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify, send_from_directory
 from flask_oauthlib.client import OAuth
-from pymongo import MongoClient
-from pymongo import Connection
-from urllib2 import Request, urlopen, URLError
-import gridfs, datetime, json, os
 from gridfs.errors import NoFile
-from bson.objectid import ObjectId
-from werkzeug import secure_filename
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
+from pdfminer.pdfdocument import PDFDocument
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
+from pdfminer.pdfparser import PDFParser
+from pymongo import Connection
+from pymongo import MongoClient
+from urllib2 import Request, urlopen, URLError
+from web.config import Config
+from werkzeug import secure_filename
+
+import gridfs, datetime, json, os
 import PyPDF2
 import hashlib
-from pdfminer.pdfdocument import PDFDocument
-from pdfminer.pdfparser import PDFParser
-from cStringIO import StringIO
 
 ALLOWED_EXTENSIONS = set(['pdf'])
-UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
+#UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
 
 app = Flask(__name__)
-app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
-app.config['GOOGLE_SECRET'] = "61w2EkT-lKN8eUkSRUBWIxMx"
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['GOOGLE_ID'] = Config.google["id"]               # "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
+app.config['GOOGLE_SECRET'] = Config.google["secret"]       # "61w2EkT-lKN8eUkSRUBWIxMx"
+app.config['UPLOAD_FOLDER'] = Config.google["folder"]       # UPLOAD_FOLDER  
 
 app.debug = True
 app.secret_key = 'development'
@@ -47,7 +49,8 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
-hash_password = "0504110310110711"
+hash_password = Config.hash_password      #"0504110310110711"
+
 pdf_path_without_filename = "/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal/"
 
 @app.route("/") #메인 홈페이지 이동
