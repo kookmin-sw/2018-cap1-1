@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
-
-
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="../static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -200,9 +198,12 @@
 
 
     }
-    else if(userId == ""){
+  </script>
 
-        alert("로그아웃");
+  <script>
+    var enrollFlag = '{{enrollFlag}}'
+    if(enrollFlag == 1){
+      alert("회원가입이 완료 되었습니다.")
     }
   </script>
 

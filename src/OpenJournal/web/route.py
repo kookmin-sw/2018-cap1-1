@@ -1,30 +1,32 @@
 # -*- coding: utf-8 -*-
+from bson.objectid import ObjectId
+from cStringIO import StringIO
 from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify, send_from_directory
 from flask_oauthlib.client import OAuth
-from pymongo import MongoClient
-from pymongo import Connection
-from urllib2 import Request, urlopen, URLError
-import gridfs, datetime, json, os
 from gridfs.errors import NoFile
-from bson.objectid import ObjectId
-from werkzeug import secure_filename
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
+from pdfminer.pdfdocument import PDFDocument
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
+from pdfminer.pdfparser import PDFParser
+from pymongo import Connection
+from pymongo import MongoClient
+from urllib2 import Request, urlopen, URLError
+from web.config import Config
+from werkzeug import secure_filename
+
+import gridfs, datetime, json, os
 import PyPDF2
 import hashlib
-from pdfminer.pdfdocument import PDFDocument
-from pdfminer.pdfparser import PDFParser
-from cStringIO import StringIO
 
 ALLOWED_EXTENSIONS = set(['pdf'])
-UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
+#UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
 
 app = Flask(__name__)
-app.config['GOOGLE_ID'] = "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
-app.config['GOOGLE_SECRET'] = "61w2EkT-lKN8eUkSRUBWIxMx"
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['GOOGLE_ID'] = Config.google["id"]               # "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
+app.config['GOOGLE_SECRET'] = Config.google["secret"]       # "61w2EkT-lKN8eUkSRUBWIxMx"
+app.config['UPLOAD_FOLDER'] = Config.google["folder"]       # UPLOAD_FOLDER
 
 app.debug = True
 app.secret_key = 'development'
@@ -47,13 +49,19 @@ google = oauth.remote_app(
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
 
-hash_password = "0504110310110711"
+hash_password = Config.hash_password      #"0504110310110711"
+
 pdf_path_without_filename = "/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal/"
 
 @app.route("/") #메인 홈페이지 이동
 def home():
     userId = checkUserId()
     return render_template('main.html', userId = userId)
+
+def passwordTohash(password):
+    hash_object = hashlib.sha256(password)
+    hex_dig = hash_object.hexdigest()
+    return hex_dig
 
 def checkUserId():
     userId = ""
@@ -74,7 +82,7 @@ def checkTime(month):   #월이 바뀌는 경우를 판단해주는 함수
         return 1 #월이 같은 경우 1 리턴
 
 @app.route("/papernum")
-def papernum():
+def papernum():                      #논문 번호 생성
     paperNumInfo = db.PaperNum
     now   = datetime.datetime.now()
     year  = str(now.strftime("%Y"))
@@ -82,7 +90,6 @@ def papernum():
     flag  = checkTime(month)
     paper = paperNumInfo.find_one({"name":"latestNum"})
     createdPaperNum = 0
-
     if(flag == 1):
         if(paper['updatedPaperNum']>=0 and paper['updatedPaperNum']<=8):
             createdPaperNum = year+month+"000"+str(int(paper['updatedPaperNum']+1))
@@ -95,14 +102,17 @@ def papernum():
     elif(flag == 0):
         paperNumInfo.update({"name":"latestNum"}, {"$set": {"year":year,"month":month,"updatedPaperNum":0}})
         createdPaperNum = year+month+"000"+"1"
-
     return createdPaperNum
 
 @app.route("/main_mypage") #메인 홈페이지 이동
 def mainMypage():
     userId = checkUserId()
-    userCollection = db.Users
-    findedUserInfo = userCollection.find({"user_id": userId})
+    if 'google_token' in session:
+        userCollection = db.Oauth_Users
+        findedUserInfo = userCollection.find({"user_id": userId})
+    else:
+        userCollection = db.Users
+        findedUserInfo = userCollection.find({"user_id": userId})
     paperCollection = db.PaperInformation
     findPaperInfo = paperCollection.find({"user_id": userId})
     return render_template('main_mypage.html', userInfo = findedUserInfo, writePaper = findPaperInfo)
@@ -114,8 +124,6 @@ def mainLogin():
 @app.route("/main_new_member") #회원 가입 페이지 이동
 def mainNewMember():
     return render_template('main_new_member.html')
-#################
-
 
 @app.route("/main_view_fix_journal")
 def moveToSubPaper():
@@ -137,23 +145,28 @@ def userLogin():
     if 'google_token' in session:         #일반회원 로그인 시 구글 로그인 정보가 세션에 담겨져있다면 세션에서 제거
         session.pop('google_token', None)
     userId = request.form['email_id']
-    password = request.form['password']
+    password = passwordTohash(request.form['password'])
     collection = db.Users
     cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색
+    loginFlag = 0
     for document in cursor:
         if document['user_id'] == userId and document['password'] == password:
             session['userId'] = userId
+            loginFlag = 1
             break
-    return render_template('main.html', userId = userId)
+    if loginFlag == 0:
+        return render_template('main_login.html', userId = userId, loginFlag = loginFlag)
+    elif loginFlag == 1:
+        return render_template('main.html', loginFlag = loginFlag)
 
-@app.route("/enrollNewMember", methods=['POST']) #회원 가입 기능 구현
+@app.route("/enrollNewMember", methods=['POST']) #일반회원 가입 기능 구현
 def enrollNewMember():
     if request.method == 'POST':
         userFirstName = request.form['first_name']
         userLastName = request.form['last_name']
         userName = userLastName+userFirstName
         userId = request.form['email_id']
-        newPassWord = request.form['new_password']
+        newPassWord = passwordTohash(request.form['new_password'])
         newPassWordCheck = request.form['new_password_check']
         telephone = request.form['telephone']
         birthday = request.form['birthday']
@@ -168,16 +181,17 @@ def enrollNewMember():
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
         oauthCursor = oauthCollection.find({"user_id": userId})
+        enrollFlag = 1
         for document in cursor:                   #구글 회원 등록 확인
             if document['user_id'] == userId:
-                #구현은 중복검사로 구현하기
-                return "이미 회원 가입 되있습니다."
+                enrollFlag = 0
+                return render_template('main_new_member.html', enrollFlag=enrollFlag)
         for oauthDocument in oauthCursor:        #일반 회원 등록 확인
             if oauthDocument['user_id'] == userId:
-                #구현은 중복검사로 구현하기
-                return "이미 회원 가입 되있습니다."
+                enrollFlag = 0
+                return render_template('main_new_member.html', enrollFlag=enrollFlag)
         collection.insert(doc)                   #아이디 검사 완료시 회원정보 데이터베이스 삽입
-        return render_template("main.html")
+        return render_template("main.html", enrollFlag=enrollFlag)
     else:
         return "잘못된 데이터 요청 입니다."
 
@@ -198,6 +212,30 @@ def login():
 @google.tokengetter
 def get_google_oauth_token():
     return session.get('google_token')
+
+@app.route('/login/authorized')
+def authorized():
+    resp = google.authorized_response()
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    session['google_token'] = (resp['access_token'], '')
+    me = google.get('userinfo')
+    userId = me.data['email']
+    userName = me.data['name']
+    fame = 0
+    doc = {'user_id': userId, 'user_name': userName, 'fame': fame, 'tokenNum':0, 'subPaperNum':0, 'enrollPaperNum':0}
+    client = MongoClient('localhost', 27017)
+    db = client.OpenJournal
+    collection = db.Oauth_Users
+    cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
+    for document in cursor:
+        if document['user_id'] == userId:
+            return render_template('main.html')
+    collection.insert(doc)
+    return render_template('main.html', userId=userId)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -229,30 +267,6 @@ def uploaded_file(filename):
 def mainEnrollForCheckJournal():
     userId = checkUserId()
     return render_template('main_enroll_for_check_journal.html', userId = userId)
-
-@app.route('/login/authorized')
-def authorized():
-    resp = google.authorized_response()
-    if resp is None:
-        return 'Access denied: reason=%s error=%s' % (
-            request.args['error_reason'],
-            request.args['error_description']
-        )
-    session['google_token'] = (resp['access_token'], '')
-    me = google.get('userinfo')
-    userId = me.data['email']
-    userName = me.data['name']
-    fame = 0
-    doc = {'user_id': userId, 'user_name': userName, 'fame': fame}
-    client = MongoClient('localhost', 27017)
-    db = client.OpenJournal
-    collection = db.Oauth_Users
-    cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
-    for document in cursor:
-        if document['user_id'] == userId:
-            return render_template('main.html')
-    collection.insert(doc)
-    return render_template('main.html')
 
 @app.route("/main_enroll") #검수중인 논문 리스트 페이지 뷰 구현
 def mainEnroll():
@@ -287,7 +301,6 @@ def enrollPaperComment():
             paperInfo.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
             paperInfo.update({"_id": ObjectId(objectId)},{"$set": {"commentNumber":commentNum+1}})
             data = paperInfo.find({"_id": ObjectId(objectId)})
-
             data2 = paperInfo.find_one({"_id": ObjectId(objectId)})
             enrollUserId = data2['user_id']
             complete = data2['complete']
@@ -296,8 +309,8 @@ def enrollPaperComment():
         else:
             return "잘못된 데이터 요청 입니다."
     else:
-        return "로그인이 필요한 기능입니다."
-
+        loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
+        return render_template('main_login.html', loginFlag=loginFlag)
 
 def enrollBlockChain(obId):
     paperInfo = db.PaperInformation
@@ -336,11 +349,6 @@ def versionUpdate():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             userId = checkUserId()
-            if 'google_token' in session:
-                me = google.get('userinfo')
-            elif 'userId' in session:
-                user = db.Users
-                data = user.find_one({"user_id": userId})
             collection = db.PaperInformation
             writer = request.form['writerName']
             mainCategory = request.form['mainCat']
@@ -360,8 +368,8 @@ def versionUpdate():
                               "fileName": fileName}})
             return mainEnroll()
     else:
-        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워data = data, userId = userId주고 login 창으로 이동.
-        return render_template('main_login.html')
+        loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
+        return render_template('main_login.html', loginFlag=loginFlag)
 
 @app.route("/adaptPaperComment") #댓글 채택시 명성 부여
 def adaptPaperComment():
@@ -370,30 +378,32 @@ def adaptPaperComment():
     paperCollection = db.PaperInformation
     userCollection = db.Users
     userId = checkUserId()
-
-    cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
-    for document in cursor:
-        if document['user_id'] == list[2]:
-            userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
-            paper = paperCollection.find_one({'_id': ObjectId(list[1])})
-            commentN = list[0]
-            paperCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
-            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
-            data = paperCollection.find({"_id": ObjectId(list[1])})
-            return render_template('main_view_journal.html',data = data, userId = userId)
-
-    oauthUserCollection = db.Oauth_Users
-    oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
-    for doc in oauthCursor:
-        if doc['user_id'] == list[2]:
-            oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
-            writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
-            commentN = list[0]
-            writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
-            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
-            data = writingCollection.find({"_id": ObjectId(list[1])})
-            return render_template('main_comunity_detail.html',data = data, userId = userId)
-    return "fail"
+    if 'google_token' in session:
+        cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
+        for document in cursor:
+            if document['user_id'] == list[2]:
+                userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
+                paper = paperCollection.find_one({'_id': ObjectId(list[1])})
+                commentN = list[0]
+                paperCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+                {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+                data = paperCollection.find({"_id": ObjectId(list[1])})
+                return render_template('main_view_journal.html',data = data, userId = userId)
+    elif 'userId' in session:
+        oauthUserCollection = db.Oauth_Users
+        oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
+        for doc in oauthCursor:
+            if doc['user_id'] == list[2]:
+                oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
+                writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
+                commentN = list[0]
+                writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+                {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+                data = writingCollection.find({"_id": ObjectId(list[1])})
+                return render_template('main_comunity_detail.html',data = data, userId = userId)
+    else:
+        loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
+        return render_template('main_login.html', loginFlag=loginFlag)
 
 @app.route('/enrollPaper', methods=['POST']) #논문 등록 버튼 클릭 시 처리 함수
 def enrollPaper():
@@ -445,8 +455,8 @@ def enrollPaper():
             session["state"] = 2 # Session의 State를 논문 등록 상태로 변환
             return mainEnroll()
     else:
-        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워data = data, userId = userId주고 login 창으로 이동.
-        return render_template('main_login.html')
+        loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
+        return render_template('main_login.html', loginFlag=loginFlag)
 
 @app.route("/main_comunity") #커뮤니티 작성된 글 목록 구성
 def mainComunity():
@@ -456,11 +466,12 @@ def mainComunity():
 
 @app.route("/main_comunity_write") #글쓰기 버튼 클릭시 로그인 검사 및 글쓰기 페이지 이동
 def mainComunityWrite():
+    userId = checkUserId()
     if 'google_token' in session or 'userId' in session:
-        return render_template('main_comunity_write.html')
+        return render_template('main_comunity_write.html', userId = userId)
     else:
-        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
-        return render_template('main_login.html', data = data, userId = userId)
+        loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
+        return render_template('main_login.html', loginFlag=loginFlag)
 
 @app.route("/main_comunity_detail", methods=['GET', 'POST']) #커뮤니티 글 내용 불러오기 기능 구현
 def getWriting():
@@ -476,21 +487,26 @@ def getWriting():
     data = bulletin.find({"_id": ObjectId(id)})
     return render_template('main_comunity_detail.html',data = data, userId = userId)
 
+def getUserName():
+    userId   = checkUserId()
+    userName = ""
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        userName = me.data['name']
+    elif 'userId' in session:
+        user = db.Users
+        userData = user.find_one({"user_id": userId})
+        userName = userData['user_name']
+    return userName
+
 @app.route('/enrollWriting', methods=['POST', 'GET']) #작성한 글 등록기능 구현
 def enrollWriting():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             collection = db.BulletinNum
             bulletinCollection = db.Bulletin
-            userName = ""
             userId   = checkUserId()
-            if 'google_token' in session:
-                me = google.get('userinfo')
-                userName = me.data['name']
-            elif 'userId' in session:
-                user = db.Users
-                userData = user.find_one({"user_id": userId})
-                userName = userData['user_name']
+            userName = getUserName()
             mainCategory = request.form['mainCat']
             subCategory = request.form['subCat']
             title = request.form['title']
@@ -511,8 +527,8 @@ def enrollWriting():
                               {"latestName": "latestName",'writingNum':writingNum})
             return mainComunity()
     else:
-        #로그인이 필요한 기능입니다. 라는 팝업 메시지 띄워주고 login 창으로 이동.
-        return render_template('main_login.html')
+        loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
+        return render_template('main_login.html', loginFlag=loginFlag)
 
 @app.route('/commentEnroll', methods=['POST']) #댓글기능 구현
 def commentEnroll():
@@ -520,14 +536,7 @@ def commentEnroll():
         if request.method == 'POST':
             bulletin = db.Bulletin
             userId = checkUserId()
-            userName = ""
-            if 'google_token' in session:
-                me = google.get('userinfo')
-                userName = me.data['name']
-            elif 'userId' in session:
-                user = db.Users
-                userData = user.find_one({"user_id": session['userId']})
-                userName = userData['user_name']
+            userName = getUserName()
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             commentContent = request.form['comment']
@@ -547,7 +556,8 @@ def commentEnroll():
         else:
             return "잘못된 데이터 요청 입니다."
     else:
-        return "로그인이 필요한 기능입니다."
+        loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
+        return render_template('main_login.html', loginFlag=loginFlag)
 
 @app.route("/adaptComment") #댓글 채택시 명성 부여
 def adaptComment():
@@ -556,31 +566,32 @@ def adaptComment():
     writingCollection = db.Bulletin
     userCollection = db.Users
     userId = checkUserId()
-
-    cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
-    for document in cursor:
-        if document['user_id'] == list[2]:
-            userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
-            writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
-            commentN = list[0]
-            writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
-            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
-            data = writingCollection.find({"_id": ObjectId(list[1])})
-            return render_template('main_comunity_detail.html',data = data, userId = userId)
-
-    oauthUserCollection = db.Oauth_Users
-    oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
-    for doc in oauthCursor:
-        if doc['user_id'] == list[2]:
-            oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
-            writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
-            commentN = list[0]
-            writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
-            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
-            data = writingCollection.find({"_id": ObjectId(list[1])})
-            return render_template('main_comunity_detail.html',data = data, userId = userId)
-
-    return "fail"
+    if 'userId' in session:
+        cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
+        for document in cursor:
+            if document['user_id'] == list[2]:
+                userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
+                writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
+                commentN = list[0]
+                writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+                {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+                data = writingCollection.find({"_id": ObjectId(list[1])})
+                return render_template('main_comunity_detail.html',data = data, userId = userId)
+    elif 'google_token' in session:
+        oauthUserCollection = db.Oauth_Users
+        oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
+        for doc in oauthCursor:
+            if doc['user_id'] == list[2]:
+                oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
+                writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
+                commentN = list[0]
+                writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+                {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+                data = writingCollection.find({"_id": ObjectId(list[1])})
+                return render_template('main_comunity_detail.html',data = data, userId = userId)
+    else:
+        loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
+        return render_template('main_login.html', loginFlag=loginFlag)
 
 @app.route("/checkMyState")
 def checkMyState():

@@ -58,6 +58,16 @@
 	</div>
 	<!--  Scripts-->
 
+  <script>
+    var loginFlag = '{{loginFlag}}'
+    if(loginFlag == 0){
+      alert("회원 정보가 없습니다.")
+    }
+    else if(loginFlag == 2){
+      alert("로그인이 필요한 기능입니다.")
+    }
+  </script>
+
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="../static/js/materialize.js"></script>
 	<script src="../static/js/init.js"></script>

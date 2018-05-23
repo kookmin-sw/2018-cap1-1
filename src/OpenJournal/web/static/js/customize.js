@@ -138,3 +138,34 @@ function modifyInfo(x){
   x.parentElement.firstElementChild.getElementsByTagName("span")[1].innerText = inputString1;
   x.parentElement.firstElementChild.getElementsByTagName("span")[3].innerText = inputString2;
 }
+
+function changeEthtoOJ(){
+  var a = document.getElementById("input_eth").value;
+  a = a*1000;
+  document.getElementById("changeEthtoOJ").innerText = a;
+
+  return false;
+}
+
+function changeOJtoEth(){
+  var a = document.getElementById("input_OJ").value;
+  a = a/1000;
+  document.getElementById("chageOJtoEth").innerText = a;
+}
+
+function filterNumber(event) {
+  var code = event.keyCode;
+  if (code > 47 && code < 58) {  //숫자입력
+    return;
+  }
+
+  if (code === 110 || code === 190) { //점입력
+    return;
+  }
+
+  if (code === 9 || code === 36 || code === 35 || code === 37 ||
+    code === 39 || code === 8 || code === 46) {
+  return;
+}
+  event.preventDefault();
+}

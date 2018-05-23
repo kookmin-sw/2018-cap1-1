@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Open Journal</title>
+
+
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="../static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../static/css/customize.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+  <nav class="white" role="navigation">
+    <ul id="dropdown1" class="dropdown-content">
+      <li id="nav_logout" style="display:block;" ><a href="" class="black-text">로그아웃</a></li>
+      <li id="nav_trade" style="display:block;" ><a href="main_token_buy_page" class="black-text">토큰 거래하기</a></li>
+      <li id="nav_mypage" style="display:none;"><a href="main_mypage" class="black-text">마이 페이지</a></li>
+      <li id="nav_login" style="display:block;" ><a href="main_login" class="black-text">로그인</a></li>
+
+      <li class="divider"></li>
+      <li id="nav_new_member" style="display:block"><a href="main_new_member" class="black-text">회원가입</a></li>
+    </ul>
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
+      <ul class="right hide-on-med-and-down">
+      <li><a href="main_enroll">논문 검수 및 등록</a></li>
+      <li><a href="main_view_fix_journal">논문 구독</a></li>
+      <li><a href="main_comunity">커뮤니티</a></li>
+      <li id="nav_login2" style="display:block;" ><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li id="nav_mypage2" style="display:none;" class="dropdown-trigger"><a href="main_mypage" data-target="dropdown1">마이페이지<i class="material-icons right"></i></a></li>
+      <li id="nav_trade2" style="display:none;" class="dropdown-trigger"><a href="main_token_buy_page" data-target="dropdown1">토큰 거래하기<i class="material-icons right"></i></a></li>
+      <li id="nav_logout2" style="display:none;" class="dropdown-trigger"><a href="" data-target="dropdown1">로그아웃<i class="material-icons right"></i></a></li>
+
+
+      </ul>
+      <ul id="nav-mobile" class="sidenav">
+        <li><a href="main_enroll">논문 검수 및 등록</a></li>
+        <li><a href="main_view_fix_journal">논문 구독</a></li>
+        <li><a href="main_comunity">커뮤니티</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
+    </div>
+  </nav>
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <br><br>
+        <h1 class="header center blue-text text-darken-4 text-lighten-2">토큰 거래하기</h1>
+        <div class="row center">
+          <h5 class="header col s12  black-text">이더리움을 이용하여 Open Journal 토큰을 구매할 수 있는 페이지입니다.</h5>
+        </div>
+        <div class="row center">
+          <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">더 알아보기</a>
+        </div>
+        <br><br>
+      </div>
+    </div>
+    <div class="parallax"><img src="../static/buyimage.jpg" alt="Unsplashed background img 1"></div>
+  </div>
+
+  <div  class="container">
+    <div class="section">
+      <div class="row" style="margin-bottom:0px;">
+        <div class="col s12 center">
+          <p>단위 : 1,000 OJ token / 1 Etherium </p>
+        </div>
+        <div class="col s12 center">
+          <h5 style="text-align:left;">Open Journal 토큰 구매하기 : <span style="font-size:1rem;">이더리움으로 구매할 수 있습니다.</span></h5>
+        </div>
+        <div class="col s12 center">
+          <div class="row">
+            <form class="col s12">
+                <div class="input-field col s6">
+                  <input style="ime-mode: disabled;" onkeydown="filterNumber(event)" onkeyup="changeEthtoOJ()" id="input_eth" type="text" class="validate">
+                  <label for="input_eth">이더리움 개수</label>
+                  <span class="helper-text">보유하고 있는 이더리움 내에서 교환할 개수를 입력하세요.</span>
+                </div>
+                <div class="input-field col s6">
+                  <p><span id="changeEthtoOJ" style="font-size:2rem; font-weight:bold;">0</span> 개의 OJ 토큰을 구매합니다.</p>
+                </div>
+                <div class="col center s12">
+                  <div class="s12 col center">
+                    <a href="#" id="" class="btn waves-effect waves-light blue darken-4">구매하기</a>
+                  </div>
+                </div>
+            </form>
+          </div>
+        </div>
+
+
+        <div class="col s12 center">
+          <h5 style="text-align:left;">Open Journal 토큰을 이더리움으로 교환하기</h5>
+        </div>
+        <div class="col s12 center">
+          <div class="row">
+            <form class="col s12">
+                <div class="input-field col s6">
+                  <input style="ime-mode: disabled;" onkeydown="filterNumber(event)" onkeyup="changeOJtoEth()" id="input_OJ" type="text" class="validate">
+                  <label for="input_OJ">OJ 토큰 개수</label>
+                  <span class="helper-text">보유하고 있는 OJ토큰 개수 내에서 교환할 개수를 입력하세요.</span>
+                </div>
+                <div class="input-field col s6">
+                  <p><span id="chageOJtoEth" style="font-size:2rem; font-weight:bold;">0</span> 개의 이더리움으로 교환 가능합니다.</p>
+                </div>
+                <div class="col center s12">
+                  <div class="s12 col center">
+                    <a href="#" id="" class="btn waves-effect waves-light blue darken-4">교환하기</a>
+                  </div>
+                </div>
+            </form>
+          </div>
+        </div>
+	    </div>
+    </div>
+  </div>
+  <!--  Scripts-->
+  <script>
+    var userId = '{{userId}}';
+    alert(userId);
+    if(userId != ""){ //login
+
+      var one = document.getElementById("nav_login");
+      one.style.display = one.style.display === 'none' ? 'block' : 'none';
+
+      var two = document.getElementById("nav_new_member");
+      two.style.display = two.style.display === 'none' ? 'block' : 'none';
+
+      var c = document.getElementById("nav_mypage");
+      c.style.display = c.style.display === 'none' ? 'block' : 'none';
+
+      var d = document.getElementById("nav_login2");
+      d.style.display = d.style.display === 'none' ? 'block' : 'none';
+
+      var e = document.getElementById("nav_mypage2");
+      e.style.display = e.style.display === 'none' ? 'block' : 'none';
+
+
+    }
+    else if(userId == ""){
+
+        alert("로그아웃");
+    }
+  </script>
+
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="../static/js/materialize.js"></script>
+  <script src="../static/js/init.js"></script>
+  <script src="../static/js/customize.js"></script>
+
+  </body>
+</html>

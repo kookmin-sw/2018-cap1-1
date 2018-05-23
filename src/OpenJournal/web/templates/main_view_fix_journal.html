@@ -121,7 +121,7 @@
       {% for i in data %}
       <div class="col s12">
         <ul class="collection">
-          <li class="collection-item avatar">
+          <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
             <i class="material-icons circle">folder</i>
             <span class="title">{{i.title}}</span>
             <p>{{i.writer}}<br></p>
