@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Open Journal</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/customize.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+  <nav class="white" role="navigation">
+    <ul id="dropdown1" class="dropdown-content">
+      <li id="nav_mypage" style="display:none;"><a href="main_mypage" class="black-text">마이 페이지</a></li>
+      <li id="nav_login" style="display:block;" ><a href="main_login" class="black-text">로그인</a></li>
+      <li class="divider"></li>
+      <li id="nav_new_member" style="display:block"><a href="main_new_member" class="black-text">회원가입</a></li>
+    </ul>
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
+      <ul class="right hide-on-med-and-down">
+      <li><a href="main_enroll">논문 검수 및 등록</a></li>
+      <li><a href="main_view_fix_journal">논문 구독</a></li>
+      <li><a href="main_comunity">커뮤니티</a></li>
+      <li id="nav_login2" style="display:block;" ><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li id="nav_mypage2" style="display:none;" class="dropdown-trigger"><a href="main_mypage" data-target="dropdown1">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
+      <ul id="nav-mobile" class="sidenav">
+        <li><a href="main_enroll">논문 검수 및 등록</a></li>
+        <li><a href="main_view_fix_journal">논문 구독</a></li>
+        <li><a href="main_comunity">커뮤니티</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
+    </div>
+  </nav>
+
+  <div id="loading_journal" style="display:none; margin:0px;" class="fixed center-align">
+    <div style="margin:0px;" class="blue lighten-4 progress">
+      <div class="blue darken-3 indeterminate"></div>
+    </div>
+    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 블록체인에 걸리는 데 약 1분 정도 소요됩니다.</span>
+  </div>
+
+  <div id="complete_journal" style="display:none; margin:0px;" class="fixed center-align">
+    <div style="margin:0px;" class="progress">
+        <div class="blue darken-3 determinate" style="width: 100%"></div>
+    </div>
+    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 성공적으로 등록되었습니다.</span>
+  </div>
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <br><br>
+        <h1 class="header center blue-text text-darken-4 text-lighten-2">OPEN JOURNAL</h1>
+        <div class="row center">
+          <h5 class="header col s12  black-text">논문 저작권자에게 충분한 보상이 보장되는 오픈 저널 커뮤니티</h5>
+        </div>
+        <div class="row center">
+          <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">더 알아보기</a>
+        </div>
+        <br><br>
+      </div>
+    </div>
+    <div class="parallax"><img src="img/background1.jpg" alt="Unsplashed background img 1"></div>
+  </div>
+
+  <div  class="container">
+    <div class="section">
+      <div class="row" style="margin-bottom:0px;">
+        <div class="col s4 center">
+          <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
+            <option value="total">전체</option>
+            <option value="engineering">공학</option>
+            <option value="education">교육</option>
+            <option value="AFO">농수해양</option>
+            <option value="interdisciplinary">복합학</option>
+            <option value="social">사회</option>
+            <option value="article_physication">예술체육</option>
+            <option value="medicine">의약학</option>
+            <option value="humanities">인문</option>
+            <option value="natural">자연</option>
+          </select>
+        </div>
+        <div class="col s4 center">
+          <select id="subCat" class="browser-default">
+            <option value="0">전체</option>
+          </select>
+        </div>
+
+        <div class="col s4 center">
+          <select class="browser-default">
+            <option value="9">인기논문</option>
+            <option value="10">최신논문</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="border:1px solid; margin-bottom:20px;">
+	    	<div class="nav-wrapper col s12 center">
+	      	<form>
+	        	<div class="input-field">
+	          	<input id="search" type="search" required>
+	          	<label class="label-icon" for="search"><i class="material-icons">search</i></label>
+	          	<i class="material-icons">close</i>
+	          </div>
+	        </form>
+	      </div>
+      </div>
+
+	    <div class="col s12">
+	      <ul class="collection">
+	        <li style="cursor:pointer;" onclick="location.href='main_view_journal.html'" class="collection-item avatar">
+	          <i class="material-icons circle purple">folder</i>
+	          <span class="title">사물인터넷(IoT : Internet of Things) 기술</span>
+	          <p>
+	          저자 : 김세형 <br>
+	          </p>
+	          주제어 : 소프트웨어 / 사물인터넷 / 공학 / 컴퓨터공학
+	          <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+	        </li>
+	        <li class="collection-item avatar">
+	          <i class="material-icons circle">folder</i>
+	          <span class="title">미국 화학물질 규제행정의 체계와 법제</span>
+	          <p>저자 : 오성은, 윤혜선<br></p>
+	          <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 화학물질 규제체계 / 유해화학물질 관리 / 미국 유해화학물질관리법 / 미국 소비자제품안전개선법 / 캘리포니아 법령 65 / Chemical Regulation / Toxic Substance Management / U.S. Toxic Substance Control Act of 1976 / U.S. Consumer Product Safety Improvement Act / California Proposition 65 / 사회과학 / 법학
+	          </p>
+	        </li>
+	        <li class="collection-item avatar">
+	          <i class="material-icons circle green">folder</i>
+	          <span class="title">투석환자에서 수면장애에 영향을 주는 심리학적 요인과 의학적 요인</span>
+	          <p>저자 : 지윤미 / 강건우 / 서민재 / 김홍익 / 우정민<br></p>
+	          <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : Hemodialysis patients / Quality of life / Psychological factors / Medical factors / 심리학적 요인 / 의학적 요인 / 혈액투석환자 / 삶의 질 / 수면의 질 / Sleep quality / 의학 / Medicine / 임상의학
+	          </p>
+	          <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+	        </li>
+	        <li class="collection-item avatar">
+	          <i class="material-icons circle blue">folder</i>
+	          <span class="title">체육과 인간 형성에 관한 근대 일본의 연구 동향</span>
+	          <p>저자 : 김기용<br></p>
+	          <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 체육개념 / 인간형성 / 연구동향
+	          </p>
+	        </li>
+	        <li class="collection-item avatar">
+	          <i class="material-icons circle yellow">folder</i>
+	          <span class="title">자연명상법을 통한 심리치유의 필요성과 그 대안</span>
+	          <p>저자 : 강명희<br></p>
+	          <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 기세간 / 자연환경 / 아뢰야식 / 계차별관 / 명상 / 수용 / Bhājana loka / A natural environment / Ālayavijñāna / Dhātu-prabheda-sṃrti / Meditation / A acceptance. / 인문학 / 불교학
+	          </p>
+	          <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+	        </li>
+	        <li class="collection-item avatar">
+	          <i class="material-icons circle pink">folder</i>
+	          <span class="title">오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
+	          <p>저자 : 이준표 / 한갑수 / 이승항<br></p>
+	          <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : 공학 / Engineering / 전기통신
+	          </p>
+	          <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+	        </li>
+	      </ul>
+	    </div>
+	    <div class="col s12 center">
+	      <ul class="pagination">
+	        <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+	        <li class="active"><a href="#!">1</a></li>
+	        <li class="waves-effect"><a href="#!">2</a></li>
+	        <li class="waves-effect"><a href="#!">3</a></li>
+	        <li class="waves-effect"><a href="#!">4</a></li>
+	        <li class="waves-effect"><a href="#!">5</a></li>
+	        <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+	      </ul>
+	    </div>
+    </div>
+  </div>
+  <!--  Scripts-->
+  <script>
+    var userId = '{{userId}}';
+    alert(userId);
+    if(userId != ""){ //login
+
+      var one = document.getElementById("nav_login");
+      one.style.display = one.style.display === 'none' ? 'block' : 'none';
+
+      var two = document.getElementById("nav_new_member");
+      two.style.display = two.style.display === 'none' ? 'block' : 'none';
+
+      var c = document.getElementById("nav_mypage");
+      c.style.display = c.style.display === 'none' ? 'block' : 'none';
+
+      var d = document.getElementById("nav_login2");
+      d.style.display = d.style.display === 'none' ? 'block' : 'none';
+
+      var e = document.getElementById("nav_mypage2");
+      e.style.display = e.style.display === 'none' ? 'block' : 'none';
+
+
+    }
+  </script>
+
+  <script>
+    var enrollFlag = '{{enrollFlag}}'
+    if(enrollFlag == 1){
+      alert("회원가입이 완료 되었습니다.")
+    }
+  </script>
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  <script src="js/customize.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+	<script src="js/app.js"></script>
+  <script src="js/common.js"></script>
+
+  </body>
+</html>

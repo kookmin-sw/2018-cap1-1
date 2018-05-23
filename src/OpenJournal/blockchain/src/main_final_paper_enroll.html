@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Open Journal</title>
+
+  <script>
+
+    var userId = '{{userId}}';
+    alert(userId);
+  </script>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/customize.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+  <nav class="white" role="navigation">
+    <ul id="dropdown1" class="dropdown-content">
+      <li><a href="main_login" class="black-text">로그인</a></li>
+      <li class="divider"></li>return str(filePath)
+      <li><a href="main_new_member" class="black-text">회원가입</a></li>
+      <li class="hiddenPage"><a href="main_mypage" class="black-text">마이 페이지</a></li>
+    </ul>
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
+      <ul class="right hide-on-med-and-down">
+      <li><a href="main_enroll">논문 검수 및 등록</a></li>
+      <li><a href="main_view_fix_journal">논문 구독</a></li>
+      <li><a href="main_comunity">커뮤니티</a></li>
+      <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
+      <ul id="nav-mobile" class="sidenav">
+        <li><a href="main_enroll">논문 검수 및 등록</a></li>
+        <li><a href="main_view_fix_journal">논문 구독</a></li>
+        <li><a href="main_comunity">커뮤니티</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
+    </div>
+  </nav>
+
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  <script src="js/customize.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+	<script src="js/app.js"></script>
+  <script src="js/common.js"></script>
+
+  </body>
+</html>
