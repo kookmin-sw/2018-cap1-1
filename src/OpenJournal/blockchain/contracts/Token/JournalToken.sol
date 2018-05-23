@@ -10,7 +10,6 @@ contract JournalToken is EIP20Interface, Owned {
 
     uint256 constant private MAX_UINT256 = 2**256 - 1;
     mapping (address => uint256) public balances;
-    mapping (address => uint256) public mini_balances;
     mapping (address => mapping (address => uint256)) public allowed; 
     
     string public name;                                 // Token name
@@ -18,7 +17,7 @@ contract JournalToken is EIP20Interface, Owned {
     string public symbol;                               // Token unit
     address public owner;                  
     uint256 constant public rate = 10000;                       // The ratio of our token to Ether
-    uint256 public constant tokenGenerationMax = 1 * (10**7) * (10**uint256(decimals));
+    uint256 public constant tokenGenerationMax = 1 * (10**6) * (10**uint256(decimals));
 
     event BuyToken(
         uint256 _msgValue,
