@@ -130,3 +130,11 @@ function selectAccount(x){
   document.getElementById("etherium_acc").value= value;
   document.getElementById("overlay").style.display = "none";
 }
+
+function modifyInfo(x){
+  var inputString1 = prompt('변경할 번호를 입력하세요', x.parentElement.firstElementChild.getElementsByTagName("span")[1].innerText);
+  var inputString2 = prompt('변경할 제목을 입력하세요', x.parentElement.firstElementChild.getElementsByTagName("span")[3].innerText);
+
+  x.parentElement.firstElementChild.getElementsByTagName("span")[1].innerText = inputString1;
+  x.parentElement.firstElementChild.getElementsByTagName("span")[3].innerText = inputString2;
+}
