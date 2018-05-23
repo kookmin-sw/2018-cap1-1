@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
+  <script>
+    var userId = '{{userId}}';
+    alert(userId);
+  </script>
+
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -56,9 +61,9 @@
     <div class="section no-pad-bot">
       <div class="container">
         <br><br>
-        <h1 class="header center blue-text text-darken-4 text-lighten-2">커뮤니티</h1>
+        <h1 class="header center blue-text text-darken-4 text-lighten-2">논문 구독</h1>
         <div class="row center">
-          <h5 class="header col s12  black-text">논문에 대해 이야기를 나누는 공간입니다.</h5>
+          <h5 class="header col s12  black-text">토큰을 지불하고 논문을 구독할 수 있습니다.</h5>
         </div>
         <div class="row center">
           <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">더 알아보기</a>
@@ -66,59 +71,88 @@
         <br><br>
       </div>
     </div>
-    <div class="parallax"><img src="img/comunity.jpg" alt="Unsplashed background img 1"></div>
+    <div class="parallax"><img src="img/background_subscribe.jpg" alt="Unsplashed background img 1"></div>
   </div>
+
 
   <div  class="container">
     <div class="section">
       <div class="row" style="margin-bottom:0px;">
-        <div class="col s12 center">
-          <table>
-            <thead>
-              <tr>
-                <th class="center" style="width:5%;">번호</th>
-                <th class="center" style="width:10%;">대분류</th>
-                <th class="center" style="width:10%;">소분류</th>
-                <th class="center" style="width:50%;">제목</th>
-                <th class="center" style="width:10%;">작성자</th>
-                <th class="center" style="width:10%;">작성일</th>
-                <th class="center" style="width:5%;">조회</th>
-              </tr>
-            </thead>
-
-            {% for i in data %}
-              <tbody>
-                <tr>
-                  <td class="center">{{i.writingNum}}</td>
-                  <td class="center">{{i.mainCategory}}</td>
-                  <td class="center">{{i.subCategory}}</td>
-                  <td class="center" style="cursor:pointer;" onclick="location.href='/main_comunity_detail?id={{i._id}}'">{{i.title}}</td>
-                  <td class="center">{{i.userName}}</td>
-                  <td class="center">{{i.time}}</td>
-                  <td class="center">{{i.hits}}</td>
-                </tr>
-              </tbody>
-            {% endfor %}
-
-            <tfoot>
-              <tr style="border-bottom:0px;">
-                <td colspan="6"><a href="main_comunity_write" class="btn right blue darken-4">글쓰기</a></td>
-              </tr>
-            </tfoot>
-          </table>
-
+        <div class="col s4 center">
+          <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
+            <option value="total">전체</option>
+            <option value="engineering">공학</option>
+            <option value="education">교육</option>
+            <option value="AFO">농수해양</option>
+            <option value="interdisciplinary">복합학</option>
+            <option value="social">사회</option>
+            <option value="article_physication">예술체육</option>
+            <option value="medicine">의약학</option>
+            <option value="humanities">인문</option>
+            <option value="natural">자연</option>
+          </select>
         </div>
+        <div class="col s4 center">
+          <select id="subCat" class="browser-default">
+            <option value="0">전체</option>
+          </select>
+        </div>
+
+        <div class="col s4 center">
+          <select class="browser-default">
+            <option value="9">인기논문</option>
+            <option value="10">최신논문</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="border:1px solid; margin-bottom:20px;">
+          <div class="nav-wrapper col s12 center">
+            <form>
+              <div class="input-field">
+                <input id="search" type="search" required>
+                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                <i class="material-icons">close</i>
+              </div>
+            </form>
+          </div>
+      </div>
+
+      {% for i in data %}
+      <div class="col s12">
+        <ul class="collection">
+          <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
+            <i class="material-icons circle">folder</i>
+            <span class="title">{{i.title}}</span>
+            <p>{{i.writer}}<br></p>
+            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : {{i.keyword}}</p>
+          </li>
+        </ul>
+      </div>
+      {% endfor %}
+
+      <div class="col s12 center">
+        <ul class="pagination">
+          <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+          <li class="active"><a href="#!">1</a></li>
+          <li class="waves-effect"><a href="#!">2</a></li>
+          <li class="waves-effect"><a href="#!">3</a></li>
+          <li class="waves-effect"><a href="#!">4</a></li>
+          <li class="waves-effect"><a href="#!">5</a></li>
+          <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+        </ul>
       </div>
     </div>
   </div>
-
   <!--  Scripts-->
-
-
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
   <script src="js/customize.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+	<script src="js/app.js"></script>
+  <script src="js/common.js"></script>
 
   </body>
 </html>
