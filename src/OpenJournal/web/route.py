@@ -13,17 +13,21 @@ from pdfminer.pdfparser import PDFParser
 from pymongo import Connection
 from pymongo import MongoClient
 from urllib2 import Request, urlopen, URLError
-from web.config import Config
+from config import Config
 from werkzeug import secure_filename
 
-import gridfs, datetime, json, os
+import gridfs, datetime, json, os, jinja2, flask
 import PyPDF2
 import hashlib
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 #UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
-
-app = Flask(__name__)
+app = flask.Flask(__name__)
+my_loader = jinja2.ChoiceLoader([
+    app.jinja_loader,
+    jinja2.FileSystemLoader('/home/hoon/captone3/2018-cap1-1/src/OpenJournal/blockchain/src'),
+])
+app.jinja_loader = my_loader
 app.config['GOOGLE_ID'] = Config.google["id"]               # "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
 app.config['GOOGLE_SECRET'] = Config.google["secret"]       # "61w2EkT-lKN8eUkSRUBWIxMx"
 app.config['UPLOAD_FOLDER'] = Config.google["folder"]       # UPLOAD_FOLDER
@@ -62,6 +66,12 @@ def passwordTohash(password):
     hash_object = hashlib.sha256(password)
     hex_dig = hash_object.hexdigest()
     return hex_dig
+
+def blockEnrollUpdate():
+    id = request.args.get("id")
+    paperCollection = db.PaperInformation
+    pNum = papernum()
+    paperCollection.update({"_id":ObjectId(id)}, {"$set": {"complete": 1, "paperNum": pNum}})
 
 def checkUserId():
     userId = ""
