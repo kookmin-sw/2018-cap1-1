@@ -21,13 +21,8 @@ function subscribeJournal(callback){
             instance.subscribeJournal(journalNumber, { from: subscriber });
         });
     });
-
-    callback();
-}
-
-subscribeJournal(function () {
     
-});
+}
 
 function getJournalNumber(){
     var number = document.getElementById("journal_number").value;
