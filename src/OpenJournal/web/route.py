@@ -452,6 +452,7 @@ def enrollPaper():
             userInfo = userCollection.find_one({"user_id": userId})
             enrollPaperNum = userInfo['enrollPaperNum']
             userCollection.update({"user_id": userId}, {"$set":{"enrollPaperNum":enrollPaperNum+1}})
+            session["state"] = 2 # Session의 State를 논문 등록 상태로 변환
             return mainEnroll()
     else:
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
@@ -592,6 +593,13 @@ def adaptComment():
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
+@app.route("/checkMyState")
+def checkMyState():
+    return """{
+        "result": 0,
+        "check_state": %d
+    }""" % session["state"]
+
 def page_number_of_pdf(path):       # PDF의 page 수
     pdfFileObj = open(path, 'rb')
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
@@ -675,6 +683,7 @@ def make_hash_string(journal_number, journal_title):        # number와 title을
     journal_hash = hashlib.sha256(new_str.encode('utf-8')).hexdigest()
 
     return journal_hash
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

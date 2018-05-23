@@ -202,3 +202,14 @@
   padding:3px;
   text-align: center;
 }
+
+.fixed{
+  margin : 10px;
+  height:35px;
+  width:100%;
+  color: #555;
+  font-size:12px;
+  z-index:999;
+  top:0px;
+  left:0px;
+}
