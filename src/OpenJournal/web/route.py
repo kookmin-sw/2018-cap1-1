@@ -60,6 +60,13 @@ def passwordTohash(password):
     hex_dig = hash_object.hexdigest()
     return hex_dig
 
+@app.route("/enrollBlockPaper")
+def enrollBlockPaper():
+    id = request.args.get("id")
+    paperNum = papernum()
+    paperInfo = db.PaperInformation
+    paperInfo.update({"_id":ObjectId(id)}, {"$set":{"complete":1, "paperNum":paperNum}})
+    return moveToSubPaper()
 
 def checkUserId():
     userId = ""
@@ -79,8 +86,7 @@ def checkTime(month):   #월이 바뀌는 경우를 판단해주는 함수
     else:
         return 1 #월이 같은 경우 1 리턴
 
-@app.route("/papernum")
-def papernum():                      #논문 번호 생성
+def papernum():   #최종 등록시 논문 번호 생성
     paperNumInfo = db.PaperNum
     now   = datetime.datetime.now()
     year  = str(now.strftime("%Y"))
@@ -585,7 +591,6 @@ def adaptComment():
             {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
             data = writingCollection.find({"_id": ObjectId(list[1])})
             return render_template('main_comunity_detail.html',data = data, userId = userId)
-
     return "fail"
 
 def page_number_of_pdf(path):       # PDF의 page 수
