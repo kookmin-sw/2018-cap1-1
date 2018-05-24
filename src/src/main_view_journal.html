@@ -365,28 +365,28 @@
     var enrollUserId = '{{enrollUserId}}';
     var complete = '{{complete}}';
     if(userId == enrollUserId && complete == 0){
-      alert("작성자와 현재 사용자가 같음");
+      //alert("작성자와 현재 사용자가 같음");
       //업데이트 버튼, 최종 등록 버튼 나오고, 구독은 안나옴
       document.getElementById("btn_update").style.display = "block";
       document.getElementById("btn_enroll").style.display = "block";
       document.getElementById("btn_read").style.display = "none";
     }
     else if(userId == enrollUserId && complete == 1){
-      alert("작성자와 현재 사용자가 같음");
+      //alert("작성자와 현재 사용자가 같음");
       //아무 버튼도 안나옴
       document.getElementById("btn_update").style.display = "none";
       document.getElementById("btn_enroll").style.display = "none";
       document.getElementById("btn_read").style.display = "none";
     }
     else if(userId != enrollUserId && complete == 0){
-      alert("작성자와 현재 사용자가 다름");
+      //alert("작성자와 현재 사용자가 다름");
       //아무 버튼도 나오지 않음
       document.getElementById("btn_update").style.display = "none";
       document.getElementById("btn_enroll").style.display = "none";
       document.getElementById("btn_read").style.display = "none";
     }
     else if(userId != enrollUserId && complete == 1){
-      alert("작성자와 현재 사용자가 다름");
+      //alert("작성자와 현재 사용자가 다름");
       //구독버튼만 나와야함
       document.getElementById("btn_update").style.display = "none";
       document.getElementById("btn_enroll").style.display = "none";
