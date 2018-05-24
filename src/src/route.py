@@ -25,13 +25,13 @@ ALLOWED_EXTENSIONS = set(['pdf'])
 app = flask.Flask(__name__)
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
-    jinja2.FileSystemLoader('/home/ubuntu/captone/2018-cap1-1/src/src'),
+    jinja2.FileSystemLoader(Config.loader_path),
 ])
 app.jinja_loader = my_loader
 
 app.config['GOOGLE_ID'] = Config.google["id"]
 app.config['GOOGLE_SECRET'] = Config.google["secret"]
-app.config['UPLOAD_FOLDER'] = Config.google["folder"]
+app.config['UPLOAD_FOLDER'] = Config.upload_folder
 
 app.debug = True
 app.secret_key = 'development'
@@ -39,6 +39,8 @@ oauth = OAuth(app)
 client = MongoClient('localhost', 27017)
 db = client.OpenJournal
 fs = gridfs.GridFS(db)
+
+hash_password = Config.hash_password      
 
 google = oauth.remote_app(
     'google',
@@ -53,10 +55,6 @@ google = oauth.remote_app(
     access_token_url='https://accounts.google.com/o/oauth2/token',
     authorize_url='https://accounts.google.com/o/oauth2/auth',
 )
-
-hash_password = Config.hash_password      #"0504110310110711"
-
-pdf_path_without_filename = "/home/ubuntu/captone/2018-cap1-1/src/src/static/journal/"
 
 @app.route("/") #메인 홈페이지 이동
 def home():
@@ -333,9 +331,9 @@ def enrollPaperComment():
 def extractReference(obId):
     paperInfo = db.PaperInformation
     paper = paperInfo.find_one({"_id":ObjectId(obId)})
-    filepath = pdf_path_without_filename + paper['fileName']
+    filepath = app.config['UPLOAD_FOLDER'] + paper['fileName']
     pdf_page = page_number_of_pdf(filepath)
-    text = convert_pdf_to_txt(str(filepath))
+    text = convert_pdf_to_txt(str(filepath), [pdf_page-3, pdf_page-2, pdf_page-1])
     reference_number_list, reference_title_list = extract_reference_from_text(text)
     reference_dic = {
     reference_number_list : reference_title_list for reference_number_list, reference_title_list in zip(reference_number_list, reference_title_list)
@@ -645,7 +643,7 @@ def convert_pdf_to_txt(path, pages=None):
     return text
 
 def extract_reference_from_text(text):      # text로부터 reference를 추출
-    start = text.find('REFERENCES:')
+    start = text.find('My references at below page.')
     reference_text = " ".join(text[start:].split("\n"))
 
     reference_list = reference_text.split("[")
@@ -686,16 +684,6 @@ def extract_reference_from_text(text):      # text로부터 reference를 추출
         return -1, -1
 
     return reference_number_list, reference_title_list
-
-def make_reference_hash_string(number_list, title_list):    # reference를 hash string으로 변환
-    hash_length = len(number_list)
-    hash_list = []
-
-    for i in range(0, hash_length):
-        new_str = str(number_list[i])+hash_password+title_list[i]
-        hash_list.append((hashlib.sha256(new_str.encode('utf-8')).hexdigest()))
-
-    return hash_list
 
 def make_hash_string(journal_number, journal_title):        # number와 title을 이용하여 hast string으로 변환
     new_str = str(journal_number)+hash_password+journal_title
