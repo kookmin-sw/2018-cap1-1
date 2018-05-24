@@ -25,7 +25,7 @@ ALLOWED_EXTENSIONS = set(['pdf'])
 app = flask.Flask(__name__)
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
-    jinja2.FileSystemLoader('/home/hoon/captone3/2018-cap1-1/src/src'),
+    jinja2.FileSystemLoader('/home/ubuntu/captone/2018-cap1-1/src/src'),
 ])
 app.jinja_loader = my_loader
 app.config['GOOGLE_ID'] = Config.google["id"]               # "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
@@ -55,7 +55,7 @@ google = oauth.remote_app(
 
 hash_password = Config.hash_password      #"0504110310110711"
 
-pdf_path_without_filename = "/home/hoon/captone3/2018-cap1-1/src/src/static/journal/"
+pdf_path_without_filename = "/home/ubuntu/captone/2018-cap1-1/src/src/static/journal/"
 
 @app.route("/") #메인 홈페이지 이동
 def home():
@@ -167,7 +167,7 @@ def userLogin():
     if loginFlag == 0:
         return render_template('main_login.html', userId = userId, loginFlag = loginFlag)
     elif loginFlag == 1:
-        return render_template('main.html', loginFlag = loginFlag)
+        return render_template('main.html', loginFlag = loginFlag, userId = userId)
 
 @app.route("/enrollNewMember", methods=['POST']) #일반회원 가입 기능 구현
 def enrollNewMember():
@@ -306,6 +306,9 @@ def enrollPaperComment():
             data = paperInfo.find({"_id": ObjectId(objectId)})
             commentNum = 0
             adaptFlag = 0
+            for document in data:
+                if document['_id'] == ObjectId(objectId):
+                    commentNum = document['commentNumber']
             commentDict = {'commentNum':commentNum+1, 'userId':userId,'userName':userName, 'Time':currentTime,
                            'comment':commentContent, 'adaptFlag': adaptFlag}
             paperInfo.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
@@ -314,7 +317,8 @@ def enrollPaperComment():
             data2 = paperInfo.find_one({"_id": ObjectId(objectId)})
             enrollUserId = data2['user_id']
             complete = data2['complete']
-            return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId, complete = complete)
+	    paperNumDic = extractReference(objectId)
+            return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
         else:
             return "잘못된 데이터 요청 입니다."
     else:
@@ -387,32 +391,33 @@ def adaptPaperComment():
     paperCollection = db.PaperInformation
     userCollection = db.Users
     userId = checkUserId()
-    if 'google_token' in session:
-        cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
-        for document in cursor:
-            if document['user_id'] == list[2]:
-                userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
-                paper = paperCollection.find_one({'_id': ObjectId(list[1])})
-                commentN = list[0]
-                paperCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
-                {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
-                data = paperCollection.find({"_id": ObjectId(list[1])})
-                return render_template('main_view_journal.html',data = data, userId = userId)
-    elif 'userId' in session:
-        oauthUserCollection = db.Oauth_Users
-        oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
-        for doc in oauthCursor:
-            if doc['user_id'] == list[2]:
-                oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
-                writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
-                commentN = list[0]
-                writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
-                {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
-                data = writingCollection.find({"_id": ObjectId(list[1])})
-                return render_template('main_comunity_detail.html',data = data, userId = userId)
-    else:
-        loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
-        return render_template('main_login.html', loginFlag=loginFlag)
+    cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
+    for document in cursor:
+        if document['user_id'] == list[2]:
+            userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
+            paper = paperCollection.find_one({'_id': ObjectId(list[1])})
+	    commentN = list[0]
+            paperCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+            data = paperCollection.find({"_id": ObjectId(list[1])})
+            paperNumDic = extractReference(list[1])
+            return render_template('main_view_journal.html',data = data, userId = userId, paperNumDic = paperNumDic)
+    
+    oauthUserCollection = db.Oauth_Users
+    oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
+    for doc in oauthCursor:
+        if doc['user_id'] == list[2]:
+            oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
+            writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
+            commentN = list[0]
+            writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+            {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+            data = writingCollection.find({"_id": ObjectId(list[1])})
+            paperNumDic = extractReference(list[1])
+            return render_template('main_view_journal.html',data = data, userId = userId, paperNumDic = paperNumDic)
+    
+    loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
+    return render_template('main_login.html', loginFlag=loginFlag)
 
 @app.route('/enrollPaper', methods=['POST']) #논문 등록 버튼 클릭 시 처리 함수
 def enrollPaper():
@@ -561,8 +566,7 @@ def commentEnroll():
             bulletin.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
             bulletin.update({"_id": ObjectId(objectId)},{"$set": {"commentNumber":commentNum+1}})
             data = bulletin.find({"_id": ObjectId(objectId)})
-            paperNumDic = extractReference(id)
-            return render_template('main_comunity_detail.html',data = data, userId = userId, paperNumDic=paperNumDic)
+            return render_template('main_comunity_detail.html',data = data, userId = userId)
         else:
             return "잘못된 데이터 요청 입니다."
     else:

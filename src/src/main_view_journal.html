@@ -5,28 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
-  <script>
+ <script>
   function checkComment(comment){
     var img_id = comment;
     var split_arr = img_id.split("_");
     if(split_arr[3] == 1){
       var special_id = document.getElementById(img_id).firstElementChild;
-      special_id.src = "../static/check.png"
+      special_id.src = "static/img/check.png"
       document.getElementById(img_id).classList.add('checked');
       document.getElementById(img_id).classList.remove('unchecked');
     }
   }
-  </script>
+ </script>
 
   <script>
   function adapt(test){
     var img_id = test.id;
     var split_arr = img_id.split("_");
-
     var userId = '{{userId}}';
     if(document.getElementById(img_id).classList.contains('unchecked') && userId == split_arr[4] && userId != split_arr[2]){
       var special_id = document.getElementById(img_id).firstElementChild;
-      special_id.src = "../static/check.png"
+      special_id.src = "static/img/check.png"
       document.getElementById(img_id).classList.add('checked');
       document.getElementById(img_id).classList.remove('unchecked');
       location.href ="adaptPaperComment?data="+split_arr;
@@ -65,20 +64,6 @@
     </div>
   </nav>
 
-  <div id="loading_journal" style="display:none; margin:0px;" class="fixed center-align">
-    <div style="margin:0px;" class="blue lighten-4 progress">
-      <div class="blue darken-3 indeterminate"></div>
-    </div>
-    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 블록체인에 걸리는 데 약 1분 정도 소요됩니다.</span>
-  </div>
-
-  <div id="complete_journal" style="display:none; margin:0px;" class="fixed center-align">
-    <div style="margin:0px;" class="progress">
-        <div class="blue darken-3 determinate" style="width: 100%"></div>
-    </div>
-    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 성공적으로 등록되었습니다.</span>
-  </div>
-
   {% for i in data %}
   <div  class="container">
     <div class="section">
@@ -99,7 +84,7 @@
           <div style="margin-bottom: 8px;" class="col s12 center">
           </div>
           <div class="s12 col center">
-            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="../static/journal/{{i.fileName}}">
+            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="static/journal/{{i.fileName}}">
             </iframe>
 
             <table class="journal_info">
@@ -217,12 +202,12 @@
                     <span style=" font-size:1.5rem; font-weight:bold;">Reference</span>
                   </div>
                   <div>
+                    {% for key, value in paperNumDic.items() %}
                     <div class="col s12">
                       <div class="col s8">
                         <div class="card blue darken-4">
                           <div style="padding:1px;" class="card-content white-text">
-                            <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title">#<span name="OJjournal">1</span><span>&nbsp;</span><span id="journal_name">오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span></span>
-                            <p id="journal_author">이준표</p>
+                            <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title">#<span name="OJjournal">{{key}}</span><span>&nbsp;</span><span id="journal_name">{{value}}</span></span>
                           </div>
                         </div>
                       </div>
@@ -255,85 +240,7 @@
                         </div>
                       </div>
                     </div>
-
-                    <div class="col s12">
-                      <div class="col s8">
-                        <div class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title">#<span name="OJjournal">2</span><span>&nbsp;</span><span id="journal_name">나는 지금 이게 너무 하기 싫다.</span></span>
-                            <p id="journal_author">이준표</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s1" onclick="modifyInfo(this)">
-                        <div class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
-                            <p id="">클릭</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s1" onclick="checkReference(this)">
-                        <div class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
-                            <p id="">클릭</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s2">
-                        <div class="card">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">번호&제목 일치여부</span>
-                            <p id="correspond" style="color:green;">일치합니다.</p>
-                            <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col s12">
-                    <div class="col s8">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title">#<span name="OJjournal">2</span><span>&nbsp;</span><span id="journal_name">나는 지금 이게 너무 하기 싫다.</span></span>
-                          <p id="journal_author">이준표</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s1" onclick="modifyInfo(this)">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
-                          <p id="">클릭</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s1" onclick="checkReference(this)">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
-                          <p id="">클릭</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s2">
-                      <div class="card">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">번호&제목 일치여부</span>
-                          <p id="correspond" style="color:green;">일치합니다.</p>
-                          <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    {% endfor %}
                 </div>
 
                 <div class="col s5 center">
@@ -365,71 +272,70 @@
               </div>
             </div>
           </div>
+        </div>
 
-
-
-          <div class="comment-window s12 col center">
-            <ul>
-              {% for j in i.commentDicts %}
-              <li id={{j.commentNum}} class="comment-list">
-                <table>
-                  <tbody>
-                    <tr id={{j.userId}}>
-                      <td class="comment-name">
-                        {{j.userName}}
-                      </td>
-                      <td class="comment-date">
-                        {{j.Time}}
-                      </td>
-
-                      <td id="{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.user_id}}" onclick="adapt(this)" class="comment-check unchecked">
-                        <img  style="height:10px; width:10px;" src="../static/uncheck.png"/>
-                      </td>
-
-                      <script>
-                        checkComment("{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.user_id}}");
-                      </script>
-
-                      <td class="comment-blank">
-                      </td>
-                      <td class="comment-cancel">
-                        <i class="tiny material-icons">cancel</i>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="4" class="comment-contents">
-                        {{j.comment}}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </li>
-                {% endfor %}
-            </ul>
-
-            <form action="enrollPaperComment" method="POST">
-              <textarea style="display:none", name="objectId", id = "objectId">{{i._id}}</textarea>
+        <div class="comment-window s12 col center">
+          <ul>
+            {% for j in i.commentDicts %}
+            <li id={{j.commentNum}} class="comment-list">
               <table>
                 <tbody>
-                  <tr>
-                    <td class="comment-window-first-td">
-                      <div class="input-field col s12">
-                        <textarea id="comment" name="comment" class="materialize-textarea"></textarea>
-                      </div>
+                  <tr id={{j.userId}}>
+                    <td class="comment-name">
+                      {{j.userName}}
                     </td>
-                    <td class="comment-window-second-td" name="enroll">
-                        <input type="submit" class="center btn blue darken-4" name="enrollBtn" value="등록" />
+                    <td class="comment-date">
+                      {{j.Time}}
+                    </td>
+
+                    <td id="{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.user_id}}" onclick="adapt(this)" class="comment-check unchecked">
+                      <img  style="height:10px; width:10px;" src="static/img/uncheck.png"/>
+                    </td>
+
+                    <script>
+                      checkComment("{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.user_id}}");
+                    </script>
+
+                    <td class="comment-blank">
+                    </td>
+                    <td class="comment-cancel">
+                      <i class="tiny material-icons">cancel</i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="4" class="comment-contents">
+                      {{j.comment}}
                     </td>
                   </tr>
                 </tbody>
               </table>
+            </li>
+              {% endfor %}
+          </ul>
+
+          <form action="enrollPaperComment" method="POST">
+            <textarea style="display:none", name="objectId", id = "objectId">{{i._id}}</textarea>
+            <table>
+              <tbody>
+                <tr>
+                  <td class="comment-window-first-td">
+                    <div class="input-field col s12">
+                      <textarea id="comment" name="comment" class="materialize-textarea"></textarea>
+                    </div>
+                  </td>
+                  <td class="comment-window-second-td" name="enroll">
+                      <input type="submit" class="center btn blue darken-4" name="enrollBtn" value="등록" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </form>
-        </div>
       </div>
     </div>
   </div>
   {% endfor %}
 
+  <!--  Scripts-->
   <script>
     var userId = '{{userId}}';
     var enrollUserId = '{{enrollUserId}}';
@@ -463,16 +369,13 @@
       document.getElementById("btn_read").style.display = "block";
     }
   </script>
-
-  <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="static/js/materialize.js"></script>
   <script src="static/js/init.js"></script>
   <script src="static/js/customize.js"></script>
   <script src="static/js/web3.min.js"></script>
   <script src="static/js/truffle-contract.js"></script>
-	<script src="static/js/app.js"></script>
-	<script src="static/js/finalenroll.js"></script>
-
+  <script src="static/js/app.js"></script>
+  <script src="static/js/finalenroll.js"></script>
   </body>
 </html>
