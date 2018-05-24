@@ -29,61 +29,42 @@ function checkContractState(info){
     }
     else if(state == 1){
         // 구독 트랜잭션이 생성되어 대기하는 경우
-        $.getJSON("OpenJournal.json", function(data){
-            var Artifact = data;
-            contracts.OpenJournal = TruffleContract(Artifact);
-            contracts.OpenJournal.setProvider(web3Provider);
-            contracts.OpenJournal.deployed().then(function(instance){
-                //loading 중일 때 써야하는 것 (첫줄에)
-                var journal_number = info["journal_number"];
-                var subscriber = getUserAccount();
-                instance.getIsSubscribedJournal(journal_number, {from: subscriber}).then(function(res){
-                    if(res == false){
-                        document.getElementById("loading_journal").style.display = "block";
-                    }
-                    else{
-                        completeState();
-                    }
-                });
-            });
-        });     
+        var instance = OpenJournal.at("0xddf4F12e72691f31A9098Af235D712988f227d6d");
+        var journal_number = info["journal_number"];
+        var subscriber = getUserAccount();
+        instance.getIsSubscribedJournal(journal_number, {from: subscriber}).then(function(res){
+            if(res == false){
+                document.getElementById("loading_journal").style.display = "block";
+            }
+            else{
+                completeState();
+            }
+        });
     }
     else if(state == 2){
         // 회원가입 트랜잭션이 생성되어 대기하는 경우
-        $.getJSON("OpenJournal.json", function(data){
-            var Artifact = data;
-            contracts.OpenJournal = TruffleContract(Artifact);
-            contracts.OpenJournal.setProvider(web3Provider);
-            contracts.OpenJournal.deployed().then(function(instance){
-                var newmember = getUserAccount();
-                instance.getIsUserValid({from: newmember}).then(function(res){
-                    if(res == false){
-                        document.getElementById("loading_journal").style.display = "block";
-                    }
-                    else{
-                        completeState();
-                    }
-                });
-            });
+        var instance = OpenJournal.at("0xddf4F12e72691f31A9098Af235D712988f227d6d");
+        var newmember = getUserAccount();
+        instance.getIsUserValid({from: newmember}).then(function(res){
+            if(res == false){
+                document.getElementById("loading_journal").style.display = "block";
+            }
+            else{
+                completeState();
+            }
         });
     }
     else if(state == 3){
         // 논문 최종 등록 트랜잭션이 생성되어 대기하는 경우
-        $.getJSON("OpenJournal.json", function(data){
-            var Artifact = data;
-            contracts.OpenJournal = TruffleContract(Artifact);
-            contracts.OpenJournal.setProvider(web3Provider);
-            contracts.OpenJournal.deployed().then(function(instance){
-                var journal_number = info["journal_number"];
-                instance.getIsJournalValid(journal_number).then(function(res){
-                    if(res == false){
-                        document.getElementById("loading_journal").style.display = "block";
-                    }
-                    else{
-                        blockEnrollUpdate();
-                    }
-                });
-            });
+        var instance = OpenJournal.at("0xddf4F12e72691f31A9098Af235D712988f227d6d");
+        var journal_number = info["journal_number"];
+        instance.getIsJournalValid(journal_number).then(function(res){
+            if(res == false){
+                document.getElementById("loading_journal").style.display = "block";
+            }
+            else{
+                blockEnrollUpdate();
+            }
         });
     }
 }
