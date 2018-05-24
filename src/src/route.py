@@ -68,18 +68,21 @@ def passwordTohash(password):
 
 @app.route("/blockEnrollUpdate")
 def blockEnrollUpdate():
-    id = request.args.get("id")
+    id = session["obId"]
     paperCollection = db.PaperInformation
     pNum = session['journal_number']   
     paperCollection.update({"_id":ObjectId(id)}, {"$set": {"complete": 1, "paperNum": pNum}})
     session.pop('journal_number', None)
-    session.pop('state', None)
+    session.pop('obId', None)
+    session['state'] = 0
 
-@app.route("/enrollState")
+@app.route("/enrollState", methods = ['POST'])
 def enrollState():
     userId = checkUserId()
-    data = request.args.get("data")
-    session['state'] = data
+    state = request.form['state']
+    obId = request.form['obId']
+    session['state'] = state
+    session['obId'] = obId
     session['journal_number'] = papernum()
     return render_template('main_enroll.html', userId = userId)
 
@@ -350,7 +353,7 @@ def viewPaper():
     enrollUserId = data2['user_id']
     complete = data2['complete']
     paperNumDic = extractReference(id)
-    return render_template('main_view_journal.html', data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
+    return render_template('main_view_journal.html', id = id, data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():

@@ -10,9 +10,9 @@ web3 = new Web3(web3Provider);
 
 $(document).ready(function () {
     $.ajax({
-        url: "http://13.125.245.69/checkMyState",
+        url: "http://52.79.222.139/checkMyState",
         dataType: 'json',
-        type: "get",
+        type: "post",
         success:function(data){
             checkContractState(data);
         }
@@ -80,7 +80,7 @@ function checkContractState(info){
                         document.getElementById("loading_journal").style.display = "block";
                     }
                     else{
-                        completeState();
+                        blockEnrollUpdate();
                     }
                 });
             });
@@ -88,10 +88,10 @@ function checkContractState(info){
     }
 }
 
-function completeState(){
+function blockEnrollUpdate(){
 
     $.ajax({
-        url: "http://13.125.245.69/completeState",
+        url: "http://52.79.222.139/blockEnrollUpdate",
         dataType: "json",
         type: "post",
         success: function (data) {

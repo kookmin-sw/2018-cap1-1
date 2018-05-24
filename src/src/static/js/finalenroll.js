@@ -8,7 +8,7 @@ if(typeof web3 !== "undefined"){
 }
 web3 = new Web3(web3Provider);
 
-function finalEnroll(){
+function finalEnroll(_id){
     var value = document.getElementById("journal_price").value;
     var title = document.getElementById("journal_title").innerText;
     var description = document.getElementById("journal_abstract").innerText;
@@ -26,6 +26,17 @@ function finalEnroll(){
             var author = getAuthorAccount();
             instance.registJournal(value, title, description, referenceList, { from: author });
             console.log(instance);
+            alert(_id);
+            // location.href ="enrollState?data="+3;
+            $.ajax({
+                url: "http://http://52.79.222.139/enrollState",
+                dataType: 'json',
+                type: "post",
+                data: {obId: _id, state: 3},
+                success:function(data){
+                    checkContractState(data);
+                }
+            });
         });
     })
 
