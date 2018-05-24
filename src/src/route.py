@@ -21,16 +21,17 @@ import PyPDF2
 import hashlib
 
 ALLOWED_EXTENSIONS = set(['pdf'])
-#UPLOAD_FOLDER = '/home/hoon/captone3/2018-cap1-1/src/OpenJournal/web/static/journal'
+
 app = flask.Flask(__name__)
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
-    jinja2.FileSystemLoader('/home/ubuntu/captone/2018-cap1-1/src/src'),
+    jinja2.FileSystemLoader(Config.loader_path),
 ])
 app.jinja_loader = my_loader
-app.config['GOOGLE_ID'] = Config.google["id"]               # "1047595356269-lhvbbepm5r2dpt1bpk01f4m5e78vavk2.apps.googleusercontent.com"
-app.config['GOOGLE_SECRET'] = Config.google["secret"]       # "61w2EkT-lKN8eUkSRUBWIxMx"
-app.config['UPLOAD_FOLDER'] = Config.google["folder"]       # UPLOAD_FOLDER
+
+app.config['GOOGLE_ID'] = Config.google["id"]
+app.config['GOOGLE_SECRET'] = Config.google["secret"]
+app.config['UPLOAD_FOLDER'] = Config.upload_folder
 
 app.debug = True
 app.secret_key = 'development'
@@ -39,6 +40,8 @@ client = MongoClient('localhost', 27017)
 db = client.OpenJournal
 fs = gridfs.GridFS(db)
 
+hash_password = Config.hash_password
+
 google = oauth.remote_app(
     'google',
     consumer_key=app.config.get('GOOGLE_ID'),
@@ -46,16 +49,12 @@ google = oauth.remote_app(
     request_token_params={
         'scope': 'email'
     },
-    base_url='https://www.googleapis.com/oauth2/v1/',
+    base_url=Config.base_url,
     request_token_url=None,
     access_token_method='POST',
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    access_token_url=Config.access_token_url,
+    authorize_url=Config.authorize_url,
 )
-
-hash_password = Config.hash_password      #"0504110310110711"
-
-pdf_path_without_filename = "/home/ubuntu/captone/2018-cap1-1/src/src/static/journal/"
 
 @app.route("/") #메인 홈페이지 이동
 def home():
@@ -65,7 +64,7 @@ def home():
 @app.route("/main_token_buy_page")
 def moveTokenBuy():
     userId = checkUserId()
-    
+
     return render_template('main_token_buy_page.html', userId = userId)
 
 def passwordTohash(password):
@@ -73,11 +72,25 @@ def passwordTohash(password):
     hex_dig = hash_object.hexdigest()
     return hex_dig
 
+@app.route("/blockEnrollUpdate")
 def blockEnrollUpdate():
-    id = request.args.get("id")
+    id = session["obId"]
     paperCollection = db.PaperInformation
-    pNum = papernum()
+    pNum = session['journal_number']
     paperCollection.update({"_id":ObjectId(id)}, {"$set": {"complete": 1, "paperNum": pNum}})
+    session.pop('journal_number', None)
+    session.pop('obId', None)
+    session['state'] = 0
+
+@app.route("/enrollState", methods = ['POST'])
+def enrollState():
+    userId = checkUserId()
+    state = request.form['state']
+    obId = request.form['obId']
+    session['state'] = state
+    session['obId'] = obId
+    session['journal_number'] = papernum()
+    return render_template('main_enroll.html', userId = userId)
 
 def checkUserId():
     userId = ""
@@ -131,7 +144,7 @@ def mainMypage():
         findedUserInfo = userCollection.find({"user_id": userId})
     paperCollection = db.PaperInformation
     findPaperInfo = paperCollection.find({"user_id": userId})
-    return render_template('main_mypage.html', userInfo = findedUserInfo, writePaper = findPaperInfo)
+    return render_template('main_mypage.html', userId=userId, userInfo = findedUserInfo, writePaper = findPaperInfo)
 
 @app.route("/main_login") #로그인 페이지 이동
 def mainLogin():
@@ -156,8 +169,6 @@ def logout():
     if 'userId' in session:
         session.pop('userId', None)
     return render_template('main.html', userId = userId)
-
-
 
 @app.route("/userLogin", methods=['POST'])
 def userLogin():
@@ -193,9 +204,11 @@ def enrollNewMember():
         subPaperNum = 0
         enrollPaperNum = 0
         tokenNum = 0
+        accountInfo = request.form['ethereum_acc']
         doc = {'user_id'    : userId,      'user_name'     : userName,       'password':newPassWord,
                'telephone'  :telephone,    'birthday'      : birthday,       'fame'    : fame,
-               'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum, 'tokenNum': tokenNum}
+               'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum, 'tokenNum': tokenNum,
+               'accountInfo' : accountInfo}
         collection = db.Users
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
@@ -285,7 +298,11 @@ def uploaded_file(filename):
 @app.route("/main_enroll_for_check_journal")
 def mainEnrollForCheckJournal():
     userId = checkUserId()
-    return render_template('main_enroll_for_check_journal.html', userId = userId)
+    if userId == "":
+        loginFlag = 2
+        return render_template('main_login.html', loginFlag=loginFlag)
+    else:
+        return render_template('main_enroll_for_check_journal.html', userId = userId)
 
 @app.route("/main_enroll") #검수중인 논문 리스트 페이지 뷰 구현
 def mainEnroll():
@@ -300,14 +317,7 @@ def enrollPaperComment():
         if request.method == 'POST':
             paperInfo = db.PaperInformation
             userId = checkUserId()
-            userName = ""
-            if 'google_token' in session:
-                me = google.get('userinfo')
-                userName = me.data['name']
-            elif 'userId' in session:
-                user = db.Users
-                userData = user.find_one({"user_id": userId})
-                userName = userData['user_name']
+            userName = getUserName()
             now = datetime.datetime.now()
             currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             commentContent = request.form['comment']
@@ -326,7 +336,7 @@ def enrollPaperComment():
             data2 = paperInfo.find_one({"_id": ObjectId(objectId)})
             enrollUserId = data2['user_id']
             complete = data2['complete']
-	    paperNumDic = extractReference(objectId)
+            paperNumDic = extractReference(objectId)
             return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
         else:
             return "잘못된 데이터 요청 입니다."
@@ -337,9 +347,9 @@ def enrollPaperComment():
 def extractReference(obId):
     paperInfo = db.PaperInformation
     paper = paperInfo.find_one({"_id":ObjectId(obId)})
-    filepath = pdf_path_without_filename + paper['fileName']
+    filepath = app.config['UPLOAD_FOLDER'] + paper['fileName']
     pdf_page = page_number_of_pdf(filepath)
-    text = convert_pdf_to_txt(str(filepath))
+    text = convert_pdf_to_txt(str(filepath), [pdf_page-3, pdf_page-2, pdf_page-1])
     reference_number_list, reference_title_list = extract_reference_from_text(text)
     reference_dic = {
     reference_number_list : reference_title_list for reference_number_list, reference_title_list in zip(reference_number_list, reference_title_list)
@@ -356,7 +366,7 @@ def viewPaper():
     enrollUserId = data2['user_id']
     complete = data2['complete']
     paperNumDic = extractReference(id)
-    return render_template('main_view_journal.html', data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
+    return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
@@ -475,7 +485,6 @@ def enrollPaper():
             userInfo = userCollection.find_one({"user_id": userId})
             enrollPaperNum = userInfo['enrollPaperNum']
             userCollection.update({"user_id": userId}, {"$set":{"enrollPaperNum":enrollPaperNum+1}})
-            session["state"] = 2 # Session의 State를 논문 등록 상태로 변환
             return mainEnroll()
     else:
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
@@ -622,9 +631,18 @@ def checkMyState():
     return """{
         "result": 0,
         "check_state": %d
-    }""" % session["state"]
+        "journal_number": %d
+    }""" % session["state"], session["journal_number"]
 
-def page_number_of_pdf(path):       # PDF의 page 수
+@app.route("/completeState")
+def completeState():
+    session["state"] = 0
+    session["journal_number"] = None
+    return """{
+        "result": 0
+    }"""
+
+def page_number_of_pdf(path):
     pdfFileObj = open(path, 'rb')
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
     return pdfReader.numPages
@@ -649,8 +667,8 @@ def convert_pdf_to_txt(path, pages=None):
     output.close
     return text
 
-def extract_reference_from_text(text):      # text로부터 reference를 추출
-    start = text.find('REFERENCES:')
+def extract_reference_from_text(text):
+    start = text.find('My references at below page.')
     reference_text = " ".join(text[start:].split("\n"))
 
     reference_list = reference_text.split("[")
@@ -686,28 +704,10 @@ def extract_reference_from_text(text):      # text로부터 reference를 추출
     number_length = len(reference_number_list)
     title_length = len(reference_title_list)
 
-    # length가 다르면 오류 발생
     if number_length != title_length:
         return -1, -1
 
     return reference_number_list, reference_title_list
-
-def make_reference_hash_string(number_list, title_list):    # reference를 hash string으로 변환
-    hash_length = len(number_list)
-    hash_list = []
-
-    for i in range(0, hash_length):
-        new_str = str(number_list[i])+hash_password+title_list[i]
-        hash_list.append((hashlib.sha256(new_str.encode('utf-8')).hexdigest()))
-
-    return hash_list
-
-def make_hash_string(journal_number, journal_title):        # number와 title을 이용하여 hast string으로 변환
-    new_str = str(journal_number)+hash_password+journal_title
-    journal_hash = hashlib.sha256(new_str.encode('utf-8')).hexdigest()
-
-    return journal_hash
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)

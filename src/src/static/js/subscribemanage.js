@@ -17,8 +17,8 @@ function subscribeJournal(callback){
         contracts.OpenJournal.deployed().then(function(instance){
             var subscriber = getUserAccount();
             var journalNumber = getJournalNumber();
-            console.log("subscriber : " + subscriber + ", number : " + journalNumber);
             instance.subscribeJournal(journalNumber, { from: subscriber });
+            alert("subscriber : " + subscriber + ", number : " + journalNumber + "\n구독이 완료되기까지 1분이 소요될 수 있습니다.");
         });
     });
     
