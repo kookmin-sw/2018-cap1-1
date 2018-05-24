@@ -49,11 +49,11 @@ google = oauth.remote_app(
     request_token_params={
         'scope': 'email'
     },
-    base_url='https://www.googleapis.com/oauth2/v1/',
+    base_url=Config.base_url,
     request_token_url=None,
     access_token_method='POST',
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    access_token_url=Config.access_token_url,
+    authorize_url=Config.authorize_url,
 )
 
 @app.route("/") #메인 홈페이지 이동
@@ -70,7 +70,7 @@ def passwordTohash(password):
 def blockEnrollUpdate():
     id = request.args.get("id")
     paperCollection = db.PaperInformation
-    pNum = session['journal_number']
+    pNum = session['journal_number']   
     paperCollection.update({"_id":ObjectId(id)}, {"$set": {"complete": 1, "paperNum": pNum}})
     session.pop('journal_number', None)
     session.pop('state', None)
@@ -617,7 +617,7 @@ def checkMyState():
         "check_state": %d
     }""" % session["state"]
 
-def page_number_of_pdf(path):       # PDF의 page 수
+def page_number_of_pdf(path):       
     pdfFileObj = open(path, 'rb')
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
     return pdfReader.numPages
@@ -642,7 +642,7 @@ def convert_pdf_to_txt(path, pages=None):
     output.close
     return text
 
-def extract_reference_from_text(text):      # text로부터 reference를 추출
+def extract_reference_from_text(text):      
     start = text.find('My references at below page.')
     reference_text = " ".join(text[start:].split("\n"))
 
@@ -679,17 +679,10 @@ def extract_reference_from_text(text):      # text로부터 reference를 추출
     number_length = len(reference_number_list)
     title_length = len(reference_title_list)
 
-    # length가 다르면 오류 발생
     if number_length != title_length:
         return -1, -1
 
     return reference_number_list, reference_title_list
-
-def make_hash_string(journal_number, journal_title):        # number와 title을 이용하여 hast string으로 변환
-    new_str = str(journal_number)+hash_password+journal_title
-    journal_hash = hashlib.sha256(new_str.encode('utf-8')).hexdigest()
-
-    return journal_hash
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
