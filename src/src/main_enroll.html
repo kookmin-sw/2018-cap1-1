@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Open Journal</title>
+
+  <script>
+    var userId = '{{userId}}';
+    alert(userId);
+  </script>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="static/css/customize.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+  <nav class="white" role="navigation">
+    <ul id="dropdown1" class="dropdown-content">
+      <li><a href="main_login" class="black-text">로그인</a></li>
+      <li class="divider"></li>
+      <li><a href="main_new_member" class="black-text">회원가입</a></li>
+      <li class="hiddenPage"><a href="main_mypage" class="black-text">마이 페이지</a></li>
+    </ul>
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
+      <ul class="right hide-on-med-and-down">
+      <li><a href="main_enroll">논문 검수 및 등록</a></li>
+      <li><a href="main_view_fix_journal">논문 구독</a></li>
+      <li><a href="main_comunity">커뮤니티</a></li>
+      <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
+      <ul id="nav-mobile" class="sidenav">
+        <li><a href="main_enroll">논문 검수 및 등록</a></li>
+        <li><a href="main_view_fix_journal">논문 구독</a></li>
+        <li><a href="main_comunity">커뮤니티</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
+    </div>
+  </nav>
+
+  <div id="loading_journal" style="display:none; margin:0px;" class="fixed center-align">
+    <div style="margin:0px;" class="blue lighten-4 progress">
+      <div class="blue darken-3 indeterminate"></div>
+    </div>
+    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 블록체인에 걸리는 데 약 1분 정도 소요됩니다.</span>
+  </div>
+
+  <div id="complete_journal" style="display:none; margin:0px;" class="fixed center-align">
+    <div style="margin:0px;" class="progress">
+        <div class="blue darken-3 determinate" style="width: 100%"></div>
+    </div>
+    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 성공적으로 등록되었습니다.</span>
+  </div>
+
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <br><br>
+        <h1 class="header center blue-text text-darken-4 text-lighten-2">논문 등록 및 검수</h1>
+        <div class="row center">
+          <h5 class="header col s12  black-text">논문 등록을 위해, 검수를 통해 최소 5,000점의 명성 점수가 필요합니다.</h5>
+        </div>
+        <div class="row center">
+          <a href="main_enroll_for_check_journal" id="" class="btn-large waves-effect waves-light blue darken-4">검수 신청</a>
+          <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">더 알아보기</a>
+        </div>
+        <br><br>
+      </div>
+    </div>
+    <div class="parallax"><img src="static/img/enrollment.png" alt="Unsplashed background img 1"></div>
+  </div>
+
+
+  <div  class="container">
+    <div class="section">
+      <div class="row" style="margin-bottom:0px;">
+        <div class="col s4 center">
+          <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
+            <option value="total">전체</option>
+            <option value="engineering">공학</option>
+            <option value="education">교육</option>
+            <option value="AFO">농수해양</option>
+            <option value="interdisciplinary">복합학</option>
+            <option value="social">사회</option>
+            <option value="article_physication">예술체육</option>
+            <option value="medicine">의약학</option>
+            <option value="humanities">인문</option>
+            <option value="natural">자연</option>
+          </select>
+        </div>
+        <div class="col s4 center">
+          <select id="subCat" class="browser-default">
+            <option value="0">전체</option>
+          </select>
+        </div>
+
+        <div class="col s4 center">
+          <select class="browser-default">
+            <option value="9">인기논문</option>
+            <option value="10">최신논문</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="border:1px solid; margin-bottom:20px;">
+          <div class="nav-wrapper col s12 center">
+            <form>
+              <div class="input-field">
+                <input id="search" type="search" required>
+                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                <i class="material-icons">close</i>
+              </div>
+            </form>
+          </div>
+      </div>
+
+      {% for i in data %}
+      <div class="col s12">
+        <ul class="collection">
+          <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
+            <i class="material-icons circle">folder</i>
+            <span class="title" name="title">{{i.title}}</span>
+            <p>저자 : {{i.writer}}<br></p>
+            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 :{{i.keyword}} </p>
+          </li>
+        </ul>
+      </div>
+      {% endfor %}
+
+      <div class="col s12 center">
+        <ul class="pagination">
+          <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+          <li class="active"><a href="#!">1</a></li>
+          <li class="waves-effect"><a href="#!">2</a></li>
+          <li class="waves-effect"><a href="#!">3</a></li>
+          <li class="waves-effect"><a href="#!">4</a></li>
+          <li class="waves-effect"><a href="#!">5</a></li>
+          <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!--  Scripts-->
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="static/js/materialize.js"></script>
+  <script src="static/js/init.js"></script>
+  <script src="static/js/customize.js"></script>
+  <script src="static/js/web3.min.js"></script>
+  <script src="static/js/truffle-contract.js"></script>
+	<script src="static/js/app.js"></script>
+  <script src="static/js/common.js"></script>
+
+  </body>
+</html>
