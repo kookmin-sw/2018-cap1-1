@@ -13,11 +13,13 @@
 </head>
 <body>
   <nav class="white" role="navigation">
-    <ul id="dropdown1" class="dropdown-content">
-      <li id="nav_mypage" style="display:none;"><a href="main_mypage" class="black-text">마이 페이지</a></li>
-      <li id="nav_logout" style="display:none;"><a href="main_logout" class="black-text">로그아웃</a></li>
-      <li id="nav_login" style="display:block;" ><a href="main_login" class="black-text">로그인</a></li>
-      <li id="nav_new_member" style="display:block"><a href="main_new_member" class="black-text">회원가입</a></li>
+    <ul id="dropdown1" style="display:block;" class="dropdown-content">
+      <li id="nav_login" ><a href="main_login" class="black-text">로그인</a></li>
+      <li id="nav_new_member"><a href="main_new_member" class="black-text">회원가입</a></li>
+    </ul>
+    <ul id="dropdown2" style="display:none;" class="dropdown-content">
+      <li id="nav_mypage"><a href="main_mypage" class="black-text">마이 페이지</a></li>
+      <li id="nav_logout"><a href="main_logout" class="black-text">로그아웃</a></li>
     </ul>
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
@@ -26,7 +28,7 @@
       <li><a href="main_view_fix_journal">논문 구독</a></li>
       <li><a href="main_comunity">커뮤니티</a></li>
       <li id="nav_login2" style="display:block;" ><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
-      <li id="nav_mypage2" style="display:none;" ><a class="dropdown-trigger" href="main_mypage" data-target="dropdown1">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li id="nav_mypage2" style="display:none;" ><a class="dropdown-trigger" href="main_mypage" data-target="dropdown2">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
       </ul>
       <ul id="nav-mobile" class="sidenav">
         <li><a href="main_enroll">논문 검수 및 등록</a></li>
@@ -181,23 +183,17 @@
     alert(userId);
     if(userId != ""){ //login
 
-      var one = document.getElementById("nav_login");
-      one.style.display = one.style.display === 'none' ? 'block' : 'none';
+      var dropdown1 = document.getElementById('dropdown1');
+      dropdown1.style.display = dropdown1.style.display === 'none' ? 'block' : 'none';
 
-      var two = document.getElementById("nav_new_member");
-      two.style.display = two.style.display === 'none' ? 'block' : 'none';
-
-      var c = document.getElementById("nav_mypage");
-      c.style.display = c.style.display === 'none' ? 'block' : 'none';
+      var dropdown2 = document.getElementById('dropdown2');
+      dropdown2.style.display = dropdown2.style.display === 'none' ? 'block' : 'none';
 
       var d = document.getElementById("nav_login2");
       d.style.display = d.style.display === 'none' ? 'block' : 'none';
 
       var e = document.getElementById("nav_mypage2");
       e.style.display = e.style.display === 'none' ? 'block' : 'none';
-
-      var f = document.getElementById("nav_logout");
-      f.style.display = f.style.display === 'none' ? 'block' : 'none';
 
 
     }
