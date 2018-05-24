@@ -61,6 +61,12 @@ def home():
     userId = checkUserId()
     return render_template('main.html', userId = userId)
 
+@app.route("/main_token_buy_page")
+def moveTokenBuy():
+    userId = checkUserId()
+    
+    return render_template('main_token_buy_page.html', userId = userId)
+
 def passwordTohash(password):
     hash_object = hashlib.sha256(password)
     hex_dig = hash_object.hexdigest()
@@ -152,13 +158,16 @@ def moveToSubPaper():
     data = completePaperCollection.find({"complete":1}).sort("time", -1)
     return render_template('main_view_fix_journal.html', data = data, userId=userId)
 
-@app.route('/logout')
+@app.route('/main_logout')
 def logout():
+    userId = ""
     if 'google_token' in session:
         session.pop('google_token', None)
     if 'userId' in session:
         session.pop('userId', None)
-    return render_template('main.html')
+    return render_template('main.html', userId = userId)
+
+
 
 @app.route("/userLogin", methods=['POST'])
 def userLogin():
@@ -479,7 +488,8 @@ def enrollPaper():
 def mainComunity():
     collection = db.Bulletin
     rows = collection.find().sort("writingNum",-1)
-    return render_template('main_comunity.html', data=rows)
+    userId = checkUserId()
+    return render_template('main_comunity.html', data=rows, userId=userId)
 
 @app.route("/main_comunity_write") #글쓰기 버튼 클릭시 로그인 검사 및 글쓰기 페이지 이동
 def mainComunityWrite():
