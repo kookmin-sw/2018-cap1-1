@@ -65,7 +65,7 @@ def home():
 @app.route("/main_token_buy_page")
 def moveTokenBuy():
     userId = checkUserId()
-    return str(userId)
+    
     return render_template('main_token_buy_page.html', userId = userId)
 
 def passwordTohash(password):
