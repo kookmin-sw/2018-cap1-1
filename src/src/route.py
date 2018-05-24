@@ -630,14 +630,14 @@ def adaptComment():
 def checkMyState():
     return """{
         "result": 0,
-        "check_state": %d
+        "check_state": %d,
         "journal_number": %d
-    }""" % session["state"], session["journal_number"]
+    }""" %(session['state'], session['journal_number'])
 
 @app.route("/completeState")
 def completeState():
-    session["state"] = 0
-    session["journal_number"] = None
+    session['state'] = 0
+    session['journal_number'] = None
     return """{
         "result": 0
     }"""

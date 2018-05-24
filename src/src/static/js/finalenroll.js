@@ -34,13 +34,11 @@ function finalEnroll(_id){
                 type: "post",
                 data: {obId: _id, state: 3},
                 success:function(data){
-                    checkContractState(data);
+			alert("논문 가격 : " + value + "\n" + "논문 제목 : " + title + "\n" + "논문 요약 : " + description + "\n정상 등록되었습니다.");
                 }
             });
         });
     })
-
-    alert("논문 가격 : " + value + "\n" + "논문 제목 : " + title + "\n" + "논문 요약 : " + description + "\n정상 등록되었습니다.");
 }
 
 function getAuthorAccount(){
