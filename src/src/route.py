@@ -40,7 +40,7 @@ client = MongoClient('localhost', 27017)
 db = client.OpenJournal
 fs = gridfs.GridFS(db)
 
-hash_password = Config.hash_password      
+hash_password = Config.hash_password
 
 google = oauth.remote_app(
     'google',
@@ -61,6 +61,12 @@ def home():
     userId = checkUserId()
     return render_template('main.html', userId = userId)
 
+@app.route("/main_token_buy_page")
+def moveTokenBuy():
+    userId = checkUserId()
+
+    return render_template('main_token_buy_page.html', userId = userId)
+
 def passwordTohash(password):
     hash_object = hashlib.sha256(password)
     hex_dig = hash_object.hexdigest()
@@ -70,7 +76,7 @@ def passwordTohash(password):
 def blockEnrollUpdate():
     id = session["obId"]
     paperCollection = db.PaperInformation
-    pNum = session['journal_number']   
+    pNum = session['journal_number']
     paperCollection.update({"_id":ObjectId(id)}, {"$set": {"complete": 1, "paperNum": pNum}})
     session.pop('journal_number', None)
     session.pop('obId', None)
@@ -138,7 +144,7 @@ def mainMypage():
         findedUserInfo = userCollection.find({"user_id": userId})
     paperCollection = db.PaperInformation
     findPaperInfo = paperCollection.find({"user_id": userId})
-    return render_template('main_mypage.html', userInfo = findedUserInfo, writePaper = findPaperInfo)
+    return render_template('main_mypage.html', userId=userId, userInfo = findedUserInfo, writePaper = findPaperInfo)
 
 @app.route("/main_login") #로그인 페이지 이동
 def mainLogin():
@@ -155,13 +161,14 @@ def moveToSubPaper():
     data = completePaperCollection.find({"complete":1}).sort("time", -1)
     return render_template('main_view_fix_journal.html', data = data, userId=userId)
 
-@app.route('/logout')
+@app.route('/main_logout')
 def logout():
+    userId = ""
     if 'google_token' in session:
         session.pop('google_token', None)
     if 'userId' in session:
         session.pop('userId', None)
-    return render_template('main.html')
+    return render_template('main.html', userId = userId)
 
 @app.route("/userLogin", methods=['POST'])
 def userLogin():
@@ -197,9 +204,11 @@ def enrollNewMember():
         subPaperNum = 0
         enrollPaperNum = 0
         tokenNum = 0
+        accountInfo = request.form['ethereum_acc']
         doc = {'user_id'    : userId,      'user_name'     : userName,       'password':newPassWord,
                'telephone'  :telephone,    'birthday'      : birthday,       'fame'    : fame,
-               'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum, 'tokenNum': tokenNum}
+               'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum, 'tokenNum': tokenNum,
+               'accountInfo' : accountInfo}
         collection = db.Users
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
@@ -289,7 +298,11 @@ def uploaded_file(filename):
 @app.route("/main_enroll_for_check_journal")
 def mainEnrollForCheckJournal():
     userId = checkUserId()
-    return render_template('main_enroll_for_check_journal.html', userId = userId)
+    if userId == "":
+        loginFlag = 2
+        return render_template('main_login.html', loginFlag=loginFlag)
+    else:
+        return render_template('main_enroll_for_check_journal.html', userId = userId)
 
 @app.route("/main_enroll") #검수중인 논문 리스트 페이지 뷰 구현
 def mainEnroll():
@@ -323,7 +336,7 @@ def enrollPaperComment():
             data2 = paperInfo.find_one({"_id": ObjectId(objectId)})
             enrollUserId = data2['user_id']
             complete = data2['complete']
-	        paperNumDic = extractReference(objectId)
+            paperNumDic = extractReference(objectId)
             return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
         else:
             return "잘못된 데이터 요청 입니다."
@@ -353,7 +366,7 @@ def viewPaper():
     enrollUserId = data2['user_id']
     complete = data2['complete']
     paperNumDic = extractReference(id)
-    return render_template('main_view_journal.html', id = id, data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
+    return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
@@ -481,7 +494,8 @@ def enrollPaper():
 def mainComunity():
     collection = db.Bulletin
     rows = collection.find().sort("writingNum",-1)
-    return render_template('main_comunity.html', data=rows)
+    userId = checkUserId()
+    return render_template('main_comunity.html', data=rows, userId=userId)
 
 @app.route("/main_comunity_write") #글쓰기 버튼 클릭시 로그인 검사 및 글쓰기 페이지 이동
 def mainComunityWrite():
@@ -628,7 +642,7 @@ def completeState():
         "result": 0
     }"""
 
-def page_number_of_pdf(path):       
+def page_number_of_pdf(path):
     pdfFileObj = open(path, 'rb')
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
     return pdfReader.numPages
@@ -653,7 +667,7 @@ def convert_pdf_to_txt(path, pages=None):
     output.close
     return text
 
-def extract_reference_from_text(text):      
+def extract_reference_from_text(text):
     start = text.find('My references at below page.')
     reference_text = " ".join(text[start:].split("\n"))
 
