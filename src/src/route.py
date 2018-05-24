@@ -65,6 +65,7 @@ def home():
 @app.route("/main_token_buy_page")
 def moveTokenBuy():
     userId = checkUserId()
+    return str(userId)
     return render_template('main_token_buy_page.html', userId = userId)
 
 def passwordTohash(password):
@@ -149,12 +150,14 @@ def moveToSubPaper():
 
 @app.route('/main_logout')
 def logout():
-    userId = checkUserId()
+    userId = ""
     if 'google_token' in session:
         session.pop('google_token', None)
     if 'userId' in session:
         session.pop('userId', None)
     return render_template('main.html', userId = userId)
+
+
 
 @app.route("/userLogin", methods=['POST'])
 def userLogin():
