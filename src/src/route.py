@@ -72,6 +72,9 @@ def blockEnrollUpdate():
     paperCollection = db.PaperInformation
     pNum = papernum()
     paperCollection.update({"_id":ObjectId(id)}, {"$set": {"complete": 1, "paperNum": pNum}})
+    # Session의 State 및 논문 번호 변환
+    session["state"] = 3 
+    session["journal_number"] = pNum 
 
 def checkUserId():
     userId = ""
@@ -466,7 +469,6 @@ def enrollPaper():
             userInfo = userCollection.find_one({"user_id": userId})
             enrollPaperNum = userInfo['enrollPaperNum']
             userCollection.update({"user_id": userId}, {"$set":{"enrollPaperNum":enrollPaperNum+1}})
-            session["state"] = 2 # Session의 State를 논문 등록 상태로 변환
             return mainEnroll()
     else:
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
@@ -612,7 +614,16 @@ def checkMyState():
     return """{
         "result": 0,
         "check_state": %d
-    }""" % session["state"]
+        "journal_number": %d
+    }""" % session["state"], session["journal_number"]
+
+@app.route("/completeState")
+def completeState():
+    session["state"] = 0
+    session["journal_number"] = None
+    return """{
+        "result": 0
+    }"""
 
 def page_number_of_pdf(path):       # PDF의 page 수
     pdfFileObj = open(path, 'rb')
