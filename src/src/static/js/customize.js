@@ -90,7 +90,7 @@ function selectAccount(x){
 
 function changeEthtoOJ(){
   var a = document.getElementById("input_eth").value;
-  a = a*1000;
+  a = Number(a*10000).toLocaleString('en');
   document.getElementById("changeEthtoOJ").innerText = a;
 
   return false;
@@ -98,13 +98,16 @@ function changeEthtoOJ(){
 
 function changeOJtoEth(){
   var a = document.getElementById("input_OJ").value;
-  a = a/1000;
+  a = Number(a/10000).toLocaleString('en');
   document.getElementById("chageOJtoEth").innerText = a;
 }
 
 function filterNumber(event) {
   var code = event.keyCode;
   if (code > 47 && code < 58) {  //숫자입력
+    return;
+  }
+  if (event.ctrlKey || event.altKey) {
     return;
   }
 
