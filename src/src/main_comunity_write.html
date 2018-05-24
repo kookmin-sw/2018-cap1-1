@@ -13,14 +13,14 @@
 </head>
 <body>
   <nav class="white" role="navigation">
-    <ul id="dropdown1" style="display:block;" class="dropdown-content">
-      <li id="nav_login" ><a href="main_login" class="black-text">로그인</a></li>
-      <li id="nav_new_member"><a href="main_new_member" class="black-text">회원가입</a></li>
+    <ul id="dropdown1"  name="notmemberNav" style="display:block;" class="dropdown-content">
+      <li id="nav_login"  name="notmemberNav" style="display:block;"><a href="main_login" class="black-text">로그인</a></li>
+      <li id="nav_new_member"  name="notmemberNav" style="display:block;"><a href="main_new_member" class="black-text">회원가입</a></li>
     </ul>
-    <ul id="dropdown2" style="display:none;" class="dropdown-content">
-      <li id="nav_mypage"><a href="main_mypage" class="black-text">마이 페이지</a></li>
-      <li id="nav_buyToken"><a href="main_token_buy_page" class="black-text"></a>토큰 구매하기</li>
-      <li id="nav_logout"><a href="main_logout" class="black-text">로그아웃</a></li>
+    <ul id="dropdown2"  name="memberNav" style="display:none;" class="dropdown-content">
+      <li id="nav_mypage"  name="memberNav" style="display:none;"><a href="main_mypage" class="black-text">마이 페이지</a></li>
+      <li id="nav_buyToken"  name="memberNav" style="display:none;"><a href="main_token_buy_page" class="black-text">토큰구매하기</a></li>
+      <li id="nav_logout"  name="memberNav" style="display:none;"><a href="main_logout" class="black-text">로그아웃</a></li>
     </ul>
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
@@ -28,19 +28,37 @@
       <li><a href="main_enroll">논문 검수 및 등록</a></li>
       <li><a href="main_view_fix_journal">논문 구독</a></li>
       <li><a href="main_comunity">커뮤니티</a></li>
-      <li id="nav_login2" style="display:block;" ><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
-      <li id="nav_mypage2" style="display:none;" ><a class="dropdown-trigger" href="main_mypage" data-target="dropdown2">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
-      </ul>
+      <li id="nav_login2"  name="notmemberNav" style="display:block;" ><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li id="nav_mypage2"  name="memberNav" style="display:none;" ><a class="dropdown-trigger" href="main_mypage" data-target="dropdown2">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
+
+    </ul>
       <ul id="nav-mobile" class="sidenav">
         <li><a href="main_enroll">논문 검수 및 등록</a></li>
         <li><a href="main_view_fix_journal">논문 구독</a></li>
         <li><a href="main_comunity">커뮤니티</a></li>
-        <li id="nav_login2" style="display:block;" ><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
-        <li id="nav_mypage2" style="display:none;" ><a class="dropdown-trigger" href="main_mypage" data-target="dropdown2">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
+        <li name="notmemberNav" style="display:block;"><a href="main_login">로그인</a></li>
+        <li name="notmemberNav" style="display:block;"><a href="main_new_member">회원가입</a></li>
+        <li name="memberNav" style="display:none;"><a href="main_mypage">마이 페이지</a></li>
+        <li name="memberNav" style="display:none;"><a href="main_token_buy_page">토큰 구매하기</a></li>
+        <li name="memberNav" style="display:none;"><a href="main_logout">로그아웃</a></li>
       </ul>
-      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
+      <a data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
     </div>
   </nav>
+
+  <div id="loading_journal" style="display:none; margin:0px;" class="fixed center-align">
+    <div style="margin:0px;" class="blue lighten-4 progress">
+      <div class="blue darken-3 indeterminate"></div>
+    </div>
+    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 블록체인에 걸리는 데 약 1분 정도 소요됩니다.</span>
+  </div>
+
+  <div id="complete_journal" style="display:none; margin:0px;" class="fixed center-align">
+    <div style="margin:0px;" class="progress">
+        <div class="blue darken-3 determinate" style="width: 100%"></div>
+    </div>
+    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 성공적으로 등록되었습니다.</span>
+  </div>
 
   <div id="loading_journal" style="display:none; margin:0px;" class="fixed center-align">
     <div style="margin:0px;" class="blue lighten-4 progress">
@@ -116,18 +134,17 @@
    <!--  Scripts-->
    <script>
      var userId = '{{userId}}';
+
+     var nonmember = document.getElementsByName("notmemberNav");
+     var member = document.getElementsByName("memberNav");
+
      if(userId != ""){ //login
-       var dropdown1 = document.getElementById('dropdown1');
-       dropdown1.style.display = dropdown1.style.display === 'none' ? 'block' : 'none';
-
-       var dropdown2 = document.getElementById('dropdown2');
-       dropdown2.style.display = dropdown2.style.display === 'none' ? 'block' : 'none';
-
-       var d = document.getElementById("nav_login2");
-       d.style.display = d.style.display === 'none' ? 'block' : 'none';
-
-       var e = document.getElementById("nav_mypage2");
-       e.style.display = e.style.display === 'none' ? 'block' : 'none';
+       for(i=0; i<nonmember.length;i++){
+         nonmember[i].style.display = nonmember[i].style.display === 'none' ? 'block' : 'none';
+       }
+       for(j=0; j<member.length;j++){
+         member[j].style.display = member[j].style.display === 'none' ? 'block' : 'none';
+       }
      }
    </script>
    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
