@@ -1,5 +1,6 @@
 .DS_Store
 .env
-src/OpenJournal/blockchain/build
-src/OpenJournal/blockchain/.ethereum
-src/OpenJournal/blockchain/eth_testdata
+src/build
+src/.ethereum
+src/eth_testdata
+src/src/static/journal
