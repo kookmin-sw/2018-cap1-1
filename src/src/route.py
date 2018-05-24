@@ -320,7 +320,7 @@ def enrollPaperComment():
             data2 = paperInfo.find_one({"_id": ObjectId(objectId)})
             enrollUserId = data2['user_id']
             complete = data2['complete']
-	        paperNumDic = extractReference(objectId)
+            paperNumDic = extractReference(objectId)
             return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
         else:
             return "잘못된 데이터 요청 입니다."
