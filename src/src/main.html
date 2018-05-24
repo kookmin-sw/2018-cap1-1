@@ -15,8 +15,8 @@
   <nav class="white" role="navigation">
     <ul id="dropdown1" class="dropdown-content">
       <li id="nav_mypage" style="display:none;"><a href="main_mypage" class="black-text">마이 페이지</a></li>
+      <li id="nav_logout" style="display:none;"><a href="main_logout" class="black-text">로그아웃</a></li>
       <li id="nav_login" style="display:block;" ><a href="main_login" class="black-text">로그인</a></li>
-      <li class="divider"></li>
       <li id="nav_new_member" style="display:block"><a href="main_new_member" class="black-text">회원가입</a></li>
     </ul>
     <div class="nav-wrapper container">
@@ -195,6 +195,9 @@
 
       var e = document.getElementById("nav_mypage2");
       e.style.display = e.style.display === 'none' ? 'block' : 'none';
+
+      var f = document.getElementById("nav_logout");
+      f.style.display = f.style.display === 'none' ? 'block' : 'none';
 
 
     }
