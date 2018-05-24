@@ -11,13 +11,15 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         uint256 value;
         uint[] subscribed;
         uint256[] reference_journal;
+        bool final_enroll;
     }
     
     struct User {
         uint256 user_number;                    
         address user_address;                   
         uint[] user_subscribe_journal;          
-        uint[] user_regist_journal;             
+        uint[] user_regist_journal;
+        bool is_user;             
     }    
 
     mapping (uint256 => Journal) public journals;                               
@@ -34,7 +36,8 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         uint256 _user_number, 
         address _user_address, 
         uint[] _user_subscribe_journal,
-        uint[] _user_regist_journal
+        uint[] _user_regist_journal,
+        bool _is_user
     );  
 
     event LogRegistJournal(
@@ -43,7 +46,8 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         string _title, 
         uint256 _value,
         uint256[] _reference_journal,
-        uint[] _user_regist_journal
+        uint[] _user_regist_journal,
+        bool _final_enroll
     );  
 
     event LogSubscribeJournal(
@@ -93,7 +97,8 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
             userNumber,
             msg.sender,
             new uint[](0),
-            new uint[](0)
+            new uint[](0),
+            true
         );
         transferFromOwner(msg.sender, signUpCost);   
 
@@ -101,7 +106,8 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
             userNumber, 
             msg.sender, 
             users[msg.sender].user_subscribe_journal, 
-            users[msg.sender].user_regist_journal
+            users[msg.sender].user_regist_journal,
+            users[msg.sender].is_user
         );
 
         return true;
@@ -116,7 +122,8 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
             _title,
             _journalValue.mul(10**uint256(decimals)),     // 테스트 할 떄 : _journalValue.mul(10**uint256(4))
             new uint[](0),
-            new uint256[](0)
+            new uint256[](0),
+            true
         );
 
         for(uint256 ref = 0; ref <_referenceJournal.length; ++ref)
@@ -130,7 +137,8 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
             _title, 
             _journalValue, 
             journals[_journalNumber].reference_journal,
-            users[msg.sender].user_regist_journal
+            users[msg.sender].user_regist_journal,
+            journals[_journalNumber].final_enroll
         );   
  
         return true;    
@@ -178,6 +186,10 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         return true;
     }
 
+    function getIsJournalValid(uint _journalNumber) public view returns (bool) {
+        return journals[_journalNumber].final_enroll;
+    }
+
     function getAuthorAddress(uint256 _journalNumber) public view returns (address){
         return journals[_journalNumber].author;
     }
@@ -196,10 +208,14 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
 
     function getReferenceJournal(uint _journalNumber) public view returns (uint256[]) {
         return journals[_journalNumber].reference_journal;
-    }
+    }    
 
     function getIsSubscribedJournal(uint _journalNumber) public view returns (bool) {
         return is_subscribed[msg.sender][_journalNumber];
+    }
+
+    function getIsUserValid() public view returns (bool) {
+        return users[msg.sender].is_user;
     }
 
     function getUserSubscribedJournals() public view returns (uint[]) {
