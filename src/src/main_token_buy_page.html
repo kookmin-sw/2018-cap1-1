@@ -137,29 +137,26 @@
   <!--  Scripts-->
   <script>
     var userId = '{{userId}}';
-    //alert(userId);
+
+    var nonmember = document.getElementsByName("notmemberNav");
+    var member = document.getElementsByName("memberNav");
+
     if(userId != ""){ //login
-
-      var one = document.getElementById("nav_login");
-      one.style.display = one.style.display === 'none' ? 'block' : 'none';
-
-      var two = document.getElementById("nav_new_member");
-      two.style.display = two.style.display === 'none' ? 'block' : 'none';
-
-      var c = document.getElementById("nav_mypage");
-      c.style.display = c.style.display === 'none' ? 'block' : 'none';
-
-      var d = document.getElementById("nav_login2");
-      d.style.display = d.style.display === 'none' ? 'block' : 'none';
-
-      var e = document.getElementById("nav_mypage2");
-      e.style.display = e.style.display === 'none' ? 'block' : 'none';
-
-
+      for(i=0; i<nonmember.length;i++){
+        nonmember[i].style.display = nonmember[i].style.display === 'none' ? 'block' : 'none';
+      }
+      for(j=0; j<member.length;j++){
+        member[j].style.display = member[j].style.display === 'none' ? 'block' : 'none';
+      }
     }
-    else if(userId == ""){
 
-        //alert("로그아웃");
+    else if(userId == ""){
+      for(i=0; i<nonmember.length;i++){
+        nonmember[i].style.display = 'block';
+      }
+      for(j=0; j<member.length;j++){
+        member[j].style.display = 'none';
+      }
     }
   </script>
 

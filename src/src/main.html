@@ -214,6 +214,15 @@
         member[j].style.display = member[j].style.display === 'none' ? 'block' : 'none';
       }
     }
+
+    else if(userId == ""){
+      for(i=0; i<nonmember.length;i++){
+        nonmember[i].style.display = 'block';
+      }
+      for(j=0; j<member.length;j++){
+        member[j].style.display = 'none';
+      }
+    }
   </script>
 
   <script>
