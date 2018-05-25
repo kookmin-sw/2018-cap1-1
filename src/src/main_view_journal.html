@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
+
  <script>
   function checkComment(comment){
     var img_id = comment;
@@ -296,7 +297,7 @@
 
 
                 <div class="col s12 center">
-                  <a onclick="finalEnroll('{{id}}')" id="load_metamask" class="btn-small waves-effect waves-light blue darken-4">확인</a>
+                  <a onclick="finalEnroll('{{id}}')" id="load_metamthisask" class="btn-small waves-effect waves-light blue darken-4">확인</a>
                   <a onclick="off()" id="load_metamask" class="btn-small waves-effect waves-light blue darken-4">취소</a>
                 </div>
               </div>
@@ -366,6 +367,8 @@
   {% endfor %}
 
   <!--  Scripts-->
+
+
   <script>
     var userId = '{{userId}}';
     var enrollUserId = '{{enrollUserId}}';
@@ -439,5 +442,6 @@
   <script src="js/truffle-contract.js"></script>
   <script src="js/common.js"></script>
   <script src="js/finalenroll.js"></script>
+
   </body>
 </html>

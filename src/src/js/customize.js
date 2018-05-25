@@ -11,7 +11,6 @@ var subCategory = [["전체","건축공학", "고분자공학", "공학일반", 
                    ["전체", "가톨릭신학", "고고학", "고전연구", "국어국문학", "기독교신학", "기타어문학", "기타인문학", "노어노문학", "독어독문학", "문학", "문학이론.비평", "문화연구", "민속학", "불교학", "불어불문학", "사전학", "스페인어와 문학", "아시아연구", "언어학", "역사학", "영어영문학", "유교학", "윤리학", "인문학일반", "일어일문학", "종교학", "중어중문학", "철학", "통역번역학"],
                    ["전체", "기타자연과학", "물리학", "생물학", "생태학", "수학", "식물학", "유전학", "자연과학일반", "지구과학", "천문학", "통계학", "화학"]]
 
-
 function ShowHideSubCat(){
   var x = document.getElementById("mainCat").value;
   var subCategoryIdx = null;
@@ -75,6 +74,7 @@ function off(){
   document.getElementById("ethereum_acc").value= value;
   document.getElementById("overlay").style.display = "none";
 }
+
 
 function viewAccount(){
   document.getElementById("AccountList").style.display = "block";
