@@ -13,14 +13,14 @@
 </head>
 <body>
   <nav class="white" role="navigation">
-    <ul id="dropdown1"  name="notmemberNav" style="display:block;" class="dropdown-content">
-      <li id="nav_login"  name="notmemberNav" style="display:block;"><a href="main_login" class="black-text">로그인</a></li>
-      <li id="nav_new_member"  name="notmemberNav" style="display:block;"><a href="main_new_member" class="black-text">회원가입</a></li>
+    <ul id="dropdown1" class="dropdown-content">
+      <li id="nav_login"><a href="main_login" class="black-text">로그인</a></li>
+      <li id="nav_new_member" ><a href="main_new_member" class="black-text">회원가입</a></li>
     </ul>
-    <ul id="dropdown2"  name="memberNav" style="display:none;" class="dropdown-content">
-      <li id="nav_mypage"  name="memberNav" style="display:none;"><a href="main_mypage" class="black-text">마이 페이지</a></li>
-      <li id="nav_buyToken"  name="memberNav" style="display:none;"><a href="main_token_buy_page" class="black-text">토큰구매하기</a></li>
-      <li id="nav_logout"  name="memberNav" style="display:none;"><a href="main_logout" class="black-text">로그아웃</a></li>
+    <ul id="dropdown2"  class="dropdown-content">
+      <li id="nav_mypage" ><a href="main_mypage" class="black-text">마이 페이지</a></li>
+      <li id="nav_buyToken" ><a href="main_token_buy_page" class="black-text">토큰구매하기</a></li>
+      <li id="nav_logout" ><a href="main_logout" class="black-text">로그아웃</a></li>
     </ul>
     <div class="nav-wrapper container">
       <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
@@ -28,8 +28,8 @@
       <li><a href="main_enroll">논문 검수 및 등록</a></li>
       <li><a href="main_view_fix_journal">논문 구독</a></li>
       <li><a href="main_comunity">커뮤니티</a></li>
-      <li id="nav_login2"  name="notmemberNav" style="display:block;" ><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
-      <li id="nav_mypage2"  name="memberNav" style="display:none;" ><a class="dropdown-trigger" href="main_mypage" data-target="dropdown2">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li id="nav_login2"  ><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
+      <li id="nav_mypage2"   ><a class="dropdown-trigger" href="main_mypage" data-target="dropdown2">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
 
     </ul>
       <ul id="nav-mobile" class="sidenav">
@@ -135,42 +135,33 @@
   <!--  Scripts-->
   <script>
     var userId = '{{userId}}';
-    alert(usertId);
-    var nonmember = document.getElementsByName("notmemberNav");
-    var member = document.getElementsByName("memberNav");
+
+    var mobile_nonmember = document.getElementsByName("notmemberNav");
+    var mobile_member = document.getElementsByName("memberNav");
+    var member = document.getElementById("nav_mypage2");
+    var nonmember = document.getElementById("nav_login2");
 
     if(userId != ""){ //login
-      for(i=0; i<nonmember.length;i++){
-        nonmember[i].style.display = nonmember[i].style.display === 'none' ? 'block' : 'none';
+
+      member.style.display = 'list-item';
+      nonmember.style.display = 'none';
+      for(i=0; i<mobile_nonmember.length; i++){
+        mobile_nonmember[i].style.display = 'none';
       }
-      for(j=0; j<member.length;j++){
-        member[j].style.display = member[j].style.display === 'none' ? 'block' : 'none';
+      for(i=0; i<mobile_member.length; i++){
+        mobile_member[i].style.display = 'block';
       }
     }
 
     else if(userId == ""){
-      for(i=0; i<nonmember.length;i++){
-        nonmember[i].style.display = 'block';
+      for(i=0; i<mobile_nonmember.length;i++){
+        mobile_nonmember[i].style.display = 'block';
       }
-      for(j=0; j<member.length;j++){
-        member[j].style.display = 'none';
+      for(i=0; i<mobile_member.length;i++){
+        mobile_member[j].style.display = 'none';
       }
-    }
-  </script>
-
-  <script>
-    var userId = '{{userId}}';
-
-    var nonmember = document.getElementsByName("notmemberNav");
-    var member = document.getElementsByName("memberNav");
-
-    if(userId != ""){ //login
-      for(i=0; i<nonmember.length;i++){
-        nonmember[i].style.display = nonmember[i].style.display === 'none' ? 'block' : 'none';
-      }
-      for(j=0; j<member.length;j++){
-        member[j].style.display = member[j].style.display === 'none' ? 'block' : 'none';
-      }
+      member.style.display = 'none';
+      nonmember.style.display = 'list-item';
     }
   </script>
 
