@@ -632,11 +632,12 @@ def adaptComment():
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
-@app.route("/checkMyState")
+@app.route("/checkMyState", methods = ['POST'])
 def checkMyState():
+<<<<<<< HEAD
     if 'state' not in session:
-	session['state'] = 0
-	session['journal_number'] = 0
+        session['state'] = 0
+        session['journal_number'] = 0
     return """{
         "result": 0,
         "check_state": %d,
