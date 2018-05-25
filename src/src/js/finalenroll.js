@@ -8,17 +8,21 @@ if(typeof web3 !== "undefined"){
 }
 web3 = new Web3(web3Provider);
 
-function finalEnroll(_id){
+
+
+function finalEnroll(){
+    alert("진입");
     var value = document.getElementById("journal_price").value;
     var title = document.getElementById("journal_title").innerText;
     var description = document.getElementById("journal_abstract").innerText;
     var referenceList = []; // 현재는 논문의 번호를 이용하여 실행됨
     var testId = _id;
-    alert(testId);
+    alert("fucking min");
     $("span[name=OJjournal]").each(function(idx){
         var referenceJournal = $(this).html();
         referenceList.push(referenceJournal);
     });
+   /*
     $.getJSON("OpenJournal.json", function(data){
         var Artifact = data;
         contracts.OpenJournal = TruffleContract(Artifact);
@@ -27,9 +31,10 @@ function finalEnroll(_id){
             var author = getAuthorAccount();
             instance.registJournal(value, title, description, referenceList, { from: author });
             console.log(instance);
-            alert(_id);
-            // location.href ="enrollState?data="+3;
-            $.ajax({
+            alert("go");
+            location.href ="enrollState?data="+3;
+            
+	    $.ajax({
                 url: "http://http://52.79.222.139/enrollState",
                 dataType: 'json',
                 type: "post",
@@ -38,8 +43,10 @@ function finalEnroll(_id){
 			alert("논문 가격 : " + value + "\n" + "논문 제목 : " + title + "\n" + "논문 요약 : " + description + "\n정상 등록되었습니다.");
                 }
             });
+	    
         });
     })
+    */
 }
 
 function getAuthorAccount(){
