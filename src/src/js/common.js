@@ -10,7 +10,7 @@ web3 = new Web3(web3Provider);
 
 $(document).ready(function () {
     $.ajax({
-        url: "http://52.79.222.139/checkMyState",
+        url: "http://localhost/checkMyState",
         dataType: 'json',
         type: "post",
         success:function(data){
@@ -46,7 +46,7 @@ function checkContractState(info){
                     }
                 });
             });
-        });     
+        });
     }
     else if(state == 2){
         // 회원가입 트랜잭션이 생성되어 대기하는 경우

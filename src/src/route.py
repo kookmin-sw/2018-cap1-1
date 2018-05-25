@@ -60,7 +60,6 @@ google = oauth.remote_app(
 @app.route("/") #메인 홈페이지 이동
 def home():
     userId = checkUserId()
-    print("main호출")
     return render_template('main.html', userId = userId)
 
 @app.route('/js/<path:path>')
@@ -244,7 +243,9 @@ def index():
 
 @app.route('/login')
 def login():
+    userId = checkUserId()
     return google.authorize(callback=url_for('authorized', _external=True))
+    #return render_template('main.html', userId=userId)
 
 @google.tokengetter
 def get_google_oauth_token():
@@ -270,7 +271,7 @@ def authorized():
     cursor = collection.find({"user_id": userId}) #회원등록이 되 있는지 검색, 회원 정보가 있다면 session에 로그인 정보 추가 후 이동
     for document in cursor:
         if document['user_id'] == userId:
-            return render_template('main.html')
+            return home()
     collection.insert(doc)
     return render_template('main.html', userId=userId)
 
@@ -500,7 +501,6 @@ def mainComunity():
     collection = db.Bulletin
     rows = collection.find().sort("writingNum",-1)
     userId = checkUserId()
-    print("main_comunity 호출")
     return render_template('main_comunity.html', data=rows, userId=userId)
 
 @app.route("/main_comunity_write") #글쓰기 버튼 클릭시 로그인 검사 및 글쓰기 페이지 이동
@@ -632,8 +632,11 @@ def adaptComment():
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
-@app.route("/checkMyState")
+@app.route("/checkMyState", methods = ['POST'])
 def checkMyState():
+    if 'state' not in session:
+        session['state'] = 0
+        session['journal_number'] = 0
     return """{
         "result": 0,
         "check_state": %d,
