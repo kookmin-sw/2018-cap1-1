@@ -634,7 +634,6 @@ def adaptComment():
 
 @app.route("/checkMyState", methods = ['POST'])
 def checkMyState():
-<<<<<<< HEAD
     if 'state' not in session:
         session['state'] = 0
         session['journal_number'] = 0
