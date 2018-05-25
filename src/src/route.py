@@ -19,6 +19,8 @@ from werkzeug import secure_filename
 import gridfs, datetime, json, os, jinja2, flask
 import PyPDF2
 import hashlib
+import nltk
+import operator
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
@@ -717,6 +719,36 @@ def extract_reference_from_text(text):
         return -1, -1
 
     return reference_number_list, reference_title_list
+
+def searchWord(my_sentence):
+    my_sentence = my_sentence.lower()
+    my_sentence_list = my_sentence.split(" ")
+    find_dict = {}
+    for sentence in journal_title:
+        real_sentences = nltkExtract(sentence)
+        temp = " "+real_sentences.lower()+" "
+        count = 0
+        for my_word in my_sentence_list:
+            if temp.find(my_word) != -1:
+                start = temp.find(my_word)
+                last = start + len(my_word)
+                if temp[start-1] != " " or temp[last] != " ":
+                    continue
+                count += 1
+        find_dict[sentence] = count 
+    sorted_dict = sorted(find_dict.items(), key=operator.itemgetter(1), reverse=True)
+    return sorted_dict
+
+def nltkExtract(sentence):
+    sentences = nltk.sent_tokenize(sentence)
+    real_sentences = ""
+    for i in sentences:
+        for word,pos in nltk.pos_tag(nltk.word_tokenize(str(i))):
+            if (pos == 'NN' or pos == 'NNP' or pos == 'NNS' or pos == 'NNPS' 
+                or pos == 'VB' or pos == 'VBD' or pos == 'VBG' or pos == 'VBN'
+                or pos == 'VBP' or pos == 'VBZ'):
+                real_sentences = real_sentences + " " + word
+    return real_sentences
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
