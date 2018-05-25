@@ -89,7 +89,7 @@
     <div class="section">
       <div class="row" style="margin-bottom:0px;">
         <div class="col s4 center">
-          <select id="mainCat" name = "mainCat" class="browser-default" onchange="ShowHideSubCat()">
+          <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
             <option value="total">전체</option>
             <option value="engineering">공학</option>
             <option value="education">교육</option>
@@ -103,7 +103,7 @@
           </select>
         </div>
         <div class="col s4 center">
-          <select id="subCat" name = "subCat" class="browser-default">
+          <select id="subCat" class="browser-default">
             <option value="0">전체</option>
           </select>
         </div>
@@ -128,14 +128,15 @@
           </div>
       </div>
 
-      {% for i in data %}
+      {% for value in result %}
       <div class="col s12">
         <ul class="collection">
-          <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
+          <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{value._id}}'">
             <i class="material-icons circle">folder</i>
-            <span class="title" name="title">{{i.title}}</span>
-            <p>저자 : {{i.writer}}<br></p>
-            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 :{{i.keyword}} </p>
+            <span class="title" name="title">{{value.title}}</span>
+            <p>저자 : {{value.writer}}<br></p>
+            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 :{{value.keyword}} </p>
+            <p> 시간: {{value.time}}</p>
           </li>
         </ul>
       </div>
