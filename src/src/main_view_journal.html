@@ -11,7 +11,7 @@
     var split_arr = img_id.split("_");
     if(split_arr[3] == 1){
       var special_id = document.getElementById(img_id).firstElementChild;
-      special_id.src = "static/img/check.png"
+      special_id.src = "img/check.png"
       document.getElementById(img_id).classList.add('checked');
       document.getElementById(img_id).classList.remove('unchecked');
     }
@@ -25,7 +25,7 @@
     var userId = '{{userId}}';
     if(document.getElementById(img_id).classList.contains('unchecked') && userId == split_arr[4] && userId != split_arr[2]){
       var special_id = document.getElementById(img_id).firstElementChild;
-      special_id.src = "static/img/check.png"
+      special_id.src = "img/check.png"
       document.getElementById(img_id).classList.add('checked');
       document.getElementById(img_id).classList.remove('unchecked');
       location.href ="adaptPaperComment?data="+split_arr;
@@ -35,9 +35,9 @@
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="static/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="static/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-  <link href="static/css/customize.css" type="text/css" rel="stylesheet"/>
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/customize.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
   <nav class="white" role="navigation">
@@ -108,7 +108,7 @@
           <div style="margin-bottom: 8px;" class="col s12 center">
           </div>
           <div class="s12 col center">
-            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="static/journal/{{i.fileName}}">
+            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="journal/{{i.fileName}}">
             </iframe>
 
             <table class="journal_info">
@@ -319,7 +319,7 @@
                     </td>
 
                     <td id="{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.user_id}}" onclick="adapt(this)" class="comment-check unchecked">
-                      <img  style="height:10px; width:10px;" src="static/img/uncheck.png"/>
+                      <img  style="height:10px; width:10px;" src="img/uncheck.png"/>
                     </td>
 
                     <script>
@@ -426,13 +426,12 @@
   </script>
 
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="static/js/materialize.js"></script>
-  <script src="static/js/init.js"></script>
-  <script src="static/js/customize.js"></script>
-  <script src="static/js/web3.min.js"></script>
-  <script src="static/js/truffle-contract.js"></script>
-  <script src="static/js/app.js"></script>
-  <script src="static/js/common.js"></script>
-  <script src="static/js/finalenroll.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  <script src="js/customize.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/finalenroll.js"></script>
   </body>
 </html>
