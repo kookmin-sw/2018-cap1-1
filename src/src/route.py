@@ -22,7 +22,8 @@ import hashlib
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
-app = flask.Flask(__name__)
+#app = flask.Flask(__name__)
+app = flask.Flask(__name__, static_url_path='', static_folder='')
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
     jinja2.FileSystemLoader(Config.loader_path),
@@ -59,12 +60,16 @@ google = oauth.remote_app(
 @app.route("/") #메인 홈페이지 이동
 def home():
     userId = checkUserId()
+    print("main호출")
     return render_template('main.html', userId = userId)
+
+@app.route('/js/<path:path>')
+def send_js(path):
+    return send_from_directory('js', path)
 
 @app.route("/main_token_buy_page")
 def moveTokenBuy():
     userId = checkUserId()
-
     return render_template('main_token_buy_page.html', userId = userId)
 
 def passwordTohash(password):
@@ -495,6 +500,7 @@ def mainComunity():
     collection = db.Bulletin
     rows = collection.find().sort("writingNum",-1)
     userId = checkUserId()
+    print("main_comunity 호출")
     return render_template('main_comunity.html', data=rows, userId=userId)
 
 @app.route("/main_comunity_write") #글쓰기 버튼 클릭시 로그인 검사 및 글쓰기 페이지 이동
