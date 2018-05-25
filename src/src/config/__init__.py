@@ -27,4 +27,3 @@ class Config:
 
 	# Configuration for upload folder
 	upload_folder = os.environ.get("UPLOAD_FOLDER")
-	

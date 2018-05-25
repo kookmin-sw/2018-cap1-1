@@ -13,9 +13,10 @@ function finalEnroll(_id){
     var title = document.getElementById("journal_title").innerText;
     var description = document.getElementById("journal_abstract").innerText;
     var referenceList = []; // 현재는 논문의 번호를 이용하여 실행됨
-    
-    $("span[name=OJjournal]").each(function(idx){   
-        var referenceJournal = $(this).html(); 
+    var testId = _id;
+    alert(testId);
+    $("span[name=OJjournal]").each(function(idx){
+        var referenceJournal = $(this).html();
         referenceList.push(referenceJournal);
     });
     $.getJSON("OpenJournal.json", function(data){
@@ -52,15 +53,15 @@ function getAuthorAccount(){
 function modifyInfo(x){
     var inputString1 = prompt('변경할 번호를 입력하세요', x.parentElement.firstElementChild.getElementsByTagName("span")[1].innerText);
     var inputString2 = prompt('변경할 제목을 입력하세요', x.parentElement.firstElementChild.getElementsByTagName("span")[3].innerText);
-  
+
     x.parentElement.firstElementChild.getElementsByTagName("span")[1].innerText = inputString1;
     x.parentElement.firstElementChild.getElementsByTagName("span")[3].innerText = inputString2;
   }
-  
+
 function checkReference(x){
    var journalNum =   x.parentElement.firstElementChild.getElementsByTagName("span")[1].innerText;
    var journalTitle =   x.parentElement.firstElementChild.getElementsByTagName("span")[3].innerText;
- 
+
    journalTitle = journalTitle.replace(/(\s*)/g,""); //띄워쓰기 다 붙임
 
    $.getJSON("OpenJournal.json", function(data){
@@ -81,5 +82,5 @@ function checkReference(x){
                 x.parentElement.children[3].getElementsByTagName("p")[1].style.display="block";
             }
         });
-    })  
+    })
 }
