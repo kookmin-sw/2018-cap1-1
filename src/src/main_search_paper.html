@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
-  <script>
-    var userId = '{{userId}}';
-    //alert(userId);
-  </script>
+<script>
+function getCategory(obId){
+  var mainCategory = document.getElementById("mainCat");
+  alert(mainCategory.value);
+}
+</script>
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -131,7 +133,7 @@
       {% for value in result %}
       <div class="col s12">
         <ul class="collection">
-          <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{value._id}}'">
+          <li class="collection-item avatar" onclick="getCategory(1)">
             <i class="material-icons circle">folder</i>
             <span class="title" name="title">{{value.title}}</span>
             <p>저자 : {{value.writer}}<br></p>

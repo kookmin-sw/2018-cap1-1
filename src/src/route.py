@@ -16,6 +16,8 @@ from urllib2 import Request, urlopen, URLError
 from config import Config
 from werkzeug import secure_filename
 
+import datetime
+import dateutil.parser
 import gridfs, datetime, json, os, jinja2, flask
 import PyPDF2
 import hashlib
@@ -743,8 +745,7 @@ def searchWord():
     querySentence = request.form['querySentence'].lower()
     querySentence = querySentence.encode('utf-8').strip()
     querySentenceList = querySentence.split(" ")
-    #return str(querySentence)
-    resultList = []
+    tempList = []
 
     for paper in paperCursor:
         paperTitle = paper['title']
@@ -760,8 +761,10 @@ def searchWord():
                 count += 1
         if count != 0:
             paper['search_count'] = count
-            resultList.append(paper)
-    resultList.sort(key=compSearchCount, reverse=True)
+            paper['enroll_date'] = dateutil.parser.parse(paper['time'])
+            tempList.append(paper)
+
+    resultList = sorted(tempList, key=compSearch, reverse=True)
     return render_template('main_search_paper.html', result = resultList)
 
 def nltkExtract(sentence):
@@ -776,8 +779,8 @@ def nltkExtract(sentence):
                 real_sentences = real_sentences + " " + word
     return real_sentences
 
-def compSearchCount(elem):
-    return elem['search_count']
+def compSearch(elem):
+    return elem['search_count'], elem['enroll_date']
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
