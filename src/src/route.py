@@ -740,12 +740,21 @@ def extract_reference_from_text(text):
 @app.route("/searchWord", methods=['POST'])
 def searchWord():
     paperCollection = db.PaperInformation
-    paperCursor = paperCollection.find()
-
+    mainCategory = request.form['mainCat']
+    subCategory = request.form['subCat']
     querySentence = request.form['querySentence'].lower()
     querySentence = querySentence.encode('utf-8').strip()
     querySentenceList = querySentence.split(" ")
     tempList = []
+    paperCursor = None
+
+    if mainCategory != "total":
+        print("부분검색")
+        paperCursor = paperCollection.find({"mainCategory":mainCategory, "subCategory":subCategory})
+    else:
+        print("전체검색")
+        paperCursor = paperCollection.find()
+
 
     for paper in paperCursor:
         paperTitle = paper['title']
