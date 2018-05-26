@@ -15,11 +15,10 @@ from pymongo import MongoClient
 from urllib2 import Request, urlopen, URLError
 from config import Config
 from werkzeug import secure_filename
-from flask_cors import CORS, cross_origin
 
 import datetime
 import dateutil.parser
-import gridfs, datetime, json, os, jinja2, flask, jsonify
+import gridfs, datetime, json, os, jinja2, flask
 import PyPDF2
 import hashlib
 import nltk
@@ -60,7 +59,9 @@ oauth = OAuth(app)
 client = MongoClient('localhost', 27017)
 db = client.OpenJournal
 fs = gridfs.GridFS(db)
+
 hash_password = Config.hash_password
+
 google = oauth.remote_app(
     'google',
     consumer_key=app.config.get('GOOGLE_ID'),
@@ -80,19 +81,6 @@ def home():
     userId = checkUserId()
     return render_template('main.html', userId = userId)
 
-@app.route("/getSession")
-def getSession():
-    result = str(session['state'])+","+str(session['journal_number'])
-    return str(result)
-
-@app.route("/getState")
-def getState():
-    return str(session['state'])
-
-@app.route("/getJournalNum")
-def getJournalNum():
-    return str(session['journal_number'])
-
 @app.route('/js/<path:path>')
 def send_js(path):
     return send_from_directory('js', path)
@@ -109,26 +97,24 @@ def passwordTohash(password):
 
 @app.route("/blockEnrollUpdate")
 def blockEnrollUpdate():
-    userId = checkUserId() 
-    userCollection = db.Users
-    user = userCollection.find_one({"user_id":userId})
-    journalNumber = user['journal_number']
-    obId = user['obId']
+    id = session["obId"]
     paperCollection = db.PaperInformation
-    paperCollection.update({"_id":ObjectId(obId)}, {"$set": {"complete": 1, "paperNum": journalNumber}})
-    userCollection.update({"user_id":userId}, {"$set":{"obId":"0", "journal_number":"0", "state": 0}})
-    paperNumInfo = db.PaperNum
-    paper = paperNumInfo.find_one({"name":"latestNum"})
-    paperNumInfo.update({"name":"latestNum"}, {"$set": {"updatedPaperNum":paper['updatedPaperNum']+1}})
-    return render_template('main_enroll.html', userId = userId)
+    pNum = session['journal_number']
+    paperCollection.update({"_id":ObjectId(id)}, {"$set": {"complete": 1, "paperNum": pNum}})
+    session.pop('journal_number', None)
+    session.pop('obId', None)
+    session['state'] = 0
 
-@app.route("/enrollState")
+@app.route("/enrollState", methods=['POST'])
 def enrollState():
     userId = checkUserId()
-    data = request.args.get("data")
-    data_list = data.split(',')  # 1st: obId, 2nd : state, 3rd : journalNumber
-    userCollection = db.Users
-    user = userCollection.update({"user_id":userId}, {"$set":{"state":int(data_list[1]), "obId":data_list[0], "journal_number":data_list[2]}})
+    state = request.get_json()
+    obId = request.form['obId']
+    journal_number = request.form['journalNumber']
+    return str(obId)
+    session['state'] = state
+    session['obId'] = obId
+    session['journal_number'] = journal_number
     return render_template('main_enroll.html', userId = userId)
 
 def checkUserId():
@@ -245,10 +231,9 @@ def enrollNewMember():
         tokenNum = 0
         accountInfo = request.form['ethereum_acc']
         doc = {'user_id'    : userId,      'user_name'     : userName,       'password':newPassWord,
-               'telephone'  : telephone,   'birthday'      : birthday,       'fame'    : fame,
+               'telephone'  :telephone,    'birthday'      : birthday,       'fame'    : fame,
                'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum, 'tokenNum': tokenNum,
-               'accountInfo': accountInfo, 'state'         : 0,              'journal_number':0,
-	       'obId'       : ""}
+               'accountInfo' : accountInfo}
         collection = db.Users
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
@@ -669,15 +654,16 @@ def adaptComment():
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
-@app.route("/checkMyState", methods = ['GET'])
+@app.route("/checkMyState", methods = ['POST'])
 def checkMyState():
-    userCollection = db.Users
-    user = userCollection.find_one({"user_id":"kobot@gmail.com"})
-    journal_number = str(papernum())
+    if 'state' not in session:
+        session['state'] = 0
+        session['journal_number'] = 0
     return """{
-        "check_state": %s,
-        "journal_number": %s
-    }""" %(str(user['state']), journal_number)
+        "result": 0,
+        "check_state": %d,
+        "journal_number": %d
+    }""" %(session['state'], session['journal_number'])
 
 @app.route("/completeState")
 def completeState():
