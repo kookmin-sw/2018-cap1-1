@@ -9,21 +9,28 @@ if(typeof web3 !== "undefined"){
 web3 = new Web3(web3Provider);
 
 $(document).ready(function () {
-    $.ajax({
-        url: "http://localhost/checkMyState",
-        dataType: 'json',
-        type: "post",
-        success:function(data){
-            checkContractState(data);
-        }
+    setInterval(function() {
+            $.ajax({
+		url: "http://openjournal.io/checkMyState",
+		type: "GET",
+		success: function(data){
+			console.log("success!");
+			console.log(data);
+			var obj = JSON.parse(data);
+			console.log(obj["check_state"] + " and " + obj["journal_number"]);
+			checkContractState(obj["check_state"], obj["journal_number"]);
+		},
+		error: function(thrownError){
+			console.log("error: " + thrownError);
+		}
 	});
+	}, 3000);
 });
 
-function checkContractState(info){
+function checkContractState(state, journalNumber){
 
-    var state = info["check_state"];
-
-    if(state == 0){
+	console.log("checkContractState : " + state);
+    if(state  == 0){
         // 아무 트랜잭션이 생성되지 않은 경우
         return;
     }
@@ -35,9 +42,8 @@ function checkContractState(info){
             contracts.OpenJournal.setProvider(web3Provider);
             contracts.OpenJournal.deployed().then(function(instance){
                 //loading 중일 때 써야하는 것 (첫줄에)
-                var journal_number = info["journal_number"];
                 var subscriber = getUserAccount();
-                instance.getIsSubscribedJournal(journal_number, {from: subscriber}).then(function(res){
+                instance.getIsSubscribedJournal(journalNumber, {from: subscriber}).then(function(res){
                     if(res == false){
                         document.getElementById("loading_journal").style.display = "block";
                     }
@@ -74,8 +80,9 @@ function checkContractState(info){
             contracts.OpenJournal = TruffleContract(Artifact);
             contracts.OpenJournal.setProvider(web3Provider);
             contracts.OpenJournal.deployed().then(function(instance){
-                var journal_number = info["journal_number"];
-                instance.getIsJournalValid(journal_number).then(function(res){
+		console.log("start getIsJournalValid");
+                instance.getIsJournalValid(journalNumber).then(function(res){
+			console.log(res);
                     if(res == false){
                         document.getElementById("loading_journal").style.display = "block";
                     }
@@ -89,19 +96,13 @@ function checkContractState(info){
 }
 
 function blockEnrollUpdate(){
-
-    $.ajax({
-        url: "http://52.79.222.139/blockEnrollUpdate",
-        dataType: "json",
-        type: "post",
-        success: function (data) {
-            document.getElementById("loading_journal").style.display = "none";
-            document.getElementById("complete_journal").style.display = "block";
-            setTimeout(function(){
-                document.getElementById("complete_journal").style.display = "none";
-            }, 3000)
-        }
-    });
+	document.getElementById("loading_journal").style.display = "none";
+        document.getElementById("complete_journal").style.display = "block";
+        setTimeout(function(){
+		console.log("setTimeout..");
+		document.getElementById("complete_journal").style.display = "none";
+        }, 3000)
+	location.href ="blockEnrollUpdate";
 }
 
 function getJournalNumber(){
