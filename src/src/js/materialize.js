@@ -10246,14 +10246,14 @@ $jscomp.polyfill = function (e, r, p, m) {
     }, {
       key: "_setupCounter",
       value: function _setupCounter() {
-        this.counterEl = document.createElement('span');
-        $(this.counterEl).addClass('character-counter').css({
-          float: 'right',
-          'font-size': '12px',
-          height: 1
-        });
-
-        this.$el.parent().append(this.counterEl);
+        // this.counterEl = document.createElement('span');
+        // $(this.counterEl).addClass('character-counter').css({
+        //   float: 'right',
+        //   'font-size': '12px',
+        //   height: 1
+        // });
+        //
+        // this.$el.parent().append(this.counterEl);
       }
 
       /**

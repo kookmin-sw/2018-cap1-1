@@ -233,7 +233,7 @@
                     <div class="col s12">
 
                       <div class="col s2">
-                        <div  style="border-radius:150px;" class="card blue darken-4">
+                        <div  class="card blue darken-4">
                           <div style="padding:1px;" class="card-content white-text">
                             <span style="margin-bottom:0px; font-size:1.3rem;" name="OJjournal" class="card-title">{{key}}</span>
                           </div>
@@ -267,7 +267,7 @@
                       </div>
 
                       <div class="col s2">
-                        <div style="border-radius:150px;"  class="card">
+                        <div class="card">
                           <div style="padding:1px;" class="card-content white-text">
                             <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">번호&제목 일치여부</span>
                             <p id="correspond" style="color:green;">일치합니다.</p>
@@ -279,7 +279,72 @@
                     {% endfor %}
                 </div>
 
-                <div class="col s5 center">
+                <div style="margin:20px; margin-bottom:0px; text-align:left;">
+                  <span style=" font-size:1.5rem; font-weight:bold;">Contributer</span>
+                </div>
+                <div>
+                  <!-- {% for key, value in paperNumDic.items() %} -->
+                  <!-- contributer에 대해서 for을 돌려야 할 듯 -->
+                  <div class="col s12">
+
+                    <div class="col s2">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span style="margin-bottom:0px; font-size:1.3rem;" name="OJcontributerNum" class="card-title">{{key}}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col s4">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title" id="contributer_name">{{value}}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col s1" onclick="modifyContributerInfo(this)">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
+                          <p id="">클릭</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col s1" onclick="checkContributer(this)">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
+                          <p id="">클릭</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col s2">
+                      <div class="card blue darken-4">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">지분(%)</span>
+                          <input style="background-color:white; height:30px; ime-mode: disabled; text-align: right; font-size:1.05rem;" id="journal_price"type="number" min="0" max="100" class="validate" name="price_percent" onkeyup="checkPercent()" required>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col s2">
+                      <div class="card">
+                        <div style="padding:1px;" class="card-content white-text">
+                          <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">Contributer 일치여부</span>
+                          <p id="correspond" style="color:green;">일치합니다.</p>
+                          <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endfor %}
+              </div>
+
+
+                <div class="col s3 center">
                   <div style="margin-bottom:0px; text-align:right;">
                     <span style=" font-size:1.5rem; font-weight:bold;">논문 가격</span>
                   </div>
@@ -287,7 +352,7 @@
 
                 <div class="col s2 center">
                   <div style="margin:0; margin-bottom:20px;" class="input-field col s12">
-                    <input style="ime-mode: disabled; text-align: right; font-size:2rem; size:2;" id="journal_price" min="30" max="50" type="number" class="validate">
+                    <input style="ime-mode: disabled; text-align: right; font-size:2rem; size:2;" id="journal_price" min="30" max="50" type="number" class="validate" required>
                   </div>
                 </div>
 
@@ -298,8 +363,27 @@
                 </div>
 
 
+                <div class="col s2 center">
+                  <div style="margin-bottom:0px; text-align:left;">
+                    <span style=" font-size:1.5rem; font-weight:bold;">나의 지분</span>
+                  </div>
+                </div>
+
+                <div class="col s2 center">
+                  <div style="margin:0; margin-bottom:20px;" class="input-field col s12">
+                    <input style="ime-mode: disabled; text-align: right; font-size:2rem; " id="journal_percentToken" min="0" max="100" type="number" class="validate" name="price_percent" onkeyup="checkPercent()" required>
+                  </div>
+                </div>
+
+                <div class="col s1 center">
+                  <div style="margin-bottom:0px; text-align:left;">
+                    <span style=" font-size:1.5rem; font-weight:bold;">%</span>
+                  </div>
+                </div>
+
+
                 <div class="col s12 center">
-                  <a onclick="finalEnroll('{{id}}', '{{journalNum}}')" id="load_metamthisask" class="btn-small waves-effect waves-light blue darken-4">확인</a>
+                  <a onclick="finalEnroll('{{id}}', '{{journalNum}}')" id="load_metamthisask" style="display:none;" class="btn-small waves-effect waves-light blue darken-4">확인</a>
                   <a onclick="off()" id="load_metamask" class="btn-small waves-effect waves-light blue darken-4">취소</a>
                 </div>
               </div>
@@ -358,15 +442,46 @@
                   </td>
                   <td class="comment-window-second-td" name="enroll">
                       <input type="submit" class="center btn blue darken-4" name="enrollBtn" value="등록" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </form>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+        </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
+</div>
+
+<footer class="blue darken-4 page-footer">
+ <div class="container">
+   <div class="row">
+     <div class="col l6 s12">
+       <h5 class="white-text">Open Journal</h5>
+       <p class="grey-text text-lighten-4">블록체인을 공부함과 동시에 논문 시장을 개척하고자 플랫폼을 개발하였고, 캡스톤 프로젝트에서 선보일 예정입니다.</p>
+     </div>
+     <div class="col l4 offset-l2 s12">
+       <h5 class="white-text">Links</h5>
+       <ul>
+         <li><a class="grey-text text-lighten-3" href="https://www.facebook.com/eom.hyungguen" target="_blank">엄형근 Facebook</a></li>
+         <li><a class="grey-text text-lighten-3" href="https://www.facebook.com/profile.php?id=100005209691285" target="_blank">차민준 Facebook</a></li>
+         <li><a class="grey-text text-lighten-3" href="https://www.facebook.com/profile.php?id=100006514342253" target="_blank">구민준 Facebook</a></li>
+         <li><a class="grey-text text-lighten-3" href="https://www.facebook.com/byeun.goohoon" target="_blank">변구훈 Facebook</a></li>
+       </ul>
+     </div>
+   </div>
+ </div>
+ <div class="footer-copyright">
+   <div class="container">
+     <span class="left">© 2018 Copyright Text</span>
+     <div style="margin : 5px; margin-top:0px;" class="s12 center">
+       <a class="grey-text text-lighten-4 right" href="https://github.com/kookmin-sw/2018-cap1-1" target="_blank">Github</a>
+       <img style="margin-right:7px; width:3%; height:3%;" class="right" src="img/github-logo.png">
+     </div>
+   </div>
+ </div>
+</footer>
 
   <!--  Scripts-->
 
@@ -437,6 +552,7 @@
   </script>
 
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
   <script src="js/customize.js"></script>

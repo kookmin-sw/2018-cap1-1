@@ -8,12 +8,16 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         uint256 number;
         address author;
         string title;
+        uint256 author_share;
         uint256 value;
+        uint256 reference_count;
         uint[] subscribed;
-        uint256[] reference_journal;
+        uint[] reference_journal;
+        uint256[] contributors;
+        uint256[] contributors_share;
         bool final_enroll;
     }
-    
+
     struct User {
         uint256 user_number;                    
         address user_address;                   
@@ -23,14 +27,18 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
     }    
 
     mapping (uint256 => Journal) public journals;                               
-    mapping (address => User) public users;                                     
+    mapping (uint256 => User) public users_by_number;
+    mapping (address => User) public users_by_address;                                     
+
     mapping (address => mapping (uint => bool)) public is_subscribed;           
 
     uint256 public userNumber;               
     uint256 public signUpCost;               
     uint256 public upperbound_value;         
-    uint256 public lowerbound_value;         
-    uint256 public author_share;
+    uint256 public lowerbound_value;             
+    
+    uint256 author_token;
+    uint256 contributor_token;
 
     event LogSignUp(
         uint256 _user_number, 
@@ -43,11 +51,12 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
     event LogRegistJournal(
         uint256 _number, 
         address _author, 
-        string _title, 
+        string _title,
+        uint256 _author_share,
         uint256 _value,
-        uint256[] _reference_journal,
-        uint[] _user_regist_journal,
-        bool _final_enroll
+        uint[] _reference_journal,
+        uint256[] _contributors,
+        uint256[] _contributors_share        
     );  
 
     event LogSubscribeJournal(
@@ -56,7 +65,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         uint[] _subscribed,
         bool _is_subscribed,
         uint256 _author_value,
-        uint256 _ref_value
+        uint256 _reference_count
     );
 
     event LogGetUserRegistedJournals(
@@ -81,19 +90,25 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         uint256 _userNumber,
         uint256 _signUpCost,
         uint256 _upperbound_value,
-        uint256 _lowerbound_value,
-        uint256 _author_share
+        uint256 _lowerbound_value
     ) public {
         userNumber = _userNumber;
-        signUpCost = _signUpCost.mul(10**uint256(decimals));        // 테스트 할 때 : signUpCost = _signUpCost.mul(10**uint256(4));
+        signUpCost = _signUpCost.mul(10**uint256(decimals));        // 테스트 값 signUpCost = _signUpCost.mul(10**uint256(4));
         upperbound_value = _upperbound_value;
         lowerbound_value = _lowerbound_value;
-        author_share = _author_share;
     }
 
     function signUp() public returns (bool) {
-        userNumber = userNumber.add(1);            
-        users[msg.sender] = User(
+        userNumber = userNumber.add(1); 
+        users_by_number[userNumber] = User(
+            userNumber,
+            msg.sender,
+            new uint[](0),
+            new uint[](0),
+            true
+        );
+
+        users_by_address[msg.sender] = User(
             userNumber,
             msg.sender,
             new uint[](0),
@@ -105,125 +120,157 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         emit LogSignUp(
             userNumber, 
             msg.sender, 
-            users[msg.sender].user_subscribe_journal, 
-            users[msg.sender].user_regist_journal,
-            users[msg.sender].is_user
+            users_by_address[msg.sender].user_subscribe_journal, 
+            users_by_address[msg.sender].user_regist_journal,
+            users_by_address[msg.sender].is_user
         );
 
         return true;
     }
 
-    function registJournal(uint256 _journalNumber, string _title, uint256 _journalValue, uint256[] _referenceJournal) public returns (bool) {
-        require(_journalValue <= upperbound_value && _journalValue >= lowerbound_value);
+    function registJournal(uint256 _journal_number, 
+                    string _title, 
+                    uint256 _author_share, 
+                    uint _journal_value, 
+                    uint256[] _reference_journal,
+                    uint256[] _contributors,
+                    uint256[] _contributors_share
+        ) public returns (bool) {
+
+        require(_journal_value <= upperbound_value && _journal_value >= lowerbound_value);
     
-        journals[_journalNumber] = Journal(
-            _journalNumber,
+        journals[_journal_number] = Journal(
+            _journal_number,
             msg.sender,
             _title,
-            _journalValue.mul(10**uint256(decimals)),     // 테스트 할 떄 : _journalValue.mul(10**uint256(4))
+            _author_share,
+            _journal_value.mul(10**uint256(decimals)),     // 테스트 값 _journal_value.mul(10**uint256(4))
+            0,
+            new uint[](0),
+            new uint[](0),
             new uint[](0),
             new uint256[](0),
             true
         );
 
-        for(uint256 ref = 0; ref <_referenceJournal.length; ++ref)
-            journals[_journalNumber].reference_journal.push(_referenceJournal[ref]);
+        for(uint256 ref = 0; ref <_reference_journal.length; ++ref)
+            journals[_journal_number].reference_journal.push(_reference_journal[ref]);
 
-        users[msg.sender].user_regist_journal.push(_journalNumber);
-        
+        for(uint256 cont = 0; cont <_contributors.length; ++cont){
+            journals[_journal_number].contributors.push(_contributors[cont]);
+            journals[_journal_number].contributors_share.push(_contributors_share[cont]);
+        }
+
+        users_by_address[msg.sender].user_regist_journal.push(_journal_number);    
+
         emit LogRegistJournal(
-            _journalNumber, 
-            msg.sender, 
-            _title, 
-            _journalValue, 
-            journals[_journalNumber].reference_journal,
-            users[msg.sender].user_regist_journal,
-            journals[_journalNumber].final_enroll
-        );   
+            _journal_number,
+            msg.sender,
+            _title,
+            _author_share,
+            _journal_value,
+            _reference_journal,
+            _contributors,
+            _contributors_share            
+        );  
  
         return true;    
     }
 
-    function subscribeJournal(uint256 _journalNumber) public returns (bool){
-        require(is_subscribed[msg.sender][_journalNumber] == false); 
+    function subscribeJournal(uint256 _journal_number) public returns (bool){
+        require(is_subscribed[msg.sender][_journal_number] == false); 
 
-        uint256 author_token;
-        uint256 reference_token;
-        uint256 reference_each_token;
-        uint256 reference_total_token;
-        uint256 reference_num = journals[_journalNumber].reference_journal.length;
+        uint256 contributor_each_token;
+        uint256 contributor_number;        
+        uint256 contributor_num = journals[_journal_number].contributors.length;
 
-        if(reference_num == 0){
-            author_token = journals[_journalNumber].value;
+        if(contributor_num == 0){
+            author_token = journals[_journal_number].value;
         } else{
-            author_token = journals[_journalNumber].value.mul(author_share).div(100);
-            reference_token = journals[_journalNumber].value.sub(author_token);
-            reference_each_token = reference_token.div(reference_num);
-            reference_total_token = reference_each_token.mul(reference_num);
-            author_token = author_token.add(reference_token.sub(reference_total_token));
+            uint256 author_share = journals[_journal_number].author_share;
+            author_token = journals[_journal_number].value.mul(author_share).div(100);
 
-            for(uint256 ref = 0; ref < reference_num; ref++)
-                transfer(journals[journals[_journalNumber].reference_journal[ref]].author, reference_each_token);                    
+            for(uint256 cont=0; cont < contributor_num; cont++){
+                contributor_each_token = journals[_journal_number].value.mul(journals[_journal_number].contributors_share[cont]).div(100);
+                transfer(users_by_number[journals[_journal_number].contributors[cont]].user_address, contributor_each_token);
+            }
         }
 
-        transfer(journals[_journalNumber].author, author_token); 
+        transfer(journals[_journal_number].author, author_token); 
 
-        uint sub_id = users[msg.sender].user_number;
+        uint sub_id = users_by_address[msg.sender].user_number;
 
-        users[msg.sender].user_subscribe_journal.push(_journalNumber);  
-        journals[_journalNumber].subscribed.push(sub_id);       
-        is_subscribed[msg.sender][_journalNumber] = true;
+        users_by_address[msg.sender].user_subscribe_journal.push(_journal_number);  
+        journals[_journal_number].subscribed.push(sub_id);       
+        is_subscribed[msg.sender][_journal_number] = true;
+        journals[_journal_number].reference_count++;
 
         emit LogSubscribeJournal(
             msg.sender, 
-            users[msg.sender].user_subscribe_journal, 
-            journals[_journalNumber].subscribed, 
-            is_subscribed[msg.sender][_journalNumber],
+            users_by_address[msg.sender].user_subscribe_journal, 
+            journals[_journal_number].subscribed, 
+            is_subscribed[msg.sender][_journal_number],
             author_token,
-            reference_each_token
+            journals[_journal_number].reference_count
         );
 
         return true;
     }
 
-    function getIsJournalValid(uint _journalNumber) public view returns (bool) {
-        return journals[_journalNumber].final_enroll;
+    function getIsJournalValid(uint _journal_number) public view returns (bool) {
+        return journals[_journal_number].final_enroll;
     }
 
-    function getAuthorAddress(uint256 _journalNumber) public view returns (address){
-        return journals[_journalNumber].author;
+    function getAuthorAddress(uint256 _journal_number) public view returns (address){
+        return journals[_journal_number].author;
     }
 
-    function getJournalTitle(uint256 _journalNumber) public view returns (string){
-        return journals[_journalNumber].title;
+    function getJournalTitle(uint256 _journal_number) public view returns (string){
+        return journals[_journal_number].title;
     }
 
-    function getValue(uint256 _journalNumber) public view returns (uint256){
-        return journals[_journalNumber].value;
+    function getValue(uint256 _journal_number) public view returns (uint256){
+        return journals[_journal_number].value;
     }
 
-    function getJournalSubscriber(uint _journalNumber) public view returns (uint[]) {
-        return journals[_journalNumber].subscribed;
+    function getJournalSubscriber(uint _journal_number) public view returns (uint[]) {
+        return journals[_journal_number].subscribed;
     }
 
-    function getReferenceJournal(uint _journalNumber) public view returns (uint256[]) {
-        return journals[_journalNumber].reference_journal;
+    function getReferenceJournal(uint _journal_number) public view returns (uint256[]) {
+        return journals[_journal_number].reference_journal;
     }    
 
-    function getIsSubscribedJournal(uint _journalNumber) public view returns (bool) {
-        return is_subscribed[msg.sender][_journalNumber];
+    function getIsSubscribedJournal(uint _journal_number) public view returns (bool) {
+        return is_subscribed[msg.sender][_journal_number];
+    }
+
+    function getAuthorShare(uint _journal_number) public view returns (uint256) {
+        return journals[_journal_number].author_share;
+    }
+
+    function getReferenceCount(uint _journal_number) public view returns (uint256) {
+        return journals[_journal_number].reference_count;
+    }
+
+    function getContributors(uint _journal_number) public view returns (uint256[]) {
+        return journals[_journal_number].contributors;
+    }
+
+    function getContributorsShare(uint _journal_number) public view returns (uint256[]) {
+        return journals[_journal_number].contributors_share;
     }
 
     function getIsUserValid() public view returns (bool) {
-        return users[msg.sender].is_user;
+        return users_by_address[msg.sender].is_user;
     }
 
     function getUserSubscribedJournals() public view returns (uint[]) {
-        return users[msg.sender].user_subscribe_journal;
+        return users_by_address[msg.sender].user_subscribe_journal;
     }    
 
     function getUserRegistedJournals() public view returns (uint[]) {
-        return users[msg.sender].user_regist_journal;
+        return users_by_address[msg.sender].user_regist_journal;
     } 
 
     function getSignupCost() public view returns (uint256) {
@@ -237,11 +284,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
     function getLowerboundValue() public view returns (uint256) {
         return lowerbound_value;
     }
-
-    function getAuthorShare() public view returns (uint256) {
-        return author_share;
-    }
-
+    
     function setSignupCost(uint256 _signUpCost) public onlyOwner{
         signUpCost = _signUpCost;
     }
@@ -254,7 +297,24 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         lowerbound_value = _lowerbound_value;
     }
 
-    function setAuthorShare(uint256 _author_share) public onlyOwner{
-        author_share = _author_share;
-    } 
+    function setAuthorShare(uint _journal_number, uint _author_share) public {
+        journals[_journal_number].author_share = _author_share;
+    }
+
+    function setContributors(uint _journal_number, uint256[] _contributors) public {
+        journals[_journal_number].contributors = _contributors;
+    }
+
+    function setContributorsShare(uint _journal_number, uint256[] _contributors_share) public {
+        uint256 new_length = _contributors_share.length;
+        uint256 new_total;
+
+        for(uint i=0; i<new_length; i++)
+            new_total = new_total.add(_contributors_share[i]);
+
+        require(new_total == 100);
+
+        journals[_journal_number].contributors_share = _contributors_share;
+    }
+   
  }
