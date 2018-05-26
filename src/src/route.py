@@ -687,6 +687,10 @@ def completeState():
         "result": 0
     }"""
 
+@app.route("/waitView")
+def waitView():
+    return render_template('main_waitView.html')
+
 def page_number_of_pdf(path):
     pdfFileObj = open(path, 'rb')
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
@@ -792,6 +796,8 @@ def searchWord():
 
     resultList = sorted(tempList, key=compSearch, reverse=True)
     return render_template('main_search_paper.html', result = resultList)
+
+
 
 def nltkExtract(sentence):
     sentence = sentence.encode('utf-8').strip()

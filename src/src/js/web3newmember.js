@@ -18,7 +18,7 @@ function signUp(){
         var newUser = getUserAccounts();
         console.log(newUser);
         instance.signUp({from: newUser});
-	//location.href = "waitView";
+    	location.href = "waitView";
     });
 
 }

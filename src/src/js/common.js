@@ -54,25 +54,6 @@ function checkContractState(state, journalNumber){
             });
         });
     }
-    else if(state == 2){
-        // 회원가입 트랜잭션이 생성되어 대기하는 경우
-        $.getJSON("OpenJournal.json", function(data){
-            var Artifact = data;
-            contracts.OpenJournal = TruffleContract(Artifact);
-            contracts.OpenJournal.setProvider(web3Provider);
-            contracts.OpenJournal.deployed().then(function(instance){
-                var newmember = getUserAccount();
-                instance.getIsUserValid({from: newmember}).then(function(res){
-                    if(res == false){
-                        document.getElementById("loading_journal").style.display = "block";
-                    }
-                    else{
-                        completeState();
-                    }
-                });
-            });
-        });
-    }
     else if(state == 3){
         // 논문 최종 등록 트랜잭션이 생성되어 대기하는 경우
         $.getJSON("OpenJournal.json", function(data){
@@ -103,11 +84,6 @@ function blockEnrollUpdate(){
 		document.getElementById("complete_journal").style.display = "none";
         }, 3000)
 	location.href ="blockEnrollUpdate";
-}
-
-function getJournalNumber(){
-    var number = document.getElementById("journal_number").value;
-    return number;
 }
 
 function getUserAccount(){
