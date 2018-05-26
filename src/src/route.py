@@ -16,13 +16,32 @@ from urllib2 import Request, urlopen, URLError
 from config import Config
 from werkzeug import secure_filename
 
+import datetime
+import dateutil.parser
 import gridfs, datetime, json, os, jinja2, flask
 import PyPDF2
 import hashlib
+import nltk
+import operator
+import ssl
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
+'''
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+'''
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
-#app = flask.Flask(__name__)
 app = flask.Flask(__name__, static_url_path='', static_folder='')
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
@@ -717,6 +736,60 @@ def extract_reference_from_text(text):
         return -1, -1
 
     return reference_number_list, reference_title_list
+
+@app.route("/searchWord", methods=['POST'])
+def searchWord():
+    paperCollection = db.PaperInformation
+    mainCategory = request.form['mainCat']
+    subCategory = request.form['subCat']
+    querySentence = request.form['querySentence'].lower()
+    querySentence = querySentence.encode('utf-8').strip()
+    querySentenceList = querySentence.split(" ")
+    tempList = []
+    paperCursor = None
+
+    if mainCategory != "total":
+        print("부분검색")
+        paperCursor = paperCollection.find({"mainCategory":mainCategory, "subCategory":subCategory})
+    else:
+        print("전체검색")
+        paperCursor = paperCollection.find()
+
+
+    for paper in paperCursor:
+        paperTitle = paper['title']
+        real_sentences = nltkExtract(paperTitle)
+        temp = " "+real_sentences.lower()+" "
+        count = 0
+        for queryWord in querySentenceList:
+            if temp.find(queryWord) != -1:
+                start = temp.find(queryWord)
+                last = start + len(queryWord)
+                if temp[start-1] != " " or temp[last] != " ":
+                    continue
+                count += 1
+        if count != 0:
+            paper['search_count'] = count
+            paper['enroll_date'] = dateutil.parser.parse(paper['time'])
+            tempList.append(paper)
+
+    resultList = sorted(tempList, key=compSearch, reverse=True)
+    return render_template('main_search_paper.html', result = resultList)
+
+def nltkExtract(sentence):
+    sentence = sentence.encode('utf-8').strip()
+    sentences = nltk.sent_tokenize(sentence)
+    real_sentences = ""
+    for i in sentences:
+        for word,pos in nltk.pos_tag(nltk.word_tokenize(str(i))):
+            if (pos == 'NN' or pos == 'NNP' or pos == 'NNS' or pos == 'NNPS'
+                or pos == 'VB' or pos == 'VBD' or pos == 'VBG' or pos == 'VBN'
+                or pos == 'VBP' or pos == 'VBZ'):
+                real_sentences = real_sentences + " " + word
+    return real_sentences
+
+def compSearch(elem):
+    return elem['search_count'], elem['enroll_date']
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
