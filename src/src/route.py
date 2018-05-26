@@ -754,7 +754,7 @@ def extract_reference_from_text(text):
         start_title = reference.find("“")
         end_title = reference.find("”")
 
-        reference_title = reference[start_title+3:end_title]
+        reference_title = reference[start_title+3:end_title].strip()
         reference_title_length = len(reference_title)
 
         if reference_title[reference_title_length-1] == ",":
@@ -786,7 +786,6 @@ def searchWord():
     else:
         print("전체검색")
         paperCursor = paperCollection.find()
-
 
     for paper in paperCursor:
         paperTitle = paper['title']
