@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
-  <script>
-   alert('{{userId}}');
-  </script>
-
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -49,7 +45,9 @@
       <a data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
     </div>
   </nav>
+
   <textarea style="display:none", name="userId", id = "userId">'{{userId}}'</textarea>
+
   <div id="loading_journal" style="display:none; margin:0px;" class="fixed center-align">
     <div style="margin:0px;" class="blue lighten-4 progress">
       <div class="blue darken-3 indeterminate"></div>

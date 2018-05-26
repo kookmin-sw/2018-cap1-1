@@ -36,10 +36,6 @@ except AttributeError:
     pass
 else:
     ssl._create_default_https_context = _create_unverified_https_context
-'''
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-'''
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
@@ -129,7 +125,11 @@ def enrollState():
     data_list = data.split(',')  # 1st: obId, 2nd : state, 3rd : journalNumber
     userCollection = db.Users
     user = userCollection.update({"user_id":userId}, {"$set":{"state":int(data_list[1]), "obId":data_list[0], "journal_number":data_list[2]}})
-    return render_template('main_enroll.html', userId = userId)
+
+    collection = db.PaperInformation
+    rows = collection.find({"complete": 0}).sort("writingPaperNum",-1)
+    userId = checkUserId()
+    return render_template('main_enroll.html', data =rows, userId=userId)
 
 def checkUserId():
     userId = ""
@@ -766,11 +766,15 @@ def searchWord():
 
     if mainCategory != "total":
         print("부분검색")
-        paperCursor = paperCollection.find({"mainCategory":mainCategory, "subCategory":subCategory})
+    	if subCategory != "total":
+    	    paperCursor = paperCollection.find({"mainCategory":mainCategory, "subCategory":subCategory})
+    	elif subCategory == "total":
+    	    paperCursor = paperCollection.find({"mainCategory":mainCategory})
     else:
         print("전체검색")
         paperCursor = paperCollection.find()
 
+    #paperCursor = paperCollection.find()
 
     for paper in paperCursor:
         paperTitle = paper['title']
@@ -802,7 +806,7 @@ def nltkExtract(sentence):
         for word,pos in nltk.pos_tag(nltk.word_tokenize(str(i))):
             if (pos == 'NN' or pos == 'NNP' or pos == 'NNS' or pos == 'NNPS'
                 or pos == 'VB' or pos == 'VBD' or pos == 'VBG' or pos == 'VBN'
-                or pos == 'VBP' or pos == 'VBZ'):
+                or pos == 'VBP' or pos == 'VBZ' or pos == 'CD'):
                 real_sentences = real_sentences + " " + word
     return real_sentences
 

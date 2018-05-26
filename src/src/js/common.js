@@ -19,12 +19,7 @@ $(document).ready(function () {
 		data: {userId: _id},
 		dataType: "json",
 		success: function(data){
-			console.log("success!");
-			console.log(data);
-			console.log(typeof(data));
 			var obj = JSON.parse(JSON.stringify(data));
-			console.log(obj);
-			console.log(typeof(obj));
 			console.log(obj.check_state + " and " + obj.journal_number);
 			checkContractState(obj["check_state"], obj["journal_number"]);
 		},
@@ -37,7 +32,6 @@ $(document).ready(function () {
 
 function checkContractState(state, journalNumber){
 
-	console.log("checkContractState : " + state);
     if(state  == 0){
         // 아무 트랜잭션이 생성되지 않은 경우
         return;
