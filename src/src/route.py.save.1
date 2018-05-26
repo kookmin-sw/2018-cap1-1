@@ -15,11 +15,10 @@ from pymongo import MongoClient
 from urllib2 import Request, urlopen, URLError
 from config import Config
 from werkzeug import secure_filename
-from flask_cors import CORS, cross_origin
 
 import datetime
 import dateutil.parser
-import gridfs, datetime, json, os, jinja2, flask, jsonify
+import gridfs, datetime, json, os, jinja2, flask
 import PyPDF2
 import hashlib
 import nltk
@@ -36,6 +35,10 @@ except AttributeError:
     pass
 else:
     ssl._create_default_https_context = _create_unverified_https_context
+'''
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+'''
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
@@ -56,7 +59,9 @@ oauth = OAuth(app)
 client = MongoClient('localhost', 27017)
 db = client.OpenJournal
 fs = gridfs.GridFS(db)
+
 hash_password = Config.hash_password
+
 google = oauth.remote_app(
     'google',
     consumer_key=app.config.get('GOOGLE_ID'),
@@ -105,26 +110,22 @@ def passwordTohash(password):
 
 @app.route("/blockEnrollUpdate")
 def blockEnrollUpdate():
-    userId = checkUserId() 
-    userCollection = db.Users
-    user = userCollection.find_one({"user_id":userId})
-    journalNumber = user['journal_number']
-    obId = user['obId']
+    id = session["obId"]
     paperCollection = db.PaperInformation
-    paperCollection.update({"_id":ObjectId(obId)}, {"$set": {"complete": 1, "paperNum": journalNumber}})
-    userCollection.update({"user_id":userId}, {"$set":{"obId":"0", "journal_number":"0", "state": 0}})
-    paperNumInfo = db.PaperNum
-    paper = paperNumInfo.find_one({"name":"latestNum"})
-    paperNumInfo.update({"name":"latestNum"}, {"$set": {"updatedPaperNum":paper['updatedPaperNum']+1}})
-    return render_template('main_enroll.html', userId = userId)
+    pNum = session['journal_number']
+    paperCollection.update({"_id":ObjectId(id)}, {"$set": {"complete": 1, "paperNum": pNum}})
+    session.pop('journal_number', None)
+    session.pop('obId', None)
+    session['state'] = 0
 
 @app.route("/enrollState")
 def enrollState():
     userId = checkUserId()
     data = request.args.get("data")
     data_list = data.split(',')  # 1st: obId, 2nd : state, 3rd : journalNumber
-    userCollection = db.Users
-    user = userCollection.update({"user_id":userId}, {"$set":{"state":int(data_list[1]), "obId":data_list[0], "journal_number":data_list[2]}})
+    session['state'] = data_list[1]
+    session['obId'] = data_list[0]
+    session['journal_number'] = data_list[2]
     return render_template('main_enroll.html', userId = userId)
 
 def checkUserId():
@@ -241,10 +242,9 @@ def enrollNewMember():
         tokenNum = 0
         accountInfo = request.form['ethereum_acc']
         doc = {'user_id'    : userId,      'user_name'     : userName,       'password':newPassWord,
-               'telephone'  : telephone,   'birthday'      : birthday,       'fame'    : fame,
+               'telephone'  :telephone,    'birthday'      : birthday,       'fame'    : fame,
                'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum, 'tokenNum': tokenNum,
-               'accountInfo': accountInfo, 'state'         : 0,              'journal_number':0,
-	       'obId'       : ""}
+               'accountInfo' : accountInfo}
         collection = db.Users
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
@@ -388,14 +388,7 @@ def extractReference(obId):
     filepath = app.config['UPLOAD_FOLDER'] + paper['fileName']
     pdf_page = page_number_of_pdf(filepath)
     text = convert_pdf_to_txt(str(filepath), [pdf_page-3, pdf_page-2, pdf_page-1])
-    contributor_number_list, contributor_name_list = extract_contributors_from_text(text)
     reference_number_list, reference_title_list = extract_reference_from_text(text)
-    
-    # contributor_dic 반환해줘야 함
-    contributor_dic = {
-    contributor_number_list : contributor_name_list for contributor_number_list, contributor_name_list in zip(contributor_number_list, contributor_name_list)
-    }
-
     reference_dic = {
     reference_number_list : reference_title_list for reference_number_list, reference_title_list in zip(reference_number_list, reference_title_list)
     }
@@ -672,15 +665,14 @@ def adaptComment():
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
-@app.route("/checkMyState", methods = ['GET'])
-def checkMyState():
-    userCollection = db.Users
-    user = userCollection.find_one({"user_id":"kobot@gmail.com"})
-    journal_number = str(papernum())
+@app.route("/checkMyState", methods = ['POST'])
+def checkMyState():    
     return """{
-        "check_state": %s,
-        "journal_number": %s
-    }""" %(str(user['state']), journal_number)
+        "result": 0,
+        "check_state": %d,
+        "journal_nu
+mber": %d
+    }""" %(int(getState()), int(getJournalNum()))
 
 @app.route("/completeState")
 def completeState():
@@ -715,37 +707,8 @@ def convert_pdf_to_txt(path, pages=None):
     output.close
     return text
 
-def extract_contributors_from_text(text):      
-    start = text.find("CONTRIBUTORS:")
-    contributor_text = " ".join(text[start:].split("\n"))
-
-    contributor_list = contributor_text.split("[")
-    contributor_number_list = []
-    contributor_name_list = []
-
-    for contributor in contributor_list:
-        is_valid = contributor.find("]")
-        try:
-            int(contributor[:is_valid])
-        except:
-            continue
-
-        contributor = contributor[is_valid+1:]
-        contributor_detail_list = contributor.split(",")
-        is_openjournal_number = contributor_detail_list[0].strip()
-
-        try:
-            contributor_number_list.append(int(is_openjournal_number))
-        except:
-            continue
-
-        contributor_name = contributor_detail_list[1].strip()
-        contributor_name_list.append(contributor_name)      
-
-    return contributor_number_list, contributor_name_list
-
 def extract_reference_from_text(text):
-    start = text.find("REFERENCES:")
+    start = text.find('My references at below page.')
     reference_text = " ".join(text[start:].split("\n"))
 
     reference_list = reference_text.split("[")
@@ -771,7 +734,7 @@ def extract_reference_from_text(text):
         start_title = reference.find("“")
         end_title = reference.find("”")
 
-        reference_title = reference[start_title+3:end_title].strip()
+        reference_title = reference[start_title+3:end_title]
         reference_title_length = len(reference_title)
 
         if reference_title[reference_title_length-1] == ",":
@@ -803,6 +766,7 @@ def searchWord():
     else:
         print("전체검색")
         paperCursor = paperCollection.find()
+
 
     for paper in paperCursor:
         paperTitle = paper['title']

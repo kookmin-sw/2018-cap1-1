@@ -3,3 +3,5 @@
 src/.ethereum
 src/eth_testdata
 src/src/static/journal
+src/src/route.pyc
+src/src/config/__init__.pyc

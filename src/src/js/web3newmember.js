@@ -14,12 +14,11 @@ function signUp(){
         var Artifact = data;
         contracts.OpenJournal = TruffleContract(Artifact);
         contracts.OpenJournal.setProvider(web3Provider);
-    })
-
-    contracts.OpenJournal.deployed().then(function(instance){
+    	contracts.OpenJournal.deployed().then(function(instance){
         var newUser = getUserAccounts();
         console.log(newUser);
         instance.signUp({from: newUser});
+	//location.href = "waitView";
     });
 
 }
