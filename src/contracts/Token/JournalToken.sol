@@ -45,7 +45,7 @@ contract JournalToken is EIP20Interface, Owned {
         name = _tokenName;                                          // Set the name for display purposes
         symbol = _tokenSymbol;
         decimals = _decimalUnits;                                   // Amount of decimals for display purrposes
-        totalSupply = _initialAmount.mul(10**uint256(decimals));    // Update total supply
+        totalSupply = _initialAmount.mul(10**uint256(4));           // 테스트 중... Update total supply
         balances[msg.sender] = totalSupply;                         // Give the creator all initial tokens 
     }   
 
@@ -58,7 +58,7 @@ contract JournalToken is EIP20Interface, Owned {
     function buyToken() public payable {
         require(msg.value > 0);
 
-        uint256 amount = msg.value.mul(rate);                       // 테스트할 때 : uint256 amount = msg.value.mul(10**uint256(4)).mul(rate);
+        uint256 amount = msg.value.mul(10**uint256(4)).mul(rate);                       // 테스트할 중... 원래 값 uint256 amount = msg.value.mul(rate);
         balances[msg.sender] = balances[msg.sender].add(amount);
         totalSupply = totalSupply.add(amount);
 
