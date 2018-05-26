@@ -14,7 +14,7 @@ $(document).ready(function () {
         contracts.OpenJournal = TruffleContract(Artifact);
         contracts.OpenJournal.setProvider(web3Provider);
     	contracts.OpenJournal.deployed().then(function(instance){
-            var newUser = getUserAccounts();
+            var newUser = getUserAccount();
             console.log(newUser);
             instance.signUp({from: newUser});
         });

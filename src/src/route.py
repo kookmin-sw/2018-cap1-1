@@ -120,7 +120,7 @@ def blockEnrollUpdate():
     paperNumInfo = db.PaperNum
     paper = paperNumInfo.find_one({"name":"latestNum"})
     paperNumInfo.update({"name":"latestNum"}, {"$set": {"updatedPaperNum":paper['updatedPaperNum']+1}})
-    return render_template('main_enroll.html', userId = userId)
+    return mainEnroll()
 
 @app.route("/enrollState")
 def enrollState():
@@ -260,7 +260,7 @@ def enrollNewMember():
             if oauthDocument['user_id'] == userId:
                 return render_template('main_new_member.html', enrollFlag=enrollFlag)
         collection.insert(doc)                   #아이디 검사 완료시 회원정보 데이터베이스 삽입
-        return render_template("waitView.html")
+        return render_template("main_waitView.html")
     else:
         return "잘못된 데이터 요청 입니다."
 
@@ -666,15 +666,25 @@ def adaptComment():
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
-@app.route("/checkMyState", methods = ['GET'])
+@app.route("/checkMyState", methods = ['POST'])
 def checkMyState():
-    userCollection = db.Users
-    user = userCollection.find_one({"user_id":"kobot@gmail.com"})
+    userId = request.form['userId']
+    #userCollection = db.Users
+    #user = userCollection.find_one({"user_id":userId})
     journal_number = str(papernum())
-    return """{
-        "check_state": %s,
-        "journal_number": %s
-    }""" %(str(user['state']), journal_number)
+    #data = {
+    #     'userId': userId,
+    #     'check_state': user['state'],
+    #     'journal_number': journal_number
+    #}
+    resp = make_response(json.dumps(userId))
+    resp.status_code = 200
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+    #return """
+    #    "check_state": %s,
+    #    "journal_number": %s
+    #}""" %(str(user['state']), journal_number)
 
 @app.route("/completeState")
 def completeState():
@@ -683,10 +693,6 @@ def completeState():
     return """{
         "result": 0
     }"""
-
-@app.route("/waitView")
-def waitView():
-    return render_template('main_waitView.html')
 
 def page_number_of_pdf(path):
     pdfFileObj = open(path, 'rb')

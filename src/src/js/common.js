@@ -9,16 +9,21 @@ if(typeof web3 !== "undefined"){
 web3 = new Web3(web3Provider);
 
 $(document).ready(function () {
+		var _id = document.getElementById("userId").value;
+		console.log(_id);
     setInterval(function() {
             $.ajax({
 		url: "http://openjournal.io/checkMyState",
-		type: "GET",
+		type: "POST",
+		cache: false,
+		data: {userId: _id},
+		dataType: "json",
 		success: function(data){
 			console.log("success!");
 			console.log(data);
-			var obj = JSON.parse(data);
-			console.log(obj["check_state"] + " and " + obj["journal_number"]);
-			checkContractState(obj["check_state"], obj["journal_number"]);
+			//var obj = JSON.parse(data);
+			//console.log(obj["check_state"] + " and " + obj["journal_number"]);
+			//checkContractState(obj["check_state"], obj["journal_number"]);
 		},
 		error: function(thrownError){
 			console.log("error: " + thrownError);
