@@ -17,7 +17,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         uint256[] contributors_share;
         bool final_enroll;
     }
-    
+
     struct User {
         uint256 user_number;                    
         address user_address;                   
@@ -245,6 +245,22 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         return is_subscribed[msg.sender][_journal_number];
     }
 
+    function getAuthorShare(uint _journal_number) public view returns (uint256) {
+        return journals[_journal_number].author_share;
+    }
+
+    function getReferenceCount(uint _journal_number) public view returns (uint256) {
+        return journals[_journal_number].reference_count;
+    }
+
+    function getContributors(uint _journal_number) public view returns (uint256[]) {
+        return journals[_journal_number].contributors;
+    }
+
+    function getContributorsShare(uint _journal_number) public view returns (uint256[]) {
+        return journals[_journal_number].contributors_share;
+    }
+
     function getIsUserValid() public view returns (bool) {
         return users_by_address[msg.sender].is_user;
     }
@@ -268,7 +284,6 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
     function getLowerboundValue() public view returns (uint256) {
         return lowerbound_value;
     }
-
     
     function setSignupCost(uint256 _signUpCost) public onlyOwner{
         signUpCost = _signUpCost;
@@ -280,6 +295,26 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
 
     function setLowerboundValue(uint256 _lowerbound_value) public onlyOwner{
         lowerbound_value = _lowerbound_value;
+    }
+
+    function setAuthorShare(uint _journal_number, uint _author_share) public {
+        journals[_journal_number].author_share = _author_share;
+    }
+
+    function setContributors(uint _journal_number, uint256[] _contributors) public {
+        journals[_journal_number].contributors = _contributors;
+    }
+
+    function setContributorsShare(uint _journal_number, uint256[] _contributors_share) public {
+        uint256 new_length = _contributors_share.length;
+        uint256 new_total;
+
+        for(uint i=0; i<new_length; i++)
+            new_total = new_total.add(_contributors_share[i]);
+
+        require(new_total == 100);
+
+        journals[_journal_number].contributors_share = _contributors_share;
     }
    
  }
