@@ -9,15 +9,18 @@ if(typeof web3 !== "undefined"){
 web3 = new Web3(web3Provider);
 
 $(document).ready(function () {
+		var _id = document.getElementById("userId").value;
+		console.log(_id);
     setInterval(function() {
             $.ajax({
 		url: "http://openjournal.io/checkMyState",
-		type: "GET",
+		type: "POST",
+		cache: false,
+		data: {userId: _id},
+		dataType: "json",
 		success: function(data){
-			console.log("success!");
-			console.log(data);
-			var obj = JSON.parse(data);
-			console.log(obj["check_state"] + " and " + obj["journal_number"]);
+			var obj = JSON.parse(JSON.stringify(data));
+			console.log(obj.check_state + " and " + obj.journal_number);
 			checkContractState(obj["check_state"], obj["journal_number"]);
 		},
 		error: function(thrownError){
@@ -29,7 +32,6 @@ $(document).ready(function () {
 
 function checkContractState(state, journalNumber){
 
-	console.log("checkContractState : " + state);
     if(state  == 0){
         // 아무 트랜잭션이 생성되지 않은 경우
         return;
@@ -44,25 +46,6 @@ function checkContractState(state, journalNumber){
                 //loading 중일 때 써야하는 것 (첫줄에)
                 var subscriber = getUserAccount();
                 instance.getIsSubscribedJournal(journalNumber, {from: subscriber}).then(function(res){
-                    if(res == false){
-                        document.getElementById("loading_journal").style.display = "block";
-                    }
-                    else{
-                        completeState();
-                    }
-                });
-            });
-        });
-    }
-    else if(state == 2){
-        // 회원가입 트랜잭션이 생성되어 대기하는 경우
-        $.getJSON("OpenJournal.json", function(data){
-            var Artifact = data;
-            contracts.OpenJournal = TruffleContract(Artifact);
-            contracts.OpenJournal.setProvider(web3Provider);
-            contracts.OpenJournal.deployed().then(function(instance){
-                var newmember = getUserAccount();
-                instance.getIsUserValid({from: newmember}).then(function(res){
                     if(res == false){
                         document.getElementById("loading_journal").style.display = "block";
                     }
@@ -103,11 +86,6 @@ function blockEnrollUpdate(){
 		document.getElementById("complete_journal").style.display = "none";
         }, 3000)
 	location.href ="blockEnrollUpdate";
-}
-
-function getJournalNumber(){
-    var number = document.getElementById("journal_number").value;
-    return number;
 }
 
 function getUserAccount(){

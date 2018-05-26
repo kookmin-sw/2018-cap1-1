@@ -116,7 +116,7 @@ def blockEnrollUpdate():
     paperNumInfo = db.PaperNum
     paper = paperNumInfo.find_one({"name":"latestNum"})
     paperNumInfo.update({"name":"latestNum"}, {"$set": {"updatedPaperNum":paper['updatedPaperNum']+1}})
-    return render_template('main_enroll.html', userId = userId)
+    return mainEnroll()
 
 @app.route("/enrollState")
 def enrollState():
@@ -125,7 +125,11 @@ def enrollState():
     data_list = data.split(',')  # 1st: obId, 2nd : state, 3rd : journalNumber
     userCollection = db.Users
     user = userCollection.update({"user_id":userId}, {"$set":{"state":int(data_list[1]), "obId":data_list[0], "journal_number":data_list[2]}})
-    return render_template('main_enroll.html', userId = userId)
+
+    collection = db.PaperInformation
+    rows = collection.find({"complete": 0}).sort("writingPaperNum",-1)
+    userId = checkUserId()
+    return render_template('main_enroll.html', data =rows, userId=userId)
 
 def checkUserId():
     userId = ""
@@ -249,17 +253,14 @@ def enrollNewMember():
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
         oauthCursor = oauthCollection.find({"user_id": userId})
-        enrollFlag = 1
         for document in cursor:                   #구글 회원 등록 확인
             if document['user_id'] == userId:
-                enrollFlag = 0
                 return render_template('main_new_member.html', enrollFlag=enrollFlag)
         for oauthDocument in oauthCursor:        #일반 회원 등록 확인
             if oauthDocument['user_id'] == userId:
-                enrollFlag = 0
                 return render_template('main_new_member.html', enrollFlag=enrollFlag)
         collection.insert(doc)                   #아이디 검사 완료시 회원정보 데이터베이스 삽입
-        return render_template("main.html", enrollFlag=enrollFlag)
+        return render_template("main_waitView.html")
     else:
         return "잘못된 데이터 요청 입니다."
 
@@ -672,15 +673,17 @@ def adaptComment():
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
-@app.route("/checkMyState", methods = ['GET'])
+@app.route("/checkMyState", methods = ['POST'])
 def checkMyState():
+    userId = request.form['userId']
+    user_id = str(userId.encode('utf-8'))
+    user_id = user_id[1:len(user_id)-1]
     userCollection = db.Users
-    user = userCollection.find_one({"user_id":"kobot@gmail.com"})
+    user = userCollection.find_one({"user_id":user_id})
     journal_number = str(papernum())
-    return """{
-        "check_state": %s,
-        "journal_number": %s
-    }""" %(str(user['state']), journal_number)
+    dic = {'check_state': user['state'], 'journal_number':journal_number}
+    return json.dumps(dic)
+  
 
 @app.route("/completeState")
 def completeState():
@@ -799,10 +802,15 @@ def searchWord():
 
     if mainCategory != "total":
         print("부분검색")
-        paperCursor = paperCollection.find({"mainCategory":mainCategory, "subCategory":subCategory})
+    	if subCategory != "total":
+    	    paperCursor = paperCollection.find({"mainCategory":mainCategory, "subCategory":subCategory})
+    	elif subCategory == "total":
+    	    paperCursor = paperCollection.find({"mainCategory":mainCategory})
     else:
         print("전체검색")
         paperCursor = paperCollection.find()
+
+    #paperCursor = paperCollection.find()
 
     for paper in paperCursor:
         paperTitle = paper['title']
@@ -824,6 +832,8 @@ def searchWord():
     resultList = sorted(tempList, key=compSearch, reverse=True)
     return render_template('main_search_paper.html', result = resultList)
 
+
+
 def nltkExtract(sentence):
     sentence = sentence.encode('utf-8').strip()
     sentences = nltk.sent_tokenize(sentence)
@@ -832,7 +842,7 @@ def nltkExtract(sentence):
         for word,pos in nltk.pos_tag(nltk.word_tokenize(str(i))):
             if (pos == 'NN' or pos == 'NNP' or pos == 'NNS' or pos == 'NNPS'
                 or pos == 'VB' or pos == 'VBD' or pos == 'VBG' or pos == 'VBN'
-                or pos == 'VBP' or pos == 'VBZ'):
+                or pos == 'VBP' or pos == 'VBZ' or pos == 'CD'):
                 real_sentences = real_sentences + " " + word
     return real_sentences
 
