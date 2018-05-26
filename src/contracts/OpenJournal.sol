@@ -93,7 +93,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         uint256 _lowerbound_value
     ) public {
         userNumber = _userNumber;
-        signUpCost = _signUpCost.mul(10**uint256(4));        // 테스트 중... signUpCost = _signUpCost.mul(10**uint256(4));
+        signUpCost = _signUpCost.mul(10**uint256(decimals));        // 테스트 값 signUpCost = _signUpCost.mul(10**uint256(4));
         upperbound_value = _upperbound_value;
         lowerbound_value = _lowerbound_value;
     }
@@ -144,7 +144,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
             msg.sender,
             _title,
             _author_share,
-            _journal_value.mul(10**uint256(4)),     // 테스트 중... _journal_value.mul(10**uint256(4))
+            _journal_value.mul(10**uint256(decimals)),     // 테스트 값 _journal_value.mul(10**uint256(4))
             0,
             new uint[](0),
             new uint[](0),
