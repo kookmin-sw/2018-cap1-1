@@ -10,19 +10,18 @@ web3 = new Web3(web3Provider);
 
 
 
-function finalEnroll(){
-    alert("진입");
+function finalEnroll(_id){
     var value = document.getElementById("journal_price").value;
     var title = document.getElementById("journal_title").innerText;
     var description = document.getElementById("journal_abstract").innerText;
     var referenceList = []; // 현재는 논문의 번호를 이용하여 실행됨
     var testId = _id;
+	alert(_id);
     alert("fucking min");
     $("span[name=OJjournal]").each(function(idx){
         var referenceJournal = $(this).html();
         referenceList.push(referenceJournal);
     });
-   /*
     $.getJSON("OpenJournal.json", function(data){
         var Artifact = data;
         contracts.OpenJournal = TruffleContract(Artifact);
@@ -46,7 +45,6 @@ function finalEnroll(){
 	    
         });
     })
-    */
 }
 
 function getAuthorAccount(){
