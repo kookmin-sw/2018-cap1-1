@@ -669,22 +669,14 @@ def adaptComment():
 @app.route("/checkMyState", methods = ['POST'])
 def checkMyState():
     userId = request.form['userId']
-    #userCollection = db.Users
-    #user = userCollection.find_one({"user_id":userId})
+    user_id = str(userId.encode('utf-8'))
+    user_id = user_id[1:len(user_id)-1]
+    userCollection = db.Users
+    user = userCollection.find_one({"user_id":user_id})
     journal_number = str(papernum())
-    #data = {
-    #     'userId': userId,
-    #     'check_state': user['state'],
-    #     'journal_number': journal_number
-    #}
-    resp = make_response(json.dumps(userId))
-    resp.status_code = 200
-    resp.headers['Access-Control-Allow-Origin'] = '*'
-    return resp
-    #return """
-    #    "check_state": %s,
-    #    "journal_number": %s
-    #}""" %(str(user['state']), journal_number)
+    dic = {'check_state': user['state'], 'journal_number':journal_number}
+    return json.dumps(dic)
+  
 
 @app.route("/completeState")
 def completeState():

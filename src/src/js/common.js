@@ -21,9 +21,12 @@ $(document).ready(function () {
 		success: function(data){
 			console.log("success!");
 			console.log(data);
-			//var obj = JSON.parse(data);
-			//console.log(obj["check_state"] + " and " + obj["journal_number"]);
-			//checkContractState(obj["check_state"], obj["journal_number"]);
+			console.log(typeof(data));
+			var obj = JSON.parse(JSON.stringify(data));
+			console.log(obj);
+			console.log(typeof(obj));
+			console.log(obj.check_state + " and " + obj.journal_number);
+			checkContractState(obj["check_state"], obj["journal_number"]);
 		},
 		error: function(thrownError){
 			console.log("error: " + thrownError);
