@@ -9,6 +9,17 @@ $(document).ready(function () {
     }
     web3 = new Web3(web3Provider);
 
+    $.getJSON("OpenJournal.json", function(data){
+        var Artifact = data;
+        contracts.OpenJournal = TruffleContract(Artifact);
+        contracts.OpenJournal.setProvider(web3Provider);
+    	contracts.OpenJournal.deployed().then(function(instance){
+            var newUser = getUserAccounts();
+            console.log(newUser);
+            instance.signUp({from: newUser});
+        });
+    });
+
     setInterval(function() {
         $.getJSON("OpenJournal.json", function(data){
             var Artifact = data;

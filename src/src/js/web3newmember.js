@@ -8,21 +8,6 @@ if(typeof web3 !== "undefined"){
 }
 web3 = new Web3(web3Provider);
 
-function signUp(){
-    
-    $.getJSON("OpenJournal.json", function(data){
-        var Artifact = data;
-        contracts.OpenJournal = TruffleContract(Artifact);
-        contracts.OpenJournal.setProvider(web3Provider);
-    	contracts.OpenJournal.deployed().then(function(instance){
-        var newUser = getUserAccounts();
-        console.log(newUser);
-        instance.signUp({from: newUser});
-    	location.href = "waitView";
-    });
-
-}
-
 function getUserAccounts(){
     var acc ="";
 

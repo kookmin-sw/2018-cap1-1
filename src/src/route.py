@@ -253,17 +253,14 @@ def enrollNewMember():
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
         oauthCursor = oauthCollection.find({"user_id": userId})
-        enrollFlag = 1
         for document in cursor:                   #구글 회원 등록 확인
             if document['user_id'] == userId:
-                enrollFlag = 0
                 return render_template('main_new_member.html', enrollFlag=enrollFlag)
         for oauthDocument in oauthCursor:        #일반 회원 등록 확인
             if oauthDocument['user_id'] == userId:
-                enrollFlag = 0
                 return render_template('main_new_member.html', enrollFlag=enrollFlag)
         collection.insert(doc)                   #아이디 검사 완료시 회원정보 데이터베이스 삽입
-        return render_template("main.html", enrollFlag=enrollFlag)
+        return render_template("waitView.html")
     else:
         return "잘못된 데이터 요청 입니다."
 
