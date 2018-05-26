@@ -35,10 +35,6 @@ except AttributeError:
     pass
 else:
     ssl._create_default_https_context = _create_unverified_https_context
-'''
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-'''
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
@@ -375,7 +371,14 @@ def extractReference(obId):
     filepath = app.config['UPLOAD_FOLDER'] + paper['fileName']
     pdf_page = page_number_of_pdf(filepath)
     text = convert_pdf_to_txt(str(filepath), [pdf_page-3, pdf_page-2, pdf_page-1])
+    contributor_number_list, contributor_name_list = extract_contributors_from_text(text)
     reference_number_list, reference_title_list = extract_reference_from_text(text)
+    
+    # contributor_dic 반환해줘야 함
+    contributor_dic = {
+    contributor_number_list : contributor_name_list for contributor_number_list, contributor_name_list in zip(contributor_number_list, contributor_name_list)
+    }
+
     reference_dic = {
     reference_number_list : reference_title_list for reference_number_list, reference_title_list in zip(reference_number_list, reference_title_list)
     }
@@ -695,8 +698,37 @@ def convert_pdf_to_txt(path, pages=None):
     output.close
     return text
 
+def extract_contributors_from_text(text):      
+    start = text.find("CONTRIBUTORS:")
+    contributor_text = " ".join(text[start:].split("\n"))
+
+    contributor_list = contributor_text.split("[")
+    contributor_number_list = []
+    contributor_name_list = []
+
+    for contributor in contributor_list:
+        is_valid = contributor.find("]")
+        try:
+            int(contributor[:is_valid])
+        except:
+            continue
+
+        contributor = contributor[is_valid+1:]
+        contributor_detail_list = contributor.split(",")
+        is_openjournal_number = contributor_detail_list[0].strip()
+
+        try:
+            contributor_number_list.append(int(is_openjournal_number))
+        except:
+            continue
+
+        contributor_name = contributor_detail_list[1].strip()
+        contributor_name_list.append(contributor_name)      
+
+    return contributor_number_list, contributor_name_list
+
 def extract_reference_from_text(text):
-    start = text.find('My references at below page.')
+    start = text.find("REFERENCES:")
     reference_text = " ".join(text[start:].split("\n"))
 
     reference_list = reference_text.split("[")
