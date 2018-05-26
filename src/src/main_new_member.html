@@ -106,8 +106,33 @@
 			</div>
 		</div>
 	</div>
+
+
 	<!--  Scripts-->
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.datepicker');
+      var options = {'yearRange' : [1950, 2018]};
+
+      var instances = M.Datepicker.init(elems, options);
+    });
+
+  </script>
+
+  <script>
+      function tocheckpw1() {
+        var pw = document.getElementById('new_password').value;
+        var pwck = document.getElementById('new_password_check').value;
+
+        if (pw != pwck) {
+            alert('비밀번호가 틀렸습니다. 다시 입력해 주세요');
+            return false;
+        }
+      }
+
+  </script>
+  
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="./js/materialize.js"></script>
   <script src="./js/init.js"></script>
@@ -117,23 +142,9 @@
   <script src="js/common.js"></script>
 	<script src="js/web3newmember.js"></script>
 
-  <script>
-  	  document.addEventListener('DOMContentLoaded', function() {
-		    var elems = document.querySelectorAll('.datepicker');
-		    var instances = M.Datepicker.init(elems);
-		  });
 
-		  function tocheckpw1() {
-        var pw = document.getElementById('new_password').value;
-        var pwck = document.getElementById('new_password_check').value;
 
-        if (pw != pwck) {
-            alert('비밀번호가 틀렸습니다. 다시 입력해 주세요');
-            return false;
-        }
-    	}
 
-  </script>
 
   </body>
 </html>
