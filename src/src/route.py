@@ -15,7 +15,6 @@ from pymongo import MongoClient
 from urllib2 import Request, urlopen, URLError
 from config import Config
 from werkzeug import secure_filename
-from flask_cors import CORS, cross_origin
 
 import datetime
 import dateutil.parser
@@ -368,6 +367,17 @@ def enrollPaperComment():
             enrollUserId = data2['user_id']
             complete = data2['complete']
             paperNumDic = extractReference(objectId)
+
+            state = checkSession()
+            if state == 0:
+                userCollection = db.Users
+                userInfo = userCollection.find_one({"user_id":userId})
+                userCollection.update({"user_id":userId}, {"$set": {"fame": userInfo['fame']+1}})
+            elif state == 1:
+                oauthCollection = db.Oauth_Users
+                oauthUserInfo = oauthCollection.find_one({"user_id":userId})
+                oauthCollection.update({"user_id":userId}, {"$set": {"fame": oauthUserInfo['fame']+1}})
+
             return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
         else:
             return "잘못된 데이터 요청 입니다."
@@ -632,6 +642,18 @@ def commentEnroll():
             bulletin.update({"_id": ObjectId(objectId)},{"$push": {"commentDicts":commentDict}})
             bulletin.update({"_id": ObjectId(objectId)},{"$set": {"commentNumber":commentNum+1}})
             data = bulletin.find({"_id": ObjectId(objectId)})
+
+
+            state = checkSession()
+            if state == 0:
+                userCollection = db.Users
+                userInfo = userCollection.find_one({"user_id":userId})
+                userCollection.update({"user_id":userId}, {"$set": {"fame": userInfo['fame']+1}})
+            elif state == 1:
+                oauthCollection = db.Oauth_Users
+                oauthUserInfo = oauthCollection.find_one({"user_id":userId})
+                oauthCollection.update({"user_id":userId}, {"$set": {"fame": oauthUserInfo['fame']+1}})
+
             return render_template('main_comunity_detail.html',data = data, userId = userId)
         else:
             return "잘못된 데이터 요청 입니다."

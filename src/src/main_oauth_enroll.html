@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Open Journal</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="./css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="./css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="./css/customize.css" type="text/css" rel="stylesheet"/>
+</head>
+<body style="background-color: #f5f5f5;">
+	<div class="container">
+		<div class="section">
+			<div class="row">
+				<div class="col s12 center">
+					<div class="vertical-container">
+						<div class="login-shadow vertical-subcontainer">
+							<div class="row">
+								<div class="col s12">
+									<p style="margin:7rem 0 3rem 0; font-size:2rem;" class="blue-text"> Open Journal <span class="black-text">계정만들기</span> </p>
+								</div>
+							</div>
+							<div style="margin:0;" class="row">
+								<form name="enroll" method = "POST" action="enrollNewMember" class="col s12" onsubmit="return tocheckpw1()">
+
+                  <div style="margin:0;" class="row">
+										<div class="input-field col s12">
+                      <textarea id="ethereum_acc" name="ethereum_acc" type="text" onclick="on()" class="materialize-textarea" required></textarea>
+											<label for="ethereum_acc">이더리움 계좌 주소</label>
+										</div>
+									</div>
+
+                  <div id="overlay">
+                    <div class="newMemberAccount">
+                      <div style="background-color:white;" class="row center">
+                        <div style="color:black;" class="col center s12">
+                          <div style="background-color:white;" class="col s12 center">
+                            <p style="font-size:1rem;"> MetaMask의 계좌를 OpenJournal에서 사용하실 계좌로 설정한 후 버튼을 클릭해주세요. </p>
+                          </div>
+                          <div id="AccountList" style="margin-top:40px; display:none; background-color:white; padding-left:50px; padding-right:50px;" class="col s12 center">
+                            <table >
+                              <tr>
+                                <td style="width:50%; text-align:center; padding:0; cursor:auto;">Account</td>
+                                <td id="MetaAcc" style="cursor:hand; font-weight:bold; width:50%; text-align:center; padding:0;"></td>
+                              </tr>
+                            </table>
+                          </div>
+                        </div>
+                        <div style="margin-top:40px; margin-bottom:40px;" class="col center s12">
+                          <a onclick="getUserAccounts()" id="load_metamask" class="btn-small waves-effect waves-light blue darken-4">메타마스크 계좌 불러오기</a>
+                          <a onclick="off()" id="load_metamask" class="btn-small waves-effect waves-light blue darken-4">닫기</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+									<input style="margin-top:5rem; margin-bottom:5rem;" type="submit" class="center s12 btn blue darken-4" name="newmember" value="입력완료" />
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!--  Scripts-->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var elems = document.querySelectorAll('.datepicker');
+      var options = {'yearRange' : [1950, 2018]};
+
+      var instances = M.Datepicker.init(elems, options);
+    });
+
+  </script>
+
+
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="./js/materialize.js"></script>
+  <script src="./js/init.js"></script>
+  <script src="./js/customize.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <script src="js/common.js"></script>
+	<script src="js/web3newmember.js"></script>
+
+
+
+
+
+  </body>
+</html>
