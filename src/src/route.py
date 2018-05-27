@@ -366,7 +366,8 @@ def enrollPaperComment():
             data2 = paperInfo.find_one({"_id": ObjectId(objectId)})
             enrollUserId = data2['user_id']
             complete = data2['complete']
-            paperNumDic = extractReference(objectId)
+
+            paperReferenceDic, paperContributorDic = extractPDF(objectId)
 
             state = checkSession()
             if state == 0:
@@ -378,14 +379,16 @@ def enrollPaperComment():
                 oauthUserInfo = oauthCollection.find_one({"user_id":userId})
                 oauthCollection.update({"user_id":userId}, {"$set": {"fame": oauthUserInfo['fame']+1}})
 
-            return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic)
+            return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId,
+                                    complete = complete, paperReferenceDic = paperNumDic, paperContributorDic = paperContributorDic)
+
         else:
             return "잘못된 데이터 요청 입니다."
     else:
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
-def extractReference(obId):
+def extractPDF(obId):
     paperInfo = db.PaperInformation
     paper = paperInfo.find_one({"_id":ObjectId(obId)})
     filepath = app.config['UPLOAD_FOLDER'] + paper['fileName']
@@ -394,15 +397,15 @@ def extractReference(obId):
     contributor_number_list, contributor_name_list = extract_contributors_from_text(text)
     reference_number_list, reference_title_list = extract_reference_from_text(text)
 
-    # contributor_dic 반환해줘야 함
+    reference_dic = {
+    reference_number_list : reference_title_list for reference_number_list, reference_title_list in zip(reference_number_list, reference_title_list)
+    }
+
     contributor_dic = {
     contributor_number_list : contributor_name_list for contributor_number_list, contributor_name_list in zip(contributor_number_list, contributor_name_list)
     }
 
-    reference_dic = {
-    reference_number_list : reference_title_list for reference_number_list, reference_title_list in zip(reference_number_list, reference_title_list)
-    }
-    return reference_dic
+    return reference_dic, contributor_dic
 
 @app.route("/main_view_journal", methods=['GET', 'POST'])
 def viewPaper():
@@ -413,9 +416,10 @@ def viewPaper():
     data2 = paperInfo.find_one({"_id": ObjectId(id)})
     enrollUserId = data2['user_id']
     complete = data2['complete']
-    paperNumDic = extractReference(id)
+    paperReferenceDic, paperContributorDic = extractPDF(id)
     journalNum = papernum()
-    return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete, paperNumDic = paperNumDic, journalNum = journalNum)
+    return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
+                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
@@ -764,7 +768,8 @@ def extract_contributors_from_text(text):
 
 def extract_reference_from_text(text):
     start = text.find("REFERENCES:")
-    reference_text = " ".join(text[start:].split("\n"))
+    last = text.find("CONTRIBUTORS:")
+    reference_text = " ".join(text[start:last].split("\n"))
 
     reference_list = reference_text.split("[")
     reference_number_list = []
@@ -795,12 +800,6 @@ def extract_reference_from_text(text):
         if reference_title[reference_title_length-1] == ",":
             reference_title = reference_title[0:reference_title_length-1]
         reference_title_list.append(reference_title)
-
-    number_length = len(reference_number_list)
-    title_length = len(reference_title_list)
-
-    if number_length != title_length:
-        return -1, -1
 
     return reference_number_list, reference_title_list
 
