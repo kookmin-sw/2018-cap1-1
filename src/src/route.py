@@ -380,7 +380,7 @@ def enrollPaperComment():
                 oauthCollection.update({"user_id":userId}, {"$set": {"fame": oauthUserInfo['fame']+1}})
 
             return render_template('main_view_journal.html',data = data, userId = userId, enrollUserId = enrollUserId,
-                                    complete = complete, paperReferenceDic = paperNumDic, paperContributorDic = paperContributorDic)
+                                    complete = complete, paperReferenceDic = paperReferenceDic, paperContributorDic = paperContributorDic)
 
         else:
             return "잘못된 데이터 요청 입니다."
