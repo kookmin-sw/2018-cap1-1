@@ -37,8 +37,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
     uint256 public upperbound_value;         
     uint256 public lowerbound_value;             
     
-    uint256 author_token;
-    uint256 contributor_token;
+    uint user_num;
 
     event LogSignUp(
         uint256 _user_number, 
@@ -64,8 +63,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         uint[] _myjournals, 
         uint[] _subscribed,
         bool _is_subscribed,
-        uint256 _author_value,
-        uint256 _reference_count
+        uint256 _author_value
     );
 
     event LogGetUserRegistedJournals(
@@ -180,9 +178,10 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
     function subscribeJournal(uint256 _journal_number) public returns (bool){
         require(is_subscribed[msg.sender][_journal_number] == false); 
 
-        uint256 contributor_each_token;
-        uint256 contributor_number;        
-        uint256 contributor_num = journals[_journal_number].contributors.length;
+        uint256 author_token;
+        uint256 contributor_token;
+        uint256 contributor_each_token;               
+        uint256 contributor_num = journals[_journal_number].contributors.length;        
 
         if(contributor_num == 0){
             author_token = journals[_journal_number].value;
@@ -191,28 +190,43 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
             author_token = journals[_journal_number].value.mul(author_share).div(100);
 
             for(uint256 cont=0; cont < contributor_num; cont++){
-                contributor_each_token = journals[_journal_number].value.mul(journals[_journal_number].contributors_share[cont]).div(100);
-                transfer(users_by_number[journals[_journal_number].contributors[cont]].user_address, contributor_each_token);
+                uint256 contributor_number = journals[_journal_number].contributors[cont];
+                uint256 contributor_share = journals[_journal_number].contributors_share[cont];
+
+                contributor_each_token = journals[_journal_number].value.mul(contributor_share).div(100);
+                transfer(users_by_number[contributor_number].user_address, contributor_each_token);
             }
         }
 
         transfer(journals[_journal_number].author, author_token); 
 
-        uint sub_id = users_by_address[msg.sender].user_number;
+        user_num = users_by_address[msg.sender].user_number;
 
         users_by_address[msg.sender].user_subscribe_journal.push(_journal_number);  
-        journals[_journal_number].subscribed.push(sub_id);       
+        journals[_journal_number].subscribed.push(user_num);       
         is_subscribed[msg.sender][_journal_number] = true;
-        journals[_journal_number].reference_count++;
+
+        upReferenceCount(_journal_number);
 
         emit LogSubscribeJournal(
             msg.sender, 
             users_by_address[msg.sender].user_subscribe_journal, 
             journals[_journal_number].subscribed, 
             is_subscribed[msg.sender][_journal_number],
-            author_token,
-            journals[_journal_number].reference_count
+            author_token
         );
+
+        return true;
+    }
+
+    function upReferenceCount(uint256 _journal_number) internal returns (bool) {
+        uint256 reference_num = journals[_journal_number].reference_journal.length;
+        uint256 reference_journal_num; 
+
+        for(uint256 ref=0; ref < reference_num; ref++){
+            reference_journal_num = journals[_journal_number].reference_journal[ref];
+            journals[reference_journal_num].reference_count++;
+        }
 
         return true;
     }
@@ -315,6 +329,5 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         require(new_total == 100);
 
         journals[_journal_number].contributors_share = _contributors_share;
-    }
-   
+    }   
  }

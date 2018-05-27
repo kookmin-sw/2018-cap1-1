@@ -229,7 +229,7 @@
                     <span style=" font-size:1.5rem; font-weight:bold;">Reference</span>
                   </div>
                   <div>
-                    {% for key, value in paperNumDic.items() %}
+                    {% for key, value in paperReferenceDic.items() %}
                     <div class="col s12">
 
                       <div class="col s2">
@@ -280,17 +280,17 @@
                 </div>
 
                 <div style="margin:20px; margin-bottom:0px; text-align:left;">
-                  <span style=" font-size:1.5rem; font-weight:bold;">Contributer</span>
+                  <span style=" font-size:1.5rem; font-weight:bold;">Contributor</span>
                 </div>
                 <div>
-                  <!-- {% for key, value in paperNumDic.items() %} -->
-                  <!-- contributer에 대해서 for을 돌려야 할 듯 -->
+
+                  {% for key, value in paperContributorDic.items() %}
                   <div class="col s12">
 
                     <div class="col s2">
                       <div class="card blue darken-4">
                         <div style="padding:1px;" class="card-content white-text">
-                          <span style="margin-bottom:0px; font-size:1.3rem;" name="OJcontributerNum" class="card-title">{{key}}</span>
+                          <span style="margin-bottom:0px; font-size:1.3rem;" name="OJcontributorNum" class="card-title">{{key}}</span>
                         </div>
                       </div>
                     </div>
@@ -298,12 +298,12 @@
                     <div class="col s4">
                       <div class="card blue darken-4">
                         <div style="padding:1px;" class="card-content white-text">
-                          <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title" id="contributer_name">{{value}}</span>
+                          <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title" id="contributor_name">{{value}}</span>
                         </div>
                       </div>
                     </div>
 
-                    <div class="col s1" onclick="modifyContributerInfo(this)">
+                    <div class="col s1" onclick="modifyContributorInfo(this)">
                       <div class="card blue darken-4">
                         <div style="padding:1px;" class="card-content white-text">
                           <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
@@ -312,7 +312,7 @@
                       </div>
                     </div>
 
-                    <div class="col s1" onclick="checkContributer(this)">
+                    <div class="col s1" onclick="checkContributor(this)">
                       <div class="card blue darken-4">
                         <div style="padding:1px;" class="card-content white-text">
                           <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
@@ -333,7 +333,7 @@
                     <div class="col s2">
                       <div class="card">
                         <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">Contributer 일치여부</span>
+                          <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">Contributor 일치여부</span>
                           <p id="correspond" style="color:green;">일치합니다.</p>
                           <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
                         </div>
