@@ -103,48 +103,47 @@
 
   <div  class="container">
     <div class="section">
-      <div class="row" style="margin-bottom:0px;">
-        <div class="col s4 center">
-          <select id="mainCat" class="browser-default" onchange="ShowHideSubCat()">
-            <option value="total">전체</option>
-            <option value="engineering">공학</option>
-            <option value="education">교육</option>
-            <option value="AFO">농수해양</option>
-            <option value="interdisciplinary">복합학</option>
-            <option value="social">사회</option>
-            <option value="article_physication">예술체육</option>
-            <option value="medicine">의약학</option>
-            <option value="humanities">인문</option>
-            <option value="natural">자연</option>
-          </select>
-        </div>
-        <div class="col s4 center">
-          <select id="subCat" class="browser-default">
-            <option value="0">전체</option>
-          </select>
-        </div>
+      <form name="search" action="searchCompleteWord" method="POST">
+        <div class="row" style="margin-bottom:0px;">
+          <div class="col s4 center">
+            <select id="mainCat" name="mainCat" class="browser-default" onchange="ShowHideSubCat()">
+              <option value="total">전체</option>
+              <option value="engineering">공학</option>
+              <option value="education">교육</option>
+              <option value="AFO">농수해양</option>
+              <option value="interdisciplinary">복합학</option>
+              <option value="social">사회</option>
+              <option value="article_physication">예술체육</option>
+              <option value="medicine">의약학</option>
+              <option value="humanities">인문</option>
+              <option value="natural">자연</option>
+            </select>
+          </div>
+          <div class="col s4 center">
+            <select id="subCat" name="subCat"class="browser-default">
+              <option value="0">전체</option>
+            </select>
+          </div>
 
-        <div class="col s4 center">
-          <select class="browser-default">
-            <option value="9">인기논문</option>
-            <option value="10">최신논문</option>
-          </select>
+          <div class="col s4 center">
+            <select class="browser-default">
+              <option value="9">인기논문</option>
+              <option value="10">최신논문</option>
+            </select>
+          </div>
         </div>
-      </div>
-
       <div style="border:1px solid; margin-bottom:20px;">
           <div class="nav-wrapper col s12 center">
-            <form>
               <div class="input-field">
-                <input id="search" type="search" required>
+                <input id="search" name="querySentence" type="search" required>
                 <label class="label-icon" for="search"><i class="material-icons">search</i></label>
                 <i class="material-icons">close</i>
               </div>
-            </form>
           </div>
       </div>
+    </form>
 
-      {% for i in data %}
+      {% for i in result %}
       <div class="col s12">
         <ul class="collection">
           <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
@@ -152,6 +151,7 @@
             <span class="title">{{i.title}}</span>
             <p>{{i.writer}}<br></p>
             <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : {{i.keyword}}</p>
+            <p> 시간: {{i.time}}</p>
           </li>
         </ul>
       </div>
