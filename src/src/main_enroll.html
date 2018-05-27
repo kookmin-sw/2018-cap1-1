@@ -125,7 +125,7 @@
         </div>
     </form>
 
-      {% for i in data %}
+      {% for i in result %}
       <div class="col s12">
         <ul class="collection">
           <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
@@ -133,6 +133,7 @@
             <span class="title" name="title">{{i.title}}</span>
             <p>저자 : {{i.writer}}<br></p>
             <p style="line-height:1.3rem; font-size:0.8rem;">주제어 :{{i.keyword}} </p>
+            <p> 시간: {{i.time}}</p>
           </li>
         </ul>
       </div>

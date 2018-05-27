@@ -105,7 +105,7 @@ def passwordTohash(password):
 
 @app.route("/blockEnrollUpdate")
 def blockEnrollUpdate():
-    userId = checkUserId() 
+    userId = checkUserId()
     userCollection = db.Users
     user = userCollection.find_one({"user_id":userId})
     journalNumber = user['journal_number']
@@ -187,7 +187,8 @@ def mainMypage():
 
 @app.route("/main_login") #로그인 페이지 이동
 def mainLogin():
-    return render_template('main_login.html')
+    loginFlag = 3
+    return render_template('main_login.html', loginFlag = loginFlag)
 
 @app.route("/main_new_member") #회원 가입 페이지 이동
 def mainNewMember():
@@ -197,8 +198,8 @@ def mainNewMember():
 def moveToSubPaper():
     userId = checkUserId()
     completePaperCollection = db.PaperInformation
-    data = completePaperCollection.find({"complete":1}).sort("time", -1)
-    return render_template('main_view_fix_journal.html', data = data, userId=userId)
+    result = completePaperCollection.find({"complete":1}).sort("time", -1)
+    return render_template('main_view_fix_journal.html', result = result, userId=userId)
 
 @app.route('/main_logout')
 def logout():
@@ -211,8 +212,6 @@ def logout():
 
 @app.route("/userLogin", methods=['POST'])
 def userLogin():
-    if 'google_token' in session:         #일반회원 로그인 시 구글 로그인 정보가 세션에 담겨져있다면 세션에서 제거
-        session.pop('google_token', None)
     userId = request.form['email_id']
     password = passwordTohash(request.form['password'])
     collection = db.Users
@@ -248,43 +247,45 @@ def enrollNewMember():
                'telephone'  : telephone,   'birthday'      : birthday,       'fame'    : fame,
                'subPaperNum': subPaperNum, 'enrollPaperNum': enrollPaperNum, 'tokenNum': tokenNum,
                'accountInfo': accountInfo, 'state'         : 0,              'journal_number':0,
-	       'obId'       : ""}
+	           'obId'       : ""}
         collection = db.Users
         oauthCollection = db.Oauth_Users
         cursor = collection.find({"user_id": userId})
         oauthCursor = oauthCollection.find({"user_id": userId})
+
+        enrollFlag = 0
         for document in cursor:                   #구글 회원 등록 확인
             if document['user_id'] == userId:
+                enrollFlag = 1
                 return render_template('main_new_member.html', enrollFlag=enrollFlag)
         for oauthDocument in oauthCursor:        #일반 회원 등록 확인
             if oauthDocument['user_id'] == userId:
+                enrollFlag = 1
                 return render_template('main_new_member.html', enrollFlag=enrollFlag)
+
         collection.insert(doc)                   #아이디 검사 완료시 회원정보 데이터베이스 삽입
         return render_template("main_waitView.html")
     else:
         return "잘못된 데이터 요청 입니다."
 
 @app.route('/oauth', methods=['GET', 'POST'])
-def index():
-    if 'userId' in session:         #구글회원 로그인 시 일반회원 로그인 정보가 세션에 담겨져있다면 세션에서 제거
-        session.pop('userId', None)
+def oauth():
     if 'google_token' in session:
         me = google.get('userinfo')
-        return render_template('main.html')
+        return render_template('main.html', user_id = userId)
     else:
+        print("google_token이 세션에 없을 때")
         return redirect(url_for('login'))
 
 @app.route('/login')
 def login():
-    userId = checkUserId()
     return google.authorize(callback=url_for('authorized', _external=True))
-    #return render_template('main.html', userId=userId)
 
 @google.tokengetter
 def get_google_oauth_token():
     return session.get('google_token')
 
-@app.route('/login/authorized')
+@app.route('/authorized')
 def authorized():
     resp = google.authorized_response()
     if resp is None:
@@ -306,7 +307,7 @@ def authorized():
         if document['user_id'] == userId:
             return home()
     collection.insert(doc)
-    return render_template('main.html', userId=userId)
+    return home()
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -348,7 +349,7 @@ def mainEnroll():
     collection = db.PaperInformation
     rows = collection.find({"complete": 0}).sort("writingPaperNum",-1)
     userId = checkUserId()
-    return render_template('main_enroll.html', data =rows, userId=userId)
+    return render_template('main_enroll.html', result =rows, userId=userId)
 
 @app.route('/enrollPaperComment', methods=['POST'])
 def enrollPaperComment():
@@ -391,7 +392,7 @@ def extractReference(obId):
     text = convert_pdf_to_txt(str(filepath), [pdf_page-3, pdf_page-2, pdf_page-1])
     contributor_number_list, contributor_name_list = extract_contributors_from_text(text)
     reference_number_list, reference_title_list = extract_reference_from_text(text)
-    
+
     # contributor_dic 반환해줘야 함
     contributor_dic = {
     contributor_number_list : contributor_name_list for contributor_number_list, contributor_name_list in zip(contributor_number_list, contributor_name_list)
@@ -490,14 +491,7 @@ def enrollPaper():
     if 'google_token' in session or 'userId' in session:
         if request.method == 'POST':
             userId = checkUserId()
-            userName = ""
-            if 'google_token' in session:
-                me = google.get('userinfo')
-                userName = me.data['name']
-            elif 'userId' in session:
-                user = db.Users
-                data = user.find_one({"user_id": userId})
-                userName = data['user_name']
+            userName = getUserName()
             writer = request.form['writerName']
             mainCategory = request.form['mainCat']
             subCategory = request.form['subCat']
@@ -528,14 +522,29 @@ def enrollPaper():
                    }
             collection = db.PaperInformation
             collection.insert(doc)
-            userCollection = db.Users
-            userInfo = userCollection.find_one({"user_id": userId})
-            enrollPaperNum = userInfo['enrollPaperNum']
-            userCollection.update({"user_id": userId}, {"$set":{"enrollPaperNum":enrollPaperNum+1}})
+            sessionState = checkSession()
+            if sessionState == 0: #일반 유저 로그인인 경우
+                userCollection = db.Users
+                userInfo = userCollection.find_one({"user_id": userId})
+                enrollPaperNum = userInfo['enrollPaperNum']
+                userCollection.update({"user_id": userId}, {"$set":{"enrollPaperNum":enrollPaperNum+1}})
+            elif sessionState == 1:
+                print("논문작성")
+                oauthCollection = db.Oauth_Users
+                oauthUserInfo   = oauthCollection.find_one({"user_id": userId})
+                enrollPaperNum  = oauthUserInfo['enrollPaperNum']
+                print(enrollPaperNum)
+                oauthCollection.update({"user_id": userId}, {"$set":{"enrollPaperNum":enrollPaperNum+1}})
             return mainEnroll()
     else:
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
+
+def checkSession():
+    if 'google_token' in session:
+        return 1
+    elif 'userId' in session:
+        return 0
 
 @app.route("/main_comunity") #커뮤니티 작성된 글 목록 구성
 def mainComunity():
@@ -568,7 +577,7 @@ def getWriting():
     return render_template('main_comunity_detail.html',data = data, userId = userId)
 
 def getUserName():
-    userId   = checkUserId()
+    userId = checkUserId()
     userName = ""
     if 'google_token' in session:
         me = google.get('userinfo')
@@ -644,29 +653,31 @@ def adaptComment():
     data = request.args.get("data")
     list = data.split(',') # 0번째 댓글번호, 1번째 문서객체아이디, 2번째 댓글 작성자 아이디, 3번째 채택flag, 4번째 글 작성자 아이디
     writingCollection = db.Bulletin
-    userCollection = db.Users
+
     userId = checkUserId()
-    if 'userId' in session:
-        cursor = userCollection.find({"user_id": list[2]}) #일반 유저인 경우
+
+    if 'google_token' in session or 'userId' in session:
+        userCollection = db.Users
+        cursor = userCollection.find({"user_id": list[2]}) #댓글 작성자가 일반 유저인 경우 탐색
         for document in cursor:
             if document['user_id'] == list[2]:
                 userCollection.update({"user_id":document['user_id']}, {"$set": {"fame": document['fame']+5}})
                 writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
                 commentN = list[0]
                 writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
-                {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
-                data = writingCollection.find({"_id": ObjectId(list[1])})
-                return render_template('main_comunity_detail.html',data = data, userId = userId)
-    elif 'google_token' in session:
+                                     {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+            data = writingCollection.find({"_id": ObjectId(list[1])})
+            return render_template('main_comunity_detail.html',data = data, userId = userId)
+
         oauthUserCollection = db.Oauth_Users
-        oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
+        oauthCursor = oauthUserCollection.find({"user_id": list[2]})  #댓글 작성자가 구글 유저인 경우 탐색
         for doc in oauthCursor:
             if doc['user_id'] == list[2]:
                 oauthUserCollection.update({"user_id":doc['user_id']}, {"$set": {"fame": doc['fame']+5}})
                 writingPaper = writingCollection.find_one({'_id': ObjectId(list[1])})
                 commentN = list[0]
-                writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
-                {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
+                writingCollection.update({"_id":    ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
+                                         {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
                 data = writingCollection.find({"_id": ObjectId(list[1])})
                 return render_template('main_comunity_detail.html',data = data, userId = userId)
     else:
@@ -683,7 +694,7 @@ def checkMyState():
     journal_number = str(papernum())
     dic = {'check_state': user['state'], 'journal_number':journal_number}
     return json.dumps(dic)
-  
+
 
 @app.route("/completeState")
 def completeState():
@@ -718,7 +729,7 @@ def convert_pdf_to_txt(path, pages=None):
     output.close
     return text
 
-def extract_contributors_from_text(text):      
+def extract_contributors_from_text(text):
     start = text.find("CONTRIBUTORS:")
     contributor_text = " ".join(text[start:].split("\n"))
 
@@ -743,7 +754,7 @@ def extract_contributors_from_text(text):
             continue
 
         contributor_name = contributor_detail_list[1].strip()
-        contributor_name_list.append(contributor_name)      
+        contributor_name_list.append(contributor_name)
 
     return contributor_number_list, contributor_name_list
 
@@ -799,18 +810,13 @@ def searchWord():
     querySentenceList = querySentence.split(" ")
     tempList = []
     paperCursor = None
-
     if mainCategory != "total":
-        print("부분검색")
-    	if subCategory != "total":
-    	    paperCursor = paperCollection.find({"mainCategory":mainCategory, "subCategory":subCategory})
-    	elif subCategory == "total":
-    	    paperCursor = paperCollection.find({"mainCategory":mainCategory})
+    	if subCategory != "전체":
+    	    paperCursor = paperCollection.find({"mainCategory":mainCategory, "subCategory":subCategory, "complete":0})
+    	elif subCategory == "전체":
+    	    paperCursor = paperCollection.find({"mainCategory":mainCategory, "complete":0})
     else:
-        print("전체검색")
-        paperCursor = paperCollection.find()
-
-    #paperCursor = paperCollection.find()
+        paperCursor = paperCollection.find({"complete":0})
 
     for paper in paperCursor:
         paperTitle = paper['title']
@@ -828,11 +834,46 @@ def searchWord():
             paper['search_count'] = count
             paper['enroll_date'] = dateutil.parser.parse(paper['time'])
             tempList.append(paper)
-
     resultList = sorted(tempList, key=compSearch, reverse=True)
-    return render_template('main_search_paper.html', result = resultList)
+    return render_template('main_enroll.html', result = resultList)
 
+@app.route("/searchCompleteWord", methods=['POST'])
+def searchCompleteWord():
+    paperCollection = db.PaperInformation
+    mainCategory = request.form['mainCat']
+    subCategory = request.form['subCat']
+    querySentence = request.form['querySentence'].lower()
+    querySentence = querySentence.encode('utf-8').strip()
+    querySentenceList = querySentence.split(" ")
+    tempList = []
+    paperCursor = None
+    if mainCategory != "total":
+        print("mainCategory: "+ mainCategory)
+    	if subCategory != "전체":
+    	    paperCursor = paperCollection.find({"mainCategory":mainCategory, "subCategory":subCategory, "complete":1})
+    	elif subCategory == "전체":
+    	    paperCursor = paperCollection.find({"mainCategory":mainCategory, "complete":1})
+    else:
+        paperCursor = paperCollection.find({"complete":1})
 
+    for paper in paperCursor:
+        paperTitle = paper['title']
+        real_sentences = nltkExtract(paperTitle)
+        temp = " "+real_sentences.lower()+" "
+        count = 0
+        for queryWord in querySentenceList:
+            if temp.find(queryWord) != -1:
+                start = temp.find(queryWord)
+                last = start + len(queryWord)
+                if temp[start-1] != " " or temp[last] != " ":
+                    continue
+                count += 1
+        if count != 0:
+            paper['search_count'] = count
+            paper['enroll_date'] = dateutil.parser.parse(paper['time'])
+            tempList.append(paper)
+    resultList = sorted(tempList, key=compSearch, reverse=True)
+    return render_template('main_view_fix_journal.html', result = resultList)
 
 def nltkExtract(sentence):
     sentence = sentence.encode('utf-8').strip()

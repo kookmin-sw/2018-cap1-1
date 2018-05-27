@@ -121,6 +121,13 @@
   </script>
 
   <script>
+    enrollFlag = '{{enrollFlag}}'
+    if(enrollFlag == 1){
+      alert("이미 회원가입되있는 아이디 입니다.");
+    }
+  </script>
+
+  <script>
       function tocheckpw1() {
         var pw = document.getElementById('new_password').value;
         var pwck = document.getElementById('new_password_check').value;
@@ -130,9 +137,8 @@
             return false;
         }
       }
-
   </script>
-  
+
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="./js/materialize.js"></script>
   <script src="./js/init.js"></script>
