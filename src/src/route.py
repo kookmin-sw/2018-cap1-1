@@ -76,18 +76,9 @@ def home():
     userId = checkUserId()
     return render_template('main.html', userId = userId)
 
-@app.route("/getSession")
-def getSession():
-    result = str(session['state'])+","+str(session['journal_number'])
-    return str(result)
-
 @app.route("/getState")
 def getState():
     return str(session['state'])
-
-@app.route("/getJournalNum")
-def getJournalNum():
-    return str(session['journal_number'])
 
 @app.route('/js/<path:path>')
 def send_js(path):
@@ -694,15 +685,6 @@ def checkMyState():
     journal_number = str(papernum())
     dic = {'check_state': user['state'], 'journal_number':journal_number}
     return json.dumps(dic)
-
-
-@app.route("/completeState")
-def completeState():
-    session['state'] = 0
-    session['journal_number'] = None
-    return """{
-        "result": 0
-    }"""
 
 def page_number_of_pdf(path):
     pdfFileObj = open(path, 'rb')
