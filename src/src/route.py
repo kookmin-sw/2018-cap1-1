@@ -198,7 +198,8 @@ def mainMypage():
         findedUserInfo = userCollection.find({"user_id": userId})
     paperCollection = db.PaperInformation
     findPaperInfo = paperCollection.find({"user_id": userId})
-    return render_template('main_mypage.html', userId=userId, userInfo = findedUserInfo, writePaper = findPaperInfo)
+    subPaperInfo  = paperCollection.find({"subscribeArray":userId})
+    return render_template('main_mypage.html', userId=userId, userInfo = findedUserInfo, writePaper = findPaperInfo, subPaperInfo = subPaperInfo)
 
 @app.route("/main_login") #로그인 페이지 이동
 def mainLogin():
