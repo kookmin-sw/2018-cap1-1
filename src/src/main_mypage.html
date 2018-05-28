@@ -117,7 +117,7 @@
                   구독한 논문
                 </td>
                 <td>
-                  5
+                  {{i.subPaperNum}}
                 </td>
               </tr>
             </tbody>
@@ -132,49 +132,18 @@
             <p style="font-size:2rem; font-weight:bold; margin:0; padding:0;">구독한 논문</p>
           </div>
           <div style="overflow:scroll;">
-            <div class="col s12">
+	    {% for i in subPaperInfo %}
+            <div class="col s12" onclick="location.href='/main_view_journal?id={{i._id}}'">
               <div class="card blue darken-4">
                 <div style="padding:15px;" class="card-content white-text">
-                  <span class="card-title">오토마타와 아두이노 기술을 활용한 새로운 융합 공학 접근 방법</span>
-                  <p>이준표, 한갑수, 이승항 | 공학 - 컴퓨터공학</p>
+                  <span class="card-title">{{i.title}}</span>
+                  <p>{{i.writer}} | {{i.mainCategory}} - {{i.subCategory}} </p>
                 </div>
               </div>
             </div>
-            <div class="col s12">
-              <div class="card blue darken-4">
-                <div style="padding:15px;" class="card-content white-text">
-                  <span class="card-title">미국 화학물질 규제행정의 체계와 법제</span>
-                  <p>오성은, 윤혜선 | 화학 - 화학</p>
-                </div>
-              </div>
-            </div>
-            <div class="col s12">
-              <div class="card blue darken-4">
-                <div style="padding:15px;" class="card-content white-text">
-                  <span class="card-title">투석환자에서 수면장애에 영향을 주는 심리학적 요인과 의학적 요인</span>
-                  <p>강건우, 지윤미, 서민재, 김홍익, 우정민 | 인문학 - 심리학</p>
-                </div>
-              </div>
-            </div>
-            <div class="col s12">
-              <div class="card blue darken-4">
-                <div style="padding:15px;" class="card-content white-text">
-                  <span class="card-title">체육과 인간 형성에 관한 근대 일본의 연구 동향</span>
-                  <p>김기용 | 예체능 - 체육</p>
-                </div>
-              </div>
-            </div>
-            <div class="col s12">
-              <div class="card blue darken-4">
-                <div style="padding:15px;" class="card-content white-text">
-                  <span class="card-title">자연명상법을 통한 심리치유의 필요성과 그 대안</span>
-                  <p>강명희 | 자연과학 - 환경학</p>
-                </div>
-              </div>
-            </div>
+            {% endfor %}
           </div>
         </div>
-
 
         <div style=" padding-top:10px;" class="col s6 left">
           <div style="margin:10px;">
