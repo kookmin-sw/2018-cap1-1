@@ -5,7 +5,6 @@ var subscribeList = [];
 var registListCount;
 var subscribeListCount;
 var tokenCount;
-var miniTokenCount;
 
 if(typeof web3 !== "undefined"){
     web3Provider = web3.currentProvider;
@@ -25,21 +24,21 @@ function getUserInfo(){
             // 비동기화 문제 해결 해야만 함.
             var user = getUserAccount();
             instance.balanceOf(user).then(res => tokenCount = parseInt(res['c'])); 
-            instance.balanceOfMini(user).then(res => miniTokenCount = parseInt(res['c']));
-            instance.getUserSubscribedJournals({from: user})
-            .then(function(res){
-                for(var i = 0; i < res.length; i++){
-                    subscribeList.push(parseInt(res[i]['c']));
-                }
-                subscribeListCount = subscribeList.length;
-            });
-            instance.getUserRegistedJournals({from: user})
-            .then(function(res){
-                for(var i = 0; i < res.length; i++){
-                    registList.push(parseInt(res[i]['c']));
-                }
-                registListCount = registList.length;
-            });
+            document.getElementById("tokenNum").innerText = tokenCount;
+            // instance.getUserSubscribedJournals({from: user})
+            // .then(function(res){
+            //     for(var i = 0; i < res.length; i++){
+            //         subscribeList.push(parseInt(res[i]['c']));
+            //     }
+            //     subscribeListCount = subscribeList.length;
+            // });
+            // instance.getUserRegistedJournals({from: user})
+            // .then(function(res){
+            //     for(var i = 0; i < res.length; i++){
+            //         registList.push(parseInt(res[i]['c']));
+            //     }
+            //     registListCount = registList.length;
+            // });
         });
     })
 }
