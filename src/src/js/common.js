@@ -50,7 +50,7 @@ function checkContractState(state, journalNumber){
                         document.getElementById("loading_journal").style.display = "block";
                     }
                     else{
-                        completeState();
+                        blockSubscribeUpdate();
                     }
                 });
             });
@@ -88,6 +88,16 @@ function blockEnrollUpdate(){
 	location.href ="blockEnrollUpdate";
 }
 
+function blockSubscribeUpdate(){
+	document.getElementById("loading_journal").style.display = "none";
+        document.getElementById("complete_journal").style.display = "block";
+        setTimeout(function(){
+                console.log("setTimeout..");
+                document.getElementById("complete_journal").style.display = "none";
+        }, 3000)
+        location.href ="blockSubscribeUpdate";
+}
+
 function getUserAccount(){
     var account;
     web3.eth.getAccounts(function(err, accounts){
@@ -95,3 +105,4 @@ function getUserAccount(){
     });
     return account;
 }
+

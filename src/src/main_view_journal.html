@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
+ <script>
+  alert('{{completeJournalNum}}')
+ </script>
 
  <script>
   function checkComment(comment){
@@ -76,6 +79,7 @@
   </nav>
 
   <textarea style="display:none", name="userId", id = "userId">'{{userId}}'</textarea>
+  <textarea style="display:none", name="journal_number", id = "journal_number">{{completeJournalNum}}</textarea>
 
   <div id="loading_journal" style="display:none; margin:0px;" class="fixed center-align">
     <div style="margin:0px;" class="blue lighten-4 progress">
@@ -137,7 +141,7 @@
           </div>
 
           <div style="margin-top:50px;" class="right">
-            <div id="btn_read" style="display:block;" onclick="" class="col center">
+            <div id="btn_read" style="display:block;" onclick="subscribeJournal('{{id}}')" class="col center">
               <a href="#" id="" class="btn waves-effect waves-light blue darken-4">구독</a>
             </div>
 
@@ -560,6 +564,6 @@
   <script src="js/truffle-contract.js"></script>
   <script src="js/common.js"></script>
   <script src="js/finalenroll.js"></script>
-
+  <script src="js/subscribemanage.js"></script>
   </body>
 </html>

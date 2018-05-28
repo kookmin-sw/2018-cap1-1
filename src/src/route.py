@@ -108,18 +108,43 @@ def blockEnrollUpdate():
     paperNumInfo.update({"name":"latestNum"}, {"$set": {"updatedPaperNum":paper['updatedPaperNum']+1}})
     return mainEnroll()
 
+@app.route("/blockSubscribeUpdate")
+def blockSubscribeUpdate():
+    userId = checkUserId()
+    userCollection = db.Users
+    user = userCollection.find_one({"user_id":userId})
+    journalNumber = user['journal_number']
+    obId = user['obId']
+    paperCollection = db.PaperInformation
+    paperCollection.update({"_id": ObjectId(obId)},{"$push": {"subscribeArray":userId}})
+    userCollection.update({"user_id":userId}, {"$set":{"obId":"0", "journal_number":"0", "state": 0, "subPaperNum":user['subPaperNum']+1}})
+    return moveToSubPaper()
+
+
 @app.route("/enrollState")
 def enrollState():
     userId = checkUserId()
     data = request.args.get("data")
     data_list = data.split(',')  # 1st: obId, 2nd : state, 3rd : journalNumber
     userCollection = db.Users
-    user = userCollection.update({"user_id":userId}, {"$set":{"state":int(data_list[1]), "obId":data_list[0], "journal_number":data_list[2]}})
-
+    userCollection.update({"user_id":userId}, {"$set":{"state":int(data_list[1]), "obId":data_list[0], "journal_number":data_list[2]}})
     collection = db.PaperInformation
     rows = collection.find({"complete": 0}).sort("writingPaperNum",-1)
-    userId = checkUserId()
     return render_template('main_enroll.html', data =rows, userId=userId)
+
+@app.route("/subscribeState")
+def subscribeState():
+    userId = checkUserId()
+    data   = request.args.get("data")
+    data_list = data.split(',')   # 1st: obId, 2nd : state, 3rd : journalNumber
+    #data_list[0].encode('utf-8')
+    userCollection = db.Users
+    #return str(data_list[0])
+    userCollection.update({"user_id":str(userId)}, {"$set":{"state":int(data_list[1]), "obId":data_list[0], "journal_number":data_list[2]}})
+    #return "2"
+    collection = db.PaperInformation
+    rows = collection.find({"complete": 1}).sort("writingPaperNum",-1)
+    return render_template('main_view_fix_journal.html', result =rows, userId=userId)
 
 def checkUserId():
     userId = ""
@@ -415,11 +440,12 @@ def viewPaper():
     data = paperInfo.find({"_id": ObjectId(id)})
     data2 = paperInfo.find_one({"_id": ObjectId(id)})
     enrollUserId = data2['user_id']
-    complete = data2['complete']
+    completeJournalNum = data2['paperNum']
+    complete = int(data2['complete'])
     paperReferenceDic, paperContributorDic = extractPDF(id)
     journalNum = papernum()
     return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
-                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic)
+                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
@@ -708,7 +734,7 @@ def checkMyState():
     user_id = user_id[1:len(user_id)-1]
     userCollection = db.Users
     user = userCollection.find_one({"user_id":user_id})
-    journal_number = str(papernum())
+    journal_number = user['journal_number']
     dic = {'check_state': user['state'], 'journal_number':journal_number}
     return json.dumps(dic)
 
