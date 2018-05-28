@@ -127,7 +127,7 @@
               <p class="right" style="margin:0;">{{i.userName}}</p>
               <img style="width:3%; height:3%;" class="right" src="img/gold-medal.png">
             </div>
-            <div class="s12 col center">
+            <div style="min-height:500px;" class="s12 col center">
               <p style="margin:0; text-align: left;" > {{i.contents}}</p>
             </div>
 
@@ -146,7 +146,7 @@
                         </td>
 
                         <td id="{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.userId}}" onclick="adapt(this)" class="comment-check unchecked">
-                          <img  style="height:10px; width:10px;" src="img/uncheck.png"/>
+                          <img  style="height:20px; width:20px;" src="img/uncheck.png"/>
                         </td>
 
                         <script>
@@ -255,6 +255,7 @@
     }
   </script>
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
   <script src="js/customize.js"></script>

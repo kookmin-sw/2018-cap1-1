@@ -80,11 +80,11 @@ function checkContractState(state, journalNumber){
 
 function blockEnrollUpdate(){
 	document.getElementById("loading_journal").style.display = "none";
-        document.getElementById("complete_journal").style.display = "block";
-        setTimeout(function(){
+  document.getElementById("complete_journal").style.display = "block";
+  setTimeout(function(){
 		console.log("setTimeout..");
 		document.getElementById("complete_journal").style.display = "none";
-        }, 3000)
+    }, 3000)
 	location.href ="blockEnrollUpdate";
 }
 
@@ -95,6 +95,7 @@ function blockSubscribeUpdate(){
                 console.log("setTimeout..");
                 document.getElementById("complete_journal").style.display = "none";
         }, 3000)
+        Materialize.toast('회원가입이 완료되었습니다. 새로 로그인을 해주시기 바랍니다.', 2000) // 4000 is the duration of the toast
         location.href ="blockSubscribeUpdate";
 }
 
@@ -105,4 +106,3 @@ function getUserAccount(){
     });
     return account;
 }
-
