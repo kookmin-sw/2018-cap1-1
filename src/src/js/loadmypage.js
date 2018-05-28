@@ -1,9 +1,5 @@
 var web3Provider;
 var contracts = {};
-var registList = [];
-var subscribeList = [];
-var registListCount;
-var subscribeListCount;
 var tokenCount;
 
 if(typeof web3 !== "undefined"){
@@ -13,7 +9,7 @@ if(typeof web3 !== "undefined"){
 }
 web3 = new Web3(web3Provider);
 
-function getUserInfo(){
+(function(){
 
     $.getJSON("OpenJournal.json", function(data){
         var Artifact = data;
@@ -21,10 +17,12 @@ function getUserInfo(){
         contracts.OpenJournal.setProvider(web3Provider);
         contracts.OpenJournal.deployed().then(function(instance){
             
-            // 비동기화 문제 해결 해야만 함.
-            var user = getUserAccount();
-            instance.balanceOf(user).then(res => tokenCount = parseInt(res['c'])); 
-            document.getElementById("tokenNum").innerText = tokenCount;
+            // 비동기화 문제 해결 해야만 
+		var user = getUserAccount();
+            	var res = instance.balanceOf(user);
+            	res.then(function(result){
+			document.getElementById("tokenNum").innerText = parseInt(result['c'][0]).toLocaleString('en');
+		});
             // instance.getUserSubscribedJournals({from: user})
             // .then(function(res){
             //     for(var i = 0; i < res.length; i++){
@@ -41,12 +39,10 @@ function getUserInfo(){
             // });
         });
     })
-}
+})();
 
 function getUserAccount(){
     var account;
-    web3.eth.getAccounts(function(err, accounts){
-        account = accounts[0];
-    });
+    account = web3.eth["coinbase"];
     return account;
 }
