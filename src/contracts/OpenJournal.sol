@@ -275,7 +275,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         return journals[_journal_number].contributors_share;
     }
 
-    function getUserNumber() public view returns (bool) {
+    function getUserNumber() public view returns (uint256) {
         return users_by_address[msg.sender].user_number;
     }
 
