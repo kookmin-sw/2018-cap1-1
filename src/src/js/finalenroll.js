@@ -30,13 +30,20 @@ function finalEnroll(_id, journalNum){
         pricePercentList.push(pricePercent);
     });
 
-
+    console.log(referenceList);
+    console.log(contributeList);
+    console.log(pricePercentList);
+	alert("STOP");
     $.getJSON("OpenJournal.json", function(data){
         var Artifact = data;
         contracts.OpenJournal = TruffleContract(Artifact);
         contracts.OpenJournal.setProvider(web3Provider);
         contracts.OpenJournal.deployed().then(function(instance){
             var author = getAuthorAccount();
+		console.log("author : " + author + "\njournalNum : " + journalNum + "\ntitle : " + title + "\nauthorShare : " + authorShare);
+		console.log(referenceList);
+		console.log(contributeList);
+		console.log(pricePercentList);
             instance.registJournal(journalNum, title, authorShare, value, referenceList, contributeList, pricePercentList, { from: author });
             console.log(instance);
 		location.href ="enrollState?data="+_id+",3,"+journalNum;

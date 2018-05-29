@@ -21,7 +21,7 @@ web3 = new Web3(web3Provider);
 		var user = getUserAccount();
             	var res = instance.balanceOf(user);
             	res.then(function(result){
-			document.getElementById("tokenNum").innerText = parseInt(result['c'][0]).toLocaleString('en');
+			document.getElementById("tokenNum").innerText = (parseFloat(result['c'][0]/10000));
 		});
             // instance.getUserSubscribedJournals({from: user})
             // .then(function(res){
