@@ -1,4 +1,5 @@
 var web3Provider;
+
 var contracts = {};
 var tokenCount;
 
@@ -20,6 +21,11 @@ web3 = new Web3(web3Provider);
             // 비동기화 문제 해결 해야만 
 		var user = getUserAccount();
             	var res = instance.balanceOf(user);
+		var id = instance.getUserNumber({from : user});
+		console.log(id);
+		id.then(function(result){
+			document.getElementById("blockchain_id").innerText = parseInt(result['c'][0]);
+		});
             	res.then(function(result){
 			document.getElementById("tokenNum").innerText = (parseFloat(result['c'][0]/10000));
 		});
