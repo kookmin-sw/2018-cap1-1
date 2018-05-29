@@ -64,25 +64,25 @@ function getAuthorAccount(){
 }
 
 function modifyInfo(x){
-  var inputString1 = prompt('변경할 번호를 입력하세요', x.parentElement.childNodes[1].getElementsByTagName("span")[0].innerText);
-  var inputString2 = prompt('변경할 제목을 입력하세요', x.parentElement.childNodes[3].getElementsByTagName("span")[0].innerText);
+  var inputString1 = prompt('변경할 번호를 입력하세요', x.previousElementSibling.previousElementSibling.innerText);
+  var inputString2 = prompt('변경할 제목을 입력하세요', x.previousElementSibling.innerText);
 
-  x.parentElement.childNodes[1].getElementsByTagName("span")[0].innerText = inputString1;
-  x.parentElement.childNodes[3].getElementsByTagName("span")[0].innerText = inputString2;
+  x.previousElementSibling.previousElementSibling.innerText = inputString1;
+  x.previousElementSibling.innerText = inputString2;
 }
 
-function modifyContributerInfo(x){
-  var inputString1 = prompt('변경할 Contributer의 아이디를 입력하세요', x.parentElement.childNodes[1].getElementsByTagName("span")[0].innerText);
-  var inputString2 = prompt('변경할 Contributer의 이름을 입력하세요.', x.parentElement.childNodes[3].getElementsByTagName("span")[0].innerText);
+function modifyContributorInfo(x){
+  var inputString1 = prompt('변경할 Contributer의 아이디를 입력하세요', x.previousElementSibling.previousElementSibling.innerText);
+  var inputString2 = prompt('변경할 Contributer의 이름을 입력하세요.', x.previousElementSibling.innerText);
 
-  x.parentElement.childNodes[1].getElementsByTagName("span")[0].innerText = inputString1;
-  x.parentElement.childNodes[3].getElementsByTagName("span")[0].innerText = inputString2;
+  x.previousElementSibling.previousElementSibling.innerText = inputString1;
+  x.previousElementSibling.innerText = inputString2;
 }
 
 function checkContributer(x){
   //contributer 값 가져올 때
-  //contributer id :  x.parentElement.childNodes[1].getElementsByTagName("span")[0].innerText
-  //contributer name : x.parentElement.childNodes[3].getElementsByTagName("span")[0].innerText
+  //contributer id :  x.previousElementSibling.previousElementSibling.previousElementSibling.innerText
+  //contributer name : x.previousElementSibling.previousElementSibling.innerText
 }
 
 function checkPercent(){
@@ -109,8 +109,9 @@ function checkPercent(){
 
 
 function checkReference(x){
-   var journalNum =   x.parentElement.childNodes[1].getElementsByTagName("span")[0].innerText;
-   var journalTitle =   x.parentElement.childNodes[3].getElementsByTagName("span")[0].innerText;
+   var journalNum =   x.previousElementSibling.previousElementSibling.previousElementSibling.innerText;
+   var journalTitle =   x.previousElementSibling.previousElementSibling.innerText;
+
 
    journalTitle = journalTitle.replace(/(\s*)/g,""); //띄워쓰기 다 붙임
 
@@ -124,12 +125,12 @@ function checkReference(x){
            instance.getJournalTitle(journalNum).then(res => journalTitleInBlockChain = res['c'].toString());;
            journalTitleInBlockChain = journalTitleInBlockChain.replace(/(\s*)/g,"");
            if(journalTitle == journalTitleInBlockChain){
-               x.parentElement.children[3].getElementById("correspond").style.display="block";
-               x.parentElement.children[3].getElementById("notcorrespond").style.display="none";
+               x.nextElementSibling.firstElementChild.style.display="block";
+               x.nextElementSibling.lastElementChild.style.display="none";
             }
             else{
-                x.parentElement.children[3].getElementsByTagName("p")[0].style.display="none";
-                x.parentElement.children[3].getElementsByTagName("p")[1].style.display="block";
+                x.nextElementSibling.firstElementChild.style.display="none";
+                x.nextElementSibling.lastElementChild.style.display="block";
             }
         });
     })
