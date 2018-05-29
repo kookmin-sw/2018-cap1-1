@@ -120,7 +120,6 @@ def blockSubscribeUpdate():
     userCollection.update({"user_id":userId}, {"$set":{"obId":"0", "journal_number":"0", "state": 0, "subPaperNum":user['subPaperNum']+1}})
     return moveToSubPaper()
 
-
 @app.route("/enrollState")
 def enrollState():
     userId = checkUserId()
@@ -130,7 +129,7 @@ def enrollState():
     userCollection.update({"user_id":userId}, {"$set":{"state":int(data_list[1]), "obId":data_list[0], "journal_number":data_list[2]}})
     collection = db.PaperInformation
     rows = collection.find({"complete": 0}).sort("writingPaperNum",-1)
-    return render_template('main_enroll.html', data =rows, userId=userId)
+    return render_template('main_enroll.html', result =rows, userId=userId)
 
 @app.route("/subscribeState")
 def subscribeState():
@@ -436,8 +435,8 @@ def extractPDF(obId):
 @app.route("/main_view_journal", methods=['GET', 'POST'])
 def viewPaper():
     id = request.args.get("id") #현재 보려고 하는 논문의 ObjectId 값 get
-    paperInfo = db.PaperInformation
     userId = checkUserId()
+    paperInfo = db.PaperInformation
     data = paperInfo.find({"_id": ObjectId(id)})
     data2 = paperInfo.find_one({"_id": ObjectId(id)})
     enrollUserId = data2['user_id']
@@ -445,6 +444,14 @@ def viewPaper():
     complete = int(data2['complete'])
     paperReferenceDic, paperContributorDic = extractPDF(id)
     journalNum = papernum()
+    hit = data2['hits']
+    paperInfo.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
+    subFlag = 0
+    subInfo = None
+    subInfo = paperInfo.find_one({"_id":ObjectId(id), "subscribeArray":userId})
+    if subInfo != None:
+        subFlag = 1
+    #return str(subFlag) 
     return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
                            paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum)
 

@@ -16,20 +16,19 @@ function finalEnroll(_id, journalNum){
     var contributeList = [];
     var pricePercentList = [];
 
-    alert("id: " + _id + "\njournalNumber: " + journalNum);
     $("span[name=OJjournal]").each(function(idx){
-        var referenceJournal = $(this).html();
+        var referenceJournal = parseInt($(this).html());
         referenceList.push(referenceJournal);
     });
     $("span[name=OJcontributorNum]").each(function(idx){
-        var contributeJournal = $(this).html();
+        var contributeJournal = parseInt($(this).html());
         contributeList.push(contributeJournal);
     });
-    $("span[name=price_percent]").each(function(idx){
-        var pricePercent = $(this).html();
+    $("input[name=price_percent]").each(function(idx){
+	var pricePercent = parseInt(this.value);
         pricePercentList.push(pricePercent);
     });
-
+    pricePercentList.pop();
 
     $.getJSON("OpenJournal.json", function(data){
         var Artifact = data;
@@ -37,6 +36,14 @@ function finalEnroll(_id, journalNum){
         contracts.OpenJournal.setProvider(web3Provider);
         contracts.OpenJournal.deployed().then(function(instance){
             var author = getAuthorAccount();
+		console.log(journalNum);
+		console.log(title);
+		console.log(authorShare);
+		console.log("value:"+value);
+		console.log(referenceList);
+		console.log(contributeList);
+		console.log(pricePercentList);
+		alert("STOP!");
             instance.registJournal(journalNum, title, authorShare, value, referenceList, contributeList, pricePercentList, { from: author });
             console.log(instance);
 		location.href ="enrollState?data="+_id+",3,"+journalNum;
@@ -57,9 +64,7 @@ function finalEnroll(_id, journalNum){
 
 function getAuthorAccount(){
     var account;
-    web3.eth.getAccounts(function(err, accounts){
-        account = accounts[0];
-    });
+    account = web3.eth["coinbase"];
     return account;
 }
 
