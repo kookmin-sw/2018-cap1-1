@@ -93,8 +93,8 @@ function checkPercent(){
   }
   console.log(sum);
   if(sum!=100){
-    var toastHTML = '<span style="color:red;">지분의 합이 100%가 아닙니다.</span>';
-    M.toast({html : toastHTML}, 1000);
+    // var toastHTML = '<span style="color:red;">지분의 합이 100%가 아닙니다.</span>';
+    // M.toast({html : toastHTML}, 1000);
     document.getElementById("load_metamthisask").style.display = 'none';
   }
   else{
