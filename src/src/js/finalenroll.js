@@ -11,19 +11,33 @@ web3 = new Web3(web3Provider);
 function finalEnroll(_id, journalNum){
     var value = document.getElementById("journal_price").value;
     var title = document.getElementById("journal_title").innerText;
+    var authorShare = document.getElementById("journal_percentToken").value;
     var referenceList = []; // 현재는 논문의 번호를 이용하여 실행됨
+    var contributeList = [];
+    var pricePercentList = [];
+
     alert("id: " + _id + "\njournalNumber: " + journalNum);
     $("span[name=OJjournal]").each(function(idx){
         var referenceJournal = $(this).html();
         referenceList.push(referenceJournal);
     });
+    $("span[name=OJcontributorNum]").each(function(idx){
+        var contributeJournal = $(this).html();
+        contributeList.push(contributeJournal);
+    });
+    $("span[name=price_percent]").each(function(idx){
+        var pricePercent = $(this).html();
+        pricePercentList.push(pricePercent);
+    });
+
+
     $.getJSON("OpenJournal.json", function(data){
         var Artifact = data;
         contracts.OpenJournal = TruffleContract(Artifact);
         contracts.OpenJournal.setProvider(web3Provider);
         contracts.OpenJournal.deployed().then(function(instance){
             var author = getAuthorAccount();
-            instance.registJournal(journalNum, title, value, referenceList, { from: author });
+            instance.registJournal(journalNum, title, authorShare, value, referenceList, contributeList, pricePercentList, { from: author });
             console.log(instance);
 		location.href ="enrollState?data="+_id+",3,"+journalNum;
 	    //$.ajax({
