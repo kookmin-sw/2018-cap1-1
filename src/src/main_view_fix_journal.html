@@ -8,16 +8,16 @@
   <script>
     var web3Provider;
     var contracts = {};
-    
+
     if(typeof web3 !== "undefined"){
         web3Provider = web3.currentProvider;
     }else {
         web3Provider = new web3Provider.providers.HttpProvider("http://localhost:7545");
     }
     web3 = new Web3(web3Provider);
-    
+
     function subscribeJournal(journalNumber){
-    
+
         $.getJSON("OpenJournal.json", function(data){
             var Artifact = data;
             contracts.OpenJournal = TruffleContract(Artifact);
@@ -31,7 +31,7 @@
     }
   </script>
   <script>
-    
+
   </script>
 
   <!-- CSS  -->
@@ -115,9 +115,7 @@
         <div class="row center">
           <h5 class="header col s12  black-text">토큰을 지불하고 논문을 구독할 수 있습니다.</h5>
         </div>
-        <div class="row center">
-          <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">더 알아보기</a>
-        </div>
+
         <br><br>
       </div>
     </div>
@@ -260,6 +258,7 @@
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
   <script src="js/common.js"></script>
+  
 
   </body>
 </html>
