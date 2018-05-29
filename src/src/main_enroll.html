@@ -131,8 +131,10 @@
           <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
             <i class="material-icons circle">folder</i>
             <span class="title" name="title">{{i.title}}</span>
-            <p>저자 : {{i.writer}}<br></p>
+            <p>저자 : {{i.writer}} <br></p>
             <p style="line-height:1.3rem; font-size:0.8rem;">주제어 :{{i.keyword}} </p>
+            <p> 버전 : {{i.version}}.0 </p>
+            <p> 조회수 : {{i.hits}} </p>
             <p> 시간: {{i.time}}</p>
           </li>
         </ul>
