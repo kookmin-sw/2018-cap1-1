@@ -155,7 +155,7 @@
             <div style="overflow:scroll; background-color:white; width:80%; height:80%;" class="uploadFinalJournal">
               <div style="color:black;" class="row">
 
-                <div class="col center s12">
+                <div class="col s12 center">
                   <p style="text-align: center; margin:20px; border:1px solid red;">
                     <span style="color:red; font-size:1.5rem;">주의사항</span><br><br>
 
@@ -166,7 +166,7 @@
                   </p>
                 </div>
 
-                <div class="col center s12">
+                <div class="col s12 center">
                   <table class="view_final_info">
                     <tbody>
                       <tr>
@@ -228,121 +228,71 @@
                   <div style="margin:20px; margin-bottom:0px; text-align:left;">
                     <span style=" font-size:1.5rem; font-weight:bold;">Reference</span>
                   </div>
-                  <div>
-                    {% for key, value in paperReferenceDic.items() %}
-                    <div class="col s12">
-
-                      <div class="col s2">
-                        <div  class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span style="margin-bottom:0px; font-size:1.3rem;" name="OJjournal" class="card-title">{{key}}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s6">
-                        <div class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title" id="journal_name">{{value}}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s1" onclick="modifyInfo(this)">
-                        <div class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
-                            <p id="">클릭</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s1" onclick="checkReference(this)">
-                        <div class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
-                            <p id="">클릭</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s2">
-                        <div class="card">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">번호&제목 일치여부</span>
+                  <div class="col s12 center">
+                    <table class="striped">
+                      <thead>
+                        <tr>
+                            <th style="width:20%;">논문번호</th>
+                            <th style="width:40%;">논문제목</th>
+                            <th style="width:10%;">정보수정</th>
+                            <th style="width:10%;">일치여부</th>
+                            <th style="width:20%;">결과</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for key, value in paperReferenceDic.items() %}
+                        <tr>
+                          <td style="padding:5px;">{{key}}</td>
+                          <td style="padding:5px;">{{value}}</td>
+                          <td style="padding:5px; font-weight:bold;" onclick = "modifyInfo(this)">클릭</td>
+                          <td style="padding:5px; font-weight:bold;" onclick="checkReference(this)">클릭</td>
+                          <td style="padding:5px;">
                             <p id="correspond" style="color:green;">일치합니다.</p>
                             <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {% endfor %}
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
 
-                <div style="margin:20px; margin-bottom:0px; text-align:left;">
-                  <span style=" font-size:1.5rem; font-weight:bold;">Contributor</span>
-                </div>
-                <div>
-
-                  {% for key, value in paperContributorDic.items() %}
-                  <div class="col s12">
-
-                    <div class="col s2">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span style="margin-bottom:0px; font-size:1.3rem;" name="OJcontributorNum" class="card-title">{{key}}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s4">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title" id="contributor_name">{{value}}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s1" onclick="modifyContributorInfo(this)">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
-                          <p id="">클릭</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s1" onclick="checkContributor(this)">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
-                          <p id="">클릭</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s2">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">지분(%)</span>
-                          <input style="background-color:white; height:30px; ime-mode: disabled; text-align: right; font-size:1.05rem;" type="number" min="0" max="100" class="validate" name="price_percent" onkeyup="checkPercent()" required>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s2">
-                      <div class="card">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">Contributor 일치여부</span>
+                <div style="margin-bottom:20px;" class="col s12 center">
+                  <div style="margin:20px; margin-bottom:0px; text-align:left;">
+                    <span style=" font-size:1.5rem; font-weight:bold;">Contributor</span>
+                  </div>
+                  <div class="col s12 center">
+                    <table class="striped">
+                    <thead>
+                      <tr>
+                          <th style="width:20%;">저자번호</th>
+                          <th style="width:20%;">저자이름</th>
+                          <th style="width:10%;">정보수정</th>
+                          <th style="width:10%;">일치여부</th>
+                          <th style="width:10%;">지분(%)</th>
+                          <th style="width:20%;">결과</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for key, value in paperContributorDic.items() %}
+                      <tr>
+                        <td style="padding:5px;">{{key}}</td>
+                        <td style="padding:5px;">{{value}}</td>
+                        <td style="padding:5px; font-weight:bold;" onclick = "modifyContributorInfo(this)">클릭</td>
+                        <td style="padding:5px; font-weight:bold;" onclick="checkContributor(this)">클릭</td>
+                        <td style="padding:5px;">
+                          <input style="ime-mode: disabled; text-align: right; font-size:2rem; " min="0" max="100" type="number" class="validate" name="price_percent" onkeyup="checkPercent()" required>
+                        </td>
+                        <td style="padding:5px;">
                           <p id="correspond" style="color:green;">일치합니다.</p>
                           <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
-                        </div>
-                      </div>
-                    </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
                   </div>
-                  {% endfor %}
-              </div>
-
+                </div>
 
                 <div class="col s3 center">
                   <div style="margin-bottom:0px; text-align:right;">
@@ -371,7 +321,7 @@
 
                 <div class="col s2 center">
                   <div style="margin:0; margin-bottom:20px;" class="input-field col s12">
-                    <input style="ime-mode: disabled; text-align: right; font-size:2rem; " id="journal_percentToken" min="0" max="100" type="number" class="validate" name="price_percent" onkeyup="checkPercent()" required>
+                    <input style="ime-mode: disabled; text-align: right; font-size:2rem; " min="0" max="100" type="number" class="validate" name="price_percent" onkeyup="checkPercent()" required>
                   </div>
                 </div>
 
