@@ -105,7 +105,7 @@
     <div class="section">
       <form name="search" action="searchCompleteWord" method="POST">
         <div class="row" style="margin-bottom:0px;">
-          <div class="col s4 center">
+          <div class="col s6 center">
             <select id="mainCat" name="mainCat" class="browser-default" onchange="ShowHideSubCat()">
               <option value="total">전체</option>
               <option value="engineering">공학</option>
@@ -119,16 +119,9 @@
               <option value="natural">자연</option>
             </select>
           </div>
-          <div class="col s4 center">
+          <div class="col s6 center">
             <select id="subCat" name="subCat"class="browser-default">
               <option value="0">전체</option>
-            </select>
-          </div>
-
-          <div class="col s4 center">
-            <select class="browser-default">
-              <option value="9">인기논문</option>
-              <option value="10">최신논문</option>
             </select>
           </div>
         </div>
@@ -150,7 +143,10 @@
             <i class="material-icons circle">folder</i>
             <span class="title">{{i.title}}</span>
             <p>{{i.writer}}<br></p>
+            <p> 논문번호: {{i.paperNum}}</p>
             <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : {{i.keyword}}</p>
+	    <p> 버전: {{i.version}}</p>
+	    <p> 조회수: {{i.hits}} </p>
             <p> 시간: {{i.time}}</p>
           </li>
         </ul>

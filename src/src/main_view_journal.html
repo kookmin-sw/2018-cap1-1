@@ -490,6 +490,8 @@
     var userId = '{{userId}}';
     var enrollUserId = '{{enrollUserId}}';
     var complete = '{{complete}}';
+    var subFlag = '{{subFlag}}';
+    
     if(userId == enrollUserId && complete == 0){
       //alert("작성자와 현재 사용자가 같음");
       //업데이트 버튼, 최종 등록 버튼 나오고, 구독은 안나옴
@@ -513,10 +515,17 @@
     }
     else if(userId != enrollUserId && complete == 1){
       //alert("작성자와 현재 사용자가 다름");
-      //구독버튼만 나와야함
-      document.getElementById("btn_update").style.display = "none";
-      document.getElementById("btn_enroll").style.display = "none";
-      document.getElementById("btn_read").style.display = "block";
+      if(subFlag == 1){ //구독완료
+          document.getElementById("btn_update").style.display = "none";
+          document.getElementById("btn_enroll").style.display = "none";
+          document.getElementById("btn_read").style.display = "none";
+      }
+      else if(subFlag == 0){ //구독 버튼만 보임
+	  document.getElementById("btn_update").style.display = "none";
+          document.getElementById("btn_enroll").style.display = "none";
+          document.getElementById("btn_read").style.display = "block";
+      }
+      
     }
   </script>
   <script>
