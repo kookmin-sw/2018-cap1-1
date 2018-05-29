@@ -445,7 +445,8 @@ def viewPaper():
     paperReferenceDic, paperContributorDic = extractPDF(id)
     journalNum = papernum()
     return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
-                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum)
+                                                     paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic,
+                                                     completeJournalNum = completeJournalNum)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
