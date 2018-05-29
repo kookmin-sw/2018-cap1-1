@@ -6,8 +6,32 @@
   <title>Open Journal</title>
 
   <script>
-    var userId = '{{userId}}';
-    //alert(userId);
+    var web3Provider;
+    var contracts = {};
+    
+    if(typeof web3 !== "undefined"){
+        web3Provider = web3.currentProvider;
+    }else {
+        web3Provider = new web3Provider.providers.HttpProvider("http://localhost:7545");
+    }
+    web3 = new Web3(web3Provider);
+    
+    function subscribeJournal(journalNumber){
+    
+        $.getJSON("OpenJournal.json", function(data){
+            var Artifact = data;
+            contracts.OpenJournal = TruffleContract(Artifact);
+            contracts.OpenJournal.setProvider(web3Provider);
+            contracts.OpenJournal.deployed().then(function(instance){
+              instance.getReferenceCount(journalNumber).then(function(res){
+                return parseInt(res['c'][0]);
+              });
+          });
+        });
+    }
+  </script>
+  <script>
+    
   </script>
 
   <!-- CSS  -->
@@ -145,8 +169,9 @@
             <p>{{i.writer}}<br></p>
             <p> 논문번호: {{i.paperNum}}</p>
             <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : {{i.keyword}}</p>
-	    <p> 버전: {{i.version}}</p>
-	    <p> 조회수: {{i.hits}} </p>
+	          <p> 버전: {{i.version}}</p>
+            <p> 조회수: {{i.hits}} </p>
+            <p> 참조수 : <script>document.subscribeJournal('{{i.paperNum}}');</script></p>
             <p> 시간: {{i.time}}</p>
           </li>
         </ul>
