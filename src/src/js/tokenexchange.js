@@ -9,15 +9,16 @@ if(typeof web3 !== "undefined"){
 web3 = new Web3(web3Provider);
 
 function buyJournalToken(){
-    var value = document.getElementById("input_eth").value;
-    value = value * 10**18;
+    var howMuch = document.getElementById("input_eth").value;
+    howMuch = howMuch * 10**18;
     $.getJSON("OpenJournal.json", function(data){
         var Artifact = data; // Wei로 단위 통일
         contracts.OpenJournal = TruffleContract(Artifact);
         contracts.OpenJournal.setProvider(web3Provider);
         contracts.OpenJournal.deployed().then(function(instance){
             var user = getUserAccount();
-            instance.buyToken(value, { from: subscriberAccount }); // wei 곱하기 추가
+	    console.log(user);
+            instance.buyToken({ from: user, value: howMuch }); // wei 곱하기 추가
             alert("'이더->토큰' 거래가 시작되었습니다. \n예상 대기시간은 1분입니다.");
 	    });
     });
@@ -32,7 +33,7 @@ function sellJournalToken(){
         contracts.OpenJournal.setProvider(web3Provider);
         contracts.OpenJournal.deployed().then(function(instance){
             var user = getUserAccount();
-            instance.sell(value, { from: subscriberAccount });
+            instance.sellToken(value, { from: user });
             alert("'토큰->이더' 거래가 진행중입니다.  \n예상 대기시간은 1분입니다.");
 	    });
     });
@@ -40,8 +41,6 @@ function sellJournalToken(){
 
 function getUserAccount(){
     var account;
-    web3.eth.getAccounts(function(err, accounts){
-        account = accounts[0];
-    });
+    account = web3.eth["coinbase"];
     return account;
 }
