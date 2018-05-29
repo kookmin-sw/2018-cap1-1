@@ -90,21 +90,19 @@
         </div>
         <div class="col s12 center">
           <div class="row">
-            <form class="col s12">
-                <div class="input-field col s6">
-                  <input style="ime-mode: disabled;" onkeydown="filterNumber(event)" onkeyup="changeEthtoOJ()" id="input_eth" type="text" class="validate">
-                  <label for="input_eth">이더리움 개수</label>
-                  <span class="helper-text">보유하고 있는 이더리움 내에서 교환할 개수를 입력하세요.</span>
-                </div>
-                <div class="input-field col s6">
-                  <p><span id="changeEthtoOJ" style="font-size:2rem; font-weight:bold;">0</span> 개의 OJ 토큰을 구매합니다.</p>
-                </div>
-                <div class="col center s12">
-                  <div class="s12 col center">
-                    <a href="#" id="" class="btn waves-effect waves-light blue darken-4">구매하기</a>
-                  </div>
-                </div>
-            </form>
+            <div class="input-field col s6">
+              <input style="ime-mode: disabled;" onkeydown="filterNumber(event)" onkeyup="changeEthtoOJ()" id="input_eth" type="text" class="validate">
+              <label for="input_eth">이더리움 개수</label>
+              <span class="helper-text">보유하고 있는 이더리움 내에서 교환할 개수를 입력하세요.</span>
+            </div>
+            <div class="input-field col s6">
+              <p><span id="changeEthtoOJ" style="font-size:2rem; font-weight:bold;">0</span> 개의 OJ 토큰을 구매합니다.</p>
+            </div>
+            <div class="col center s12">
+              <div class="s12 col center">
+                <button href="#" onclick="buyJournalToken()" class="btn waves-effect waves-light blue darken-4">구매하기</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -114,22 +112,19 @@
         </div>
         <div class="col s12 center">
           <div class="row">
-            <form class="col s12">
-                <div class="input-field col s6">
-                  <input style="ime-mode: disabled;" onkeydown="filterNumber(event)" onkeyup="changeOJtoEth()" id="input_OJ" type="text" class="validate">
-                  <label for="input_OJ">OJ 토큰 개수</label>
-                  <span class="helper-text">보유하고 있는 OJ토큰 개수 내에서 교환할 개수를 입력하세요.</span>
-                </div>
-                <div class="input-field col s6">
-                  <p><span id="chageOJtoEth" style="font-size:2rem; font-weight:bold;">0</span> 개의 이더리움으로 교환 가능합니다.</p>
-                </div>
-                <div class="col center s12">
-                  <div class="s12 col center">
-                    <a href="#" id="" class="btn waves-effect waves-light blue darken-4">교환하기</a>
-                  </div>
-                </div>
-            </form>
+            <div class="input-field col s6">
+              <input style="ime-mode: disabled;" onkeydown="filterNumber(event)" onkeyup="changeOJtoEth()" id="input_OJ" type="text" class="validate">
+              <label for="input_OJ">OJ 토큰 개수</label>
+              <span class="helper-text">보유하고 있는 OJ토큰 개수 내에서 교환할 개수를 입력하세요.</span>
+            </div>
+            <div class="input-field col s6">
+              <p><span id="chageOJtoEth" style="font-size:2rem; font-weight:bold;">0</span> 개의 이더리움으로 교환 가능합니다.</p>
+            </div>
           </div>
+          <div class="col s12 center">
+            <button href="#" onclick="sellJournalToken()" class="btn waves-effect waves-light blue darken-4">교환하기</button>
+          </div>
+
         </div>
 	    </div>
     </div>
@@ -204,6 +199,7 @@
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
   <script src="js/common.js"></script>
-
+  <script src="js/tokenexchange.js"></script>
+  
   </body>
 </html>
