@@ -86,7 +86,60 @@
           <h5 class="header col s12  black-text">논문에 대해 이야기를 나누는 공간입니다.</h5>
         </div>
         <div class="row center">
-          <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">더 알아보기</a>
+          <button data-target="modal1" class="btn-large waves-effect waves-light blue darken-4 modal-trigger">Modal</button>
+        </div>
+        <div id="modal1" class="modal">
+          <div style="color:black;" class="modal-content">
+            <h5>명성 지급 기준</h5>
+            <table style="line-height : 2;" class="striped centered">
+              <thead>
+                <tr>
+                    <th style="font-weight:bold;">구분</th>
+                    <th style="font-weight:bold;">명성 1개</th>
+                    <th style="font-weight:bold;">명성 5개</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="2">명성을 부여하는 기준</td>
+                  <td>논문 검수에 참여하여<br /> <span style="font-weight:bold;">의견을 제시</span>할 때</td>
+                  <td>논문 게시자가 논문의 수정에 <br /><span style="font-weight:bold;">참고한 댓글</span>일 때</td>
+                </tr>
+                <tr>
+                  <td>커뮤니티에서<br /> <span style="font-weight:bold;">댓글을 작성</span>할 때</td>
+                  <td>커뮤니티 질문자가 질문에 대한 <br /><span style="font-weight:bold;">답변을 채택</span>할 때 </td>
+                </tr>
+              </tbody>
+            </table>
+            <br /><br />
+            <h2> </h2>
+            <h5>명성에 따른 멤버등급 부여</h5>
+            <table style="line-height : 2;" class="striped centered">
+              <thead>
+                <tr>
+                    <th style="font-weight:bold;">구분</th>
+                    <th style="color:#795548; font-weight:bold;">Bronze</th>
+                    <th style="color:#757575; font-weight:bold;">Silver</th>
+                    <th style="color:#9e9d24; font-weight:bold;">Gold</th>
+                    <th style="color:#18ffff; font-weight:bold;">Diamond</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>명성 개수</td>
+                  <td>50개</td>
+                  <td>200개</td>
+                  <td>500개</td>
+                  <td>1,000개</td>
+                </tr>
+
+              </tbody>
+            </table>
+
+          </div>
+          <div style="color:black;" class="white modal-footer">
+            <a href="#!" class=" modal-close waves-effect waves-green btn-flat">Agree</a>
+          </div>
         </div>
         <br><br>
       </div>
@@ -206,6 +259,19 @@
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
   <script src="js/common.js"></script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems, options);
+      });
+
+      // Or with jQuery
+
+      $(document).ready(function(){
+        $('.modal').modal();
+      });
+
+  </script>
 
   </body>
 </html>
