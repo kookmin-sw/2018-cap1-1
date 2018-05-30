@@ -8,6 +8,7 @@
   <script>
     var web3Provider;
     var contracts = {};
+    var global_instance = undefined;
 
     if(typeof web3 !== "undefined"){
         web3Provider = web3.currentProvider;
@@ -15,22 +16,7 @@
         web3Provider = new web3Provider.providers.HttpProvider("http://localhost:7545");
     }
     web3 = new Web3(web3Provider);
-
-    function subscribeJournal(journalNumber){
-
-        $.getJSON("OpenJournal.json", function(data){
-            var Artifact = data;
-            contracts.OpenJournal = TruffleContract(Artifact);
-            contracts.OpenJournal.setProvider(web3Provider);
-            contracts.OpenJournal.deployed().then(function(instance){
-              instance.getReferenceCount(journalNumber).then(function(res){
-		var str = res['c'][0].toString();
-                console.log(str);
-		return str;
-              });
-          });
-        });
-    }
+    
   </script>
   <script>
 
@@ -171,7 +157,8 @@
             <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : {{i.keyword}}</p>
 	          <p> 버전: {{i.version}}</p>
             <p> 조회수: {{i.hits}} </p>
-       <!--     <p><script>document.write("aa:" + subscribeJournal('{{i.paperNum}}'));</script></p> -->
+            <p> 참조 수 : <span class="oj-ref-count" data-id="{{i.paperNum}}"></span></p>
+            <!-- oj-ref-count = 참조 수 전체 태그 가진 클래스 / data-id = 각 참조 수 태그를 구분하는 값 -->
        <!--     <p> 시간: {{i.time}}</p> -->
           </li>
         </ul>
@@ -260,6 +247,29 @@
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
   <script src="js/common.js"></script>
+  <script>
+    function setJournalRefCount(instance) {
+        $(".oj-ref-count").each(async function () {
+          var journalNumber = $(this).attr("data-id");
+          await instance.getReferenceCount(journalNumber).then(function (res) {
+            var count = res['c'][0].toString();
+            $(".oj-ref-count[data-id=\"" + journalNumber + "\"]").html(count);
+          });
+        });
+    }
+    
+    $(document).ready(function () {
+      $.getJSON("OpenJournal.json", function(data){
+        var Artifact = data;
+        contracts.OpenJournal = TruffleContract(Artifact);
+        contracts.OpenJournal.setProvider(web3Provider);
+        contracts.OpenJournal.deployed().then(function(instance){
+          global_instance = instance;
+          setJournalRefCount(global_instance);
+        });
+      });
+    });
+  </script>
   
 
   </body>
