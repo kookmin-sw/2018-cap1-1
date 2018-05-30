@@ -467,7 +467,6 @@ def viewReferencePaper(journalNum):
     paperInfo = db.PaperInformation
     obPaper = paperInfo.find_one({"paperNum":str(journalNum)}) #논문 번호를 이용하여, paper를 찾아줌
     id = obPaper['_id']
-    return str(id)
     data = paperInfo.find({"_id": ObjectId(id)})
     data2 = paperInfo.find_one({"_id": ObjectId(id)})
     enrollUserId = data2['user_id']
