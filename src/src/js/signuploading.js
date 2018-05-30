@@ -16,7 +16,8 @@ $(document).ready(function () {
     	contracts.OpenJournal.deployed().then(function(instance){
             var newUser = getUserAccount();
             console.log(newUser);
-            instance.signUp({from: newUser});
+            var contractLog = instance.signUp({from: newUser});
+	    console.log(contractLog);
         });
     });
 
