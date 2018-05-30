@@ -17,8 +17,12 @@
 
 [![capton](http://img.youtube.com/vi/FlC69TKqo5M/0.jpg)](https://www.youtube.com/watch?v=FlC69TKqo5M "capton")
 
+## 4. 프로젝트 소개 영상
 
-## 4. 팀 소개
+[![capton](http://img.youtube.com/vi/FlC69TKqo5M/0.jpg)](https://youtu.be/HUOEOGsxMhY")
+
+
+## 5. 팀 소개
 
 #### - 지도교수 : 임성수교수님 (Lim Sung-soo)
 
