@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+de# -*- coding: utf-8 -*-
 from bson.objectid import ObjectId
 from cStringIO import StringIO
 from flask import Flask, render_template, request, redirect, url_for, session, make_response, jsonify, send_from_directory
@@ -617,11 +617,11 @@ def getWriting():
     writer = oneData['userId']
     return render_template('main_comunity_detail.html',data = data, userId = userId, writer = writer)
 
-@app.route("/deleteCommunityWriting", methods=['GET', 'POST']) 
+@app.route("/deleteCommunityWriting", methods=['GET', 'POST']) #커뮤니티 글 내용 불러오기 기능 구현
 def deleteCommunityWriting():
     id = request.args.get("id")
     bulletin = db.Bulletin
-    bulletin.remove({"_id": ObjectId(id)})
+    bulletin.delete({"_id":Object(id)})
     return mainComunity()
 
 def getUserName():

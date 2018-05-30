@@ -135,35 +135,46 @@
             </select>
           </div>
         </div>
-      <div style="border:1px solid; margin-bottom:20px;">
-          <div class="nav-wrapper col s12 center">
-              <div class="input-field">
-                <input id="search" name="querySentence" type="search" required>
-                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                <i class="material-icons">close</i>
-              </div>
-          </div>
-      </div>
-    </form>
+        <div style="border:1px solid; margin-bottom:20px;">
+            <div class="nav-wrapper col s12 center">
+                <div class="input-field">
+                  <input id="search" name="querySentence" type="search" required>
+                  <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                  <i class="material-icons">close</i>
+                </div>
+            </div>
+        </div>
+      </form>
 
-      {% for i in result %}
-      <div class="col s12">
-        <ul class="collection">
-          <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
-            <i class="material-icons circle">folder</i>
-            <span class="title">{{i.title}}</span>
-            <p>{{i.writer}}<br></p>
-            <p> 논문번호: {{i.paperNum}}</p>
-            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : {{i.keyword}}</p>
-	          <p> 버전: {{i.version}}</p>
-            <p> 조회수: {{i.hits}} </p>
-            <p> 참조 수 : <span class="oj-ref-count" data-id="{{i.paperNum}}"></span></p>
-            <!-- oj-ref-count = 참조 수 전체 태그 가진 클래스 / data-id = 각 참조 수 태그를 구분하는 값 -->
-       <!--     <p> 시간: {{i.time}}</p> -->
-          </li>
-        </ul>
+      <div class="col s12 center">
+        <table class="striped highlight centered responsive-table">
+          <thead>
+            <tr>
+                <th style="font-weight:bold; width:10%;">논문번호</th>
+                <th style="font-weight:bold; width:50%;">논문제목</th>
+                <th style="font-weight:bold; width:15%;">논문저자</th>
+                <th style="font-weight:bold; width:10%;">논문버전</th>
+                <th style="font-weight:bold; width:10%;">논문가치</th>
+                <th style="font-weight:bold; width:5%;">조회수</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for i in result %}
+            <tr>
+              <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.paperNum}}</span></td>
+              <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.title}}</span></td>
+              <td>{{i.writer}}</td>
+              <td>{{i.version}}</td>
+              <td>참조수 : <span class="oj-ref-count" data-id="{{i.paperNum}}"></span></td>
+			  <!-- oj-ref-count = 참조 수 전체 태그 가진 클래스 / data-id = 각 참조 수 태그를 구분하는 값 -->
+              <td>{{i.hits}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-      {% endfor %}
+
 
       <div class="col s12 center">
         <ul class="pagination">
@@ -247,6 +258,7 @@
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
   <script src="js/common.js"></script>
+<<<<<<< HEAD
   <script>
     function setJournalRefCount(instance) {
         $(".oj-ref-count").each(async function () {
@@ -271,6 +283,9 @@
     });
   </script>
   
+=======
+
+>>>>>>> 61e15ec0b5ccd4ce4c1eb8046800aaa092c43ed2
 
   </body>
 </html>
