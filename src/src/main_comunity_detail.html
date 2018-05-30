@@ -6,6 +6,10 @@
   <title>Open Journal</title>
 
   <script>
+    alert('{{writer}}')
+  </script>
+
+  <script>
   function checkComment(comment){
     var img_id = comment;
     var split_arr = img_id.split("_");
@@ -187,6 +191,7 @@
                     </tbody>
                   </table>
               </form>
+	      <button onclick="location.href='/deleteCommunityWriting?id={{i._id}}'">삭제</button>
               </div>
             </div>
           </div>
