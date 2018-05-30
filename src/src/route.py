@@ -457,6 +457,35 @@ def viewPaper():
                            paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum,
                            subFlag = subFlag, writer = writer)
 
+@app.route("/main_view_reference_journal", methods=['GET', 'POST'])
+def movoTorefenrenceJournal():
+    journalNum = request.args.get("journalNum")
+    return viewReferencePaper(str(journalNum))
+
+def viewReferencePaper(journalNum):
+    userId = checkUserId()
+    paperInfo = db.PaperInformation
+    obPaper = paperInfo.find_one({"paperNum":str(journalNum)}) #논문 번호를 이용하여, paper를 찾아줌
+    id = obPaper['_id']
+    data = paperInfo.find({"_id": ObjectId(id)})
+    data2 = paperInfo.find_one({"_id": ObjectId(id)})
+    enrollUserId = data2['user_id']
+    completeJournalNum = data2['paperNum']
+    complete = int(data2['complete'])
+    writer = data2['user_id']
+    paperReferenceDic, paperContributorDic = extractPDF(id)
+    journalNum = papernum()
+    hit = data2['hits']
+    paperInfo.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
+    subFlag = 0
+    subInfo = None
+    subInfo = paperInfo.find_one({"_id":ObjectId(id), "subscribeArray":userId})
+    if subInfo != None:
+        subFlag = 1
+    return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
+                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum,
+                           subFlag = subFlag, writer = writer)
+
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
     id = request.args.get("id")

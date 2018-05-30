@@ -146,7 +146,7 @@
                   </td>
                   <td>
                     {% for key, value in paperReferenceDic.items() %}
-                    <p style="padding-left : 10px;text-align: left;">[<span>{{key}}</span>]&nbsp;<span style="font-weight:bold;">{{value}}</span></p>
+                    <p onclick="location.href='/main_view_reference_journal?journalNum={{key}}'" style="padding-left :10px; cursor:pointer; text-align: left;">[<span>{{key}}</span>]&nbsp;<span style="font-weight:bold;">{{value}}</span></p>
                     {% endfor %}
                   </td>
                 </tr>
