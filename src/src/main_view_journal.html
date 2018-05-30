@@ -104,32 +104,40 @@
                 <td class="left">{{i.mainCategory}}</td>
                 <td class="left">-</td>
                 <td class="left">{{i.subCategory}}</td>
-                <td class="right blue-text" style="font-size:1.2rem; font-weight: bold">{{i.time}}</td>
+                <td class="right blue-text text-darken-4" style="font-size:1rem; font-weight: bold">{{i.paperNum}}</td>
               </tr>
             </tbody>
           </table>
           <div style="margin-bottom: 8px;" class="col s12 center">
           </div>
           <div class="s12 col center">
-            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="journal/{{i.fileName}}">
+            <iframe id="journalPDF" style="margin-bottom: 50px; margin-top:50px; width:80%; height:650px; overflow: hidden;" src="journal/{{i.fileName}}">
             </iframe>
 
-            <table class="journal_info">
+            <table class=" striped centered ">
               <tbody>
                 <tr>
-                  <td style="font-weight: bold;">
+                  <td style="width:20%; font-weight: bold;">
                     저자
                   </td>
                   <td>
-                    {{i.writer}}
+                    <p style="padding-left : 10px;text-align: left;">{{i.writer}}</p>
                   </td>
                 </tr>
                 <tr>
-                  <td style="font-weight: bold;">
+                  <td style="width:20%; font-weight: bold;">
                     Abstract
                   </td>
                   <td>
                     <p style="padding-left : 10px;text-align: left;">{{i.abstract}}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%; font-weight: bold;">
+                    Keyword
+                  </td>
+                  <td>
+                    <p style="padding-left : 10px;text-align: left;">{{i.keyword}}</p>
                   </td>
                 </tr>
               </tbody>
@@ -441,7 +449,7 @@
     var enrollUserId = '{{enrollUserId}}';
     var complete = '{{complete}}';
     var subFlag = '{{subFlag}}';
-    
+
     if(userId == enrollUserId && complete == 0){
       //alert("작성자와 현재 사용자가 같음");
       //업데이트 버튼, 최종 등록 버튼 나오고, 구독은 안나옴
@@ -475,7 +483,7 @@
           document.getElementById("btn_enroll").style.display = "none";
           document.getElementById("btn_read").style.display = "block";
       }
-      
+
     }
   </script>
   <script>
