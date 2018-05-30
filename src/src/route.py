@@ -269,6 +269,7 @@ def enrollNewMember():
         oauthCursor = oauthCollection.find({"user_id": userId})
 
         enrollFlag = 0
+        
         for document in cursor:                   #구글 회원 등록 확인
             if document['user_id'] == userId:
                 enrollFlag = 1
@@ -543,7 +544,7 @@ def enrollPaper():
             commentNum = 0
             paperNum = "" #최종 논문 등록시 논문 번호
             now = datetime.datetime.now()
-            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))	    
             latestPaperNum = db.latestPaperNum
             latestCursor = latestPaperNum.find_one({"latestfind": "latestfind"})
             writingPaperNum = int(latestCursor['latestPaperNum']+1)
@@ -568,7 +569,6 @@ def enrollPaper():
                 enrollPaperNum = userInfo['enrollPaperNum']
                 userCollection.update({"user_id": userId}, {"$set":{"enrollPaperNum":enrollPaperNum+1}})
             elif sessionState == 1:
-                print("논문작성")
                 oauthCollection = db.Oauth_Users
                 oauthUserInfo   = oauthCollection.find_one({"user_id": userId})
                 enrollPaperNum  = oauthUserInfo['enrollPaperNum']

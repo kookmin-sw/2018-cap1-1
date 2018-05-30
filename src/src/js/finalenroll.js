@@ -16,11 +16,11 @@ function finalEnroll(_id, journalNum){
     var contributeList = [];
     var pricePercentList = [];
 
-    $("span[name=OJjournal]").each(function(idx){
+    $("td[name=OJjournal]").each(function(idx){
         var referenceJournal = parseInt($(this).html());
         referenceList.push(referenceJournal);
     });
-    $("span[name=OJcontributorNum]").each(function(idx){
+    $("td[name=OJcontributorNum]").each(function(idx){
         var contributeJournal = parseInt($(this).html());
         contributeList.push(contributeJournal);
     });

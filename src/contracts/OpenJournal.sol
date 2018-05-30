@@ -10,7 +10,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         string title;
         uint256 author_share;
         uint256 value;
-        uint256 reference_count;
+        uint256 honor_count;
         uint[] subscribed;
         uint[] reference_journal;
         uint256[] contributors;
@@ -203,10 +203,11 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         user_num = users_by_address[msg.sender].user_number;
 
         users_by_address[msg.sender].user_subscribe_journal.push(_journal_number);  
-        journals[_journal_number].subscribed.push(user_num);       
+        journals[_journal_number].subscribed.push(user_num);
+	journals[_journal_number].honor_count++;       
         is_subscribed[msg.sender][_journal_number] = true;
 
-        upReferenceCount(_journal_number);
+        upHonorCount(_journal_number);
 
         emit LogSubscribeJournal(
             msg.sender, 
@@ -219,13 +220,13 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
         return true;
     }
 
-    function upReferenceCount(uint256 _journal_number) internal returns (bool) {
+    function upHonorCount(uint256 _journal_number) internal returns (bool) {
         uint256 reference_num = journals[_journal_number].reference_journal.length;
         uint256 reference_journal_num; 
 
         for(uint256 ref=0; ref < reference_num; ref++){
             reference_journal_num = journals[_journal_number].reference_journal[ref];
-            journals[reference_journal_num].reference_count++;
+            journals[reference_journal_num].honor_count++;
         }
 
         return true;
@@ -237,10 +238,6 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
 
     function getAuthorAddress(uint256 _journal_number) public view returns (address){
         return journals[_journal_number].author;
-    }
-
-    function getJournalTitle(uint256 _journal_number) public view returns (string){
-        return journals[_journal_number].title;
     }
 
     function getValue(uint256 _journal_number) public view returns (uint256){
@@ -264,7 +261,7 @@ contract OpenJournal is JournalToken(200000, "Journal Token", 18, "jt") {
     }
 
     function getReferenceCount(uint _journal_number) public view returns (uint256) {
-        return journals[_journal_number].reference_count;
+        return journals[_journal_number].honor_count;
     }
 
     function getContributors(uint _journal_number) public view returns (uint256[]) {

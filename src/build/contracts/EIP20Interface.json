@@ -212,14 +212,14 @@
     "absolutePath": "/home/ubuntu/captone/2018-cap1-1/src/contracts/Token/EIP20Interface.sol",
     "exportedSymbols": {
       "EIP20Interface": [
-        1270
+        1263
       ]
     },
-    "id": 1271,
+    "id": 1264,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1196,
+        "id": 1189,
         "literals": [
           "solidity",
           "^",
@@ -235,19 +235,19 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 1270,
+        "id": 1263,
         "linearizedBaseContracts": [
-          1270
+          1263
         ],
         "name": "EIP20Interface",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 1198,
+            "id": 1191,
             "name": "totalSupply",
             "nodeType": "VariableDeclaration",
-            "scope": 1270,
+            "scope": 1263,
             "src": "573:26:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -256,7 +256,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1197,
+              "id": 1190,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "573:7:4",
@@ -271,7 +271,7 @@
           {
             "body": null,
             "documentation": "@param _owner The address from which the balance will be retrieved\n @return The balance",
-            "id": 1205,
+            "id": 1198,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -279,15 +279,15 @@
             "name": "balanceOf",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1201,
+              "id": 1194,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1200,
+                  "id": 1193,
                   "name": "_owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1205,
+                  "scope": 1198,
                   "src": "728:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -296,7 +296,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1199,
+                    "id": 1192,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "728:7:4",
@@ -313,15 +313,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1204,
+              "id": 1197,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1203,
+                  "id": 1196,
                   "name": "balance",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1205,
+                  "scope": 1198,
                   "src": "765:15:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -330,7 +330,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1202,
+                    "id": 1195,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "765:7:4",
@@ -345,7 +345,7 @@
               ],
               "src": "764:17:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "709:73:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -354,7 +354,7 @@
           {
             "body": null,
             "documentation": "@notice send `_value` token to `_to` from `msg.sender`\n @param _to The address of the recipient\n @param _value The amount of token to be transferred\n @return Whether the transfer was successful or not",
-            "id": 1214,
+            "id": 1207,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -362,15 +362,15 @@
             "name": "transfer",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1210,
+              "id": 1203,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1207,
+                  "id": 1200,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1214,
+                  "scope": 1207,
                   "src": "1036:11:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -379,7 +379,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1206,
+                    "id": 1199,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1036:7:4",
@@ -393,10 +393,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1209,
+                  "id": 1202,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1214,
+                  "scope": 1207,
                   "src": "1049:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -405,7 +405,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1208,
+                    "id": 1201,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1049:7:4",
@@ -422,15 +422,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1213,
+              "id": 1206,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1212,
+                  "id": 1205,
                   "name": "success",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1214,
+                  "scope": 1207,
                   "src": "1081:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -439,7 +439,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 1211,
+                    "id": 1204,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1081:4:4",
@@ -454,7 +454,7 @@
               ],
               "src": "1080:14:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "1018:77:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -463,7 +463,7 @@
           {
             "body": null,
             "documentation": "@notice send `_value` token to `_to` from `_from` on the condition it is approved by `_from`\n @param _from The address of the sender\n @param _to The address of the recipient\n @param _value The amount of token to be transferred\n @return Whether the transfer was successful or not",
-            "id": 1225,
+            "id": 1218,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -471,15 +471,15 @@
             "name": "transferFrom",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1221,
+              "id": 1214,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1216,
+                  "id": 1209,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1225,
+                  "scope": 1218,
                   "src": "1438:13:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -488,7 +488,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1215,
+                    "id": 1208,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1438:7:4",
@@ -502,10 +502,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1218,
+                  "id": 1211,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1225,
+                  "scope": 1218,
                   "src": "1453:11:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -514,7 +514,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1217,
+                    "id": 1210,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1453:7:4",
@@ -528,10 +528,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1220,
+                  "id": 1213,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1225,
+                  "scope": 1218,
                   "src": "1466:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -540,7 +540,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1219,
+                    "id": 1212,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1466:7:4",
@@ -557,15 +557,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1224,
+              "id": 1217,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1223,
+                  "id": 1216,
                   "name": "success",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1225,
+                  "scope": 1218,
                   "src": "1498:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -574,7 +574,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 1222,
+                    "id": 1215,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1498:4:4",
@@ -589,7 +589,7 @@
               ],
               "src": "1497:14:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "1416:96:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -598,7 +598,7 @@
           {
             "body": null,
             "documentation": "@notice `msg.sender` approves `_spender` to spend `_value` tokens\n @param _spender The address of the account able to transfer the tokens\n @param _value The amount of tokens to be approved for transfer\n @return Whether the approval was successful or not",
-            "id": 1234,
+            "id": 1227,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -606,15 +606,15 @@
             "name": "approve",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1230,
+              "id": 1223,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1227,
+                  "id": 1220,
                   "name": "_spender",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1234,
+                  "scope": 1227,
                   "src": "1818:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -623,7 +623,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1226,
+                    "id": 1219,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1818:7:4",
@@ -637,10 +637,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1229,
+                  "id": 1222,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1234,
+                  "scope": 1227,
                   "src": "1836:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -649,7 +649,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1228,
+                    "id": 1221,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1836:7:4",
@@ -666,15 +666,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1233,
+              "id": 1226,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1232,
+                  "id": 1225,
                   "name": "success",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1234,
+                  "scope": 1227,
                   "src": "1868:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -683,7 +683,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 1231,
+                    "id": 1224,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1868:4:4",
@@ -698,7 +698,7 @@
               ],
               "src": "1867:14:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "1801:81:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -707,7 +707,7 @@
           {
             "body": null,
             "documentation": "@param _owner The address of the account owning tokens\n @param _spender The address of the account able to transfer the tokens\n @return Amount of remaining tokens allowed to spent",
-            "id": 1243,
+            "id": 1236,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -715,15 +715,15 @@
             "name": "allowance",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1239,
+              "id": 1232,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1236,
+                  "id": 1229,
                   "name": "_owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1243,
+                  "scope": 1236,
                   "src": "2109:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -732,7 +732,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1235,
+                    "id": 1228,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2109:7:4",
@@ -746,10 +746,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1238,
+                  "id": 1231,
                   "name": "_spender",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1243,
+                  "scope": 1236,
                   "src": "2125:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -758,7 +758,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1237,
+                    "id": 1230,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2125:7:4",
@@ -775,15 +775,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1242,
+              "id": 1235,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1241,
+                  "id": 1234,
                   "name": "remaining",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1243,
+                  "scope": 1236,
                   "src": "2164:17:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -792,7 +792,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1240,
+                    "id": 1233,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2164:7:4",
@@ -807,7 +807,7 @@
               ],
               "src": "2163:19:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "2090:93:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -816,20 +816,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1251,
+            "id": 1244,
             "name": "Transfer",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1250,
+              "id": 1243,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1245,
+                  "id": 1238,
                   "indexed": true,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1251,
+                  "scope": 1244,
                   "src": "2265:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -838,7 +838,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1244,
+                    "id": 1237,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2265:7:4",
@@ -852,11 +852,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1247,
+                  "id": 1240,
                   "indexed": true,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1251,
+                  "scope": 1244,
                   "src": "2288:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -865,7 +865,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1246,
+                    "id": 1239,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2288:7:4",
@@ -879,11 +879,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1249,
+                  "id": 1242,
                   "indexed": false,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1251,
+                  "scope": 1244,
                   "src": "2309:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -892,7 +892,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1248,
+                    "id": 1241,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2309:7:4",
@@ -912,20 +912,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1261,
+            "id": 1254,
             "name": "TransferAll",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1260,
+              "id": 1253,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1253,
+                  "id": 1246,
                   "indexed": true,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1261,
+                  "scope": 1254,
                   "src": "2349:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -934,7 +934,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1252,
+                    "id": 1245,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2349:7:4",
@@ -948,11 +948,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1255,
+                  "id": 1248,
                   "indexed": true,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1261,
+                  "scope": 1254,
                   "src": "2372:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -961,7 +961,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1254,
+                    "id": 1247,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2372:7:4",
@@ -975,11 +975,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1257,
+                  "id": 1250,
                   "indexed": false,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1261,
+                  "scope": 1254,
                   "src": "2393:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -988,7 +988,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1256,
+                    "id": 1249,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2393:7:4",
@@ -1002,11 +1002,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1259,
+                  "id": 1252,
                   "indexed": false,
                   "name": "_mini_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1261,
+                  "scope": 1254,
                   "src": "2409:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1015,7 +1015,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1258,
+                    "id": 1251,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2409:7:4",
@@ -1035,20 +1035,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1269,
+            "id": 1262,
             "name": "Approval",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1268,
+              "id": 1261,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1263,
+                  "id": 1256,
                   "indexed": true,
                   "name": "_owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1269,
+                  "scope": 1262,
                   "src": "2451:22:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1057,7 +1057,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1262,
+                    "id": 1255,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2451:7:4",
@@ -1071,11 +1071,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1265,
+                  "id": 1258,
                   "indexed": true,
                   "name": "_spender",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1269,
+                  "scope": 1262,
                   "src": "2475:24:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1084,7 +1084,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1264,
+                    "id": 1257,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2475:7:4",
@@ -1098,11 +1098,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1267,
+                  "id": 1260,
                   "indexed": false,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1269,
+                  "scope": 1262,
                   "src": "2501:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1111,7 +1111,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1266,
+                    "id": 1259,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2501:7:4",
@@ -1129,7 +1129,7 @@
             "src": "2436:81:4"
           }
         ],
-        "scope": 1271,
+        "scope": 1264,
         "src": "82:2441:4"
       }
     ],
@@ -1139,14 +1139,14 @@
     "absolutePath": "/home/ubuntu/captone/2018-cap1-1/src/contracts/Token/EIP20Interface.sol",
     "exportedSymbols": {
       "EIP20Interface": [
-        1270
+        1263
       ]
     },
-    "id": 1271,
+    "id": 1264,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 1196,
+        "id": 1189,
         "literals": [
           "solidity",
           "^",
@@ -1162,19 +1162,19 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 1270,
+        "id": 1263,
         "linearizedBaseContracts": [
-          1270
+          1263
         ],
         "name": "EIP20Interface",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "constant": false,
-            "id": 1198,
+            "id": 1191,
             "name": "totalSupply",
             "nodeType": "VariableDeclaration",
-            "scope": 1270,
+            "scope": 1263,
             "src": "573:26:4",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1183,7 +1183,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 1197,
+              "id": 1190,
               "name": "uint256",
               "nodeType": "ElementaryTypeName",
               "src": "573:7:4",
@@ -1198,7 +1198,7 @@
           {
             "body": null,
             "documentation": "@param _owner The address from which the balance will be retrieved\n @return The balance",
-            "id": 1205,
+            "id": 1198,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1206,15 +1206,15 @@
             "name": "balanceOf",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1201,
+              "id": 1194,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1200,
+                  "id": 1193,
                   "name": "_owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1205,
+                  "scope": 1198,
                   "src": "728:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1223,7 +1223,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1199,
+                    "id": 1192,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "728:7:4",
@@ -1240,15 +1240,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1204,
+              "id": 1197,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1203,
+                  "id": 1196,
                   "name": "balance",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1205,
+                  "scope": 1198,
                   "src": "765:15:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1257,7 +1257,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1202,
+                    "id": 1195,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "765:7:4",
@@ -1272,7 +1272,7 @@
               ],
               "src": "764:17:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "709:73:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -1281,7 +1281,7 @@
           {
             "body": null,
             "documentation": "@notice send `_value` token to `_to` from `msg.sender`\n @param _to The address of the recipient\n @param _value The amount of token to be transferred\n @return Whether the transfer was successful or not",
-            "id": 1214,
+            "id": 1207,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1289,15 +1289,15 @@
             "name": "transfer",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1210,
+              "id": 1203,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1207,
+                  "id": 1200,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1214,
+                  "scope": 1207,
                   "src": "1036:11:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1306,7 +1306,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1206,
+                    "id": 1199,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1036:7:4",
@@ -1320,10 +1320,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1209,
+                  "id": 1202,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1214,
+                  "scope": 1207,
                   "src": "1049:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1332,7 +1332,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1208,
+                    "id": 1201,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1049:7:4",
@@ -1349,15 +1349,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1213,
+              "id": 1206,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1212,
+                  "id": 1205,
                   "name": "success",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1214,
+                  "scope": 1207,
                   "src": "1081:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1366,7 +1366,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 1211,
+                    "id": 1204,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1081:4:4",
@@ -1381,7 +1381,7 @@
               ],
               "src": "1080:14:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "1018:77:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -1390,7 +1390,7 @@
           {
             "body": null,
             "documentation": "@notice send `_value` token to `_to` from `_from` on the condition it is approved by `_from`\n @param _from The address of the sender\n @param _to The address of the recipient\n @param _value The amount of token to be transferred\n @return Whether the transfer was successful or not",
-            "id": 1225,
+            "id": 1218,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1398,15 +1398,15 @@
             "name": "transferFrom",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1221,
+              "id": 1214,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1216,
+                  "id": 1209,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1225,
+                  "scope": 1218,
                   "src": "1438:13:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1415,7 +1415,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1215,
+                    "id": 1208,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1438:7:4",
@@ -1429,10 +1429,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1218,
+                  "id": 1211,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1225,
+                  "scope": 1218,
                   "src": "1453:11:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1441,7 +1441,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1217,
+                    "id": 1210,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1453:7:4",
@@ -1455,10 +1455,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1220,
+                  "id": 1213,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1225,
+                  "scope": 1218,
                   "src": "1466:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1467,7 +1467,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1219,
+                    "id": 1212,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1466:7:4",
@@ -1484,15 +1484,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1224,
+              "id": 1217,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1223,
+                  "id": 1216,
                   "name": "success",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1225,
+                  "scope": 1218,
                   "src": "1498:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1501,7 +1501,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 1222,
+                    "id": 1215,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1498:4:4",
@@ -1516,7 +1516,7 @@
               ],
               "src": "1497:14:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "1416:96:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -1525,7 +1525,7 @@
           {
             "body": null,
             "documentation": "@notice `msg.sender` approves `_spender` to spend `_value` tokens\n @param _spender The address of the account able to transfer the tokens\n @param _value The amount of tokens to be approved for transfer\n @return Whether the approval was successful or not",
-            "id": 1234,
+            "id": 1227,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": false,
@@ -1533,15 +1533,15 @@
             "name": "approve",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1230,
+              "id": 1223,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1227,
+                  "id": 1220,
                   "name": "_spender",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1234,
+                  "scope": 1227,
                   "src": "1818:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1550,7 +1550,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1226,
+                    "id": 1219,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1818:7:4",
@@ -1564,10 +1564,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1229,
+                  "id": 1222,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1234,
+                  "scope": 1227,
                   "src": "1836:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1576,7 +1576,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1228,
+                    "id": 1221,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "1836:7:4",
@@ -1593,15 +1593,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1233,
+              "id": 1226,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1232,
+                  "id": 1225,
                   "name": "success",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1234,
+                  "scope": 1227,
                   "src": "1868:12:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1610,7 +1610,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 1231,
+                    "id": 1224,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1868:4:4",
@@ -1625,7 +1625,7 @@
               ],
               "src": "1867:14:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "1801:81:4",
             "stateMutability": "nonpayable",
             "superFunction": null,
@@ -1634,7 +1634,7 @@
           {
             "body": null,
             "documentation": "@param _owner The address of the account owning tokens\n @param _spender The address of the account able to transfer the tokens\n @return Amount of remaining tokens allowed to spent",
-            "id": 1243,
+            "id": 1236,
             "implemented": false,
             "isConstructor": false,
             "isDeclaredConst": true,
@@ -1642,15 +1642,15 @@
             "name": "allowance",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1239,
+              "id": 1232,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1236,
+                  "id": 1229,
                   "name": "_owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1243,
+                  "scope": 1236,
                   "src": "2109:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1659,7 +1659,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1235,
+                    "id": 1228,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2109:7:4",
@@ -1673,10 +1673,10 @@
                 },
                 {
                   "constant": false,
-                  "id": 1238,
+                  "id": 1231,
                   "name": "_spender",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1243,
+                  "scope": 1236,
                   "src": "2125:16:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1685,7 +1685,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1237,
+                    "id": 1230,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2125:7:4",
@@ -1702,15 +1702,15 @@
             },
             "payable": false,
             "returnParameters": {
-              "id": 1242,
+              "id": 1235,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1241,
+                  "id": 1234,
                   "name": "remaining",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1243,
+                  "scope": 1236,
                   "src": "2164:17:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1719,7 +1719,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1240,
+                    "id": 1233,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2164:7:4",
@@ -1734,7 +1734,7 @@
               ],
               "src": "2163:19:4"
             },
-            "scope": 1270,
+            "scope": 1263,
             "src": "2090:93:4",
             "stateMutability": "view",
             "superFunction": null,
@@ -1743,20 +1743,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1251,
+            "id": 1244,
             "name": "Transfer",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1250,
+              "id": 1243,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1245,
+                  "id": 1238,
                   "indexed": true,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1251,
+                  "scope": 1244,
                   "src": "2265:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1765,7 +1765,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1244,
+                    "id": 1237,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2265:7:4",
@@ -1779,11 +1779,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1247,
+                  "id": 1240,
                   "indexed": true,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1251,
+                  "scope": 1244,
                   "src": "2288:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1792,7 +1792,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1246,
+                    "id": 1239,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2288:7:4",
@@ -1806,11 +1806,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1249,
+                  "id": 1242,
                   "indexed": false,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1251,
+                  "scope": 1244,
                   "src": "2309:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1819,7 +1819,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1248,
+                    "id": 1241,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2309:7:4",
@@ -1839,20 +1839,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1261,
+            "id": 1254,
             "name": "TransferAll",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1260,
+              "id": 1253,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1253,
+                  "id": 1246,
                   "indexed": true,
                   "name": "_from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1261,
+                  "scope": 1254,
                   "src": "2349:21:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1861,7 +1861,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1252,
+                    "id": 1245,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2349:7:4",
@@ -1875,11 +1875,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1255,
+                  "id": 1248,
                   "indexed": true,
                   "name": "_to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1261,
+                  "scope": 1254,
                   "src": "2372:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1888,7 +1888,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1254,
+                    "id": 1247,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2372:7:4",
@@ -1902,11 +1902,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1257,
+                  "id": 1250,
                   "indexed": false,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1261,
+                  "scope": 1254,
                   "src": "2393:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1915,7 +1915,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1256,
+                    "id": 1249,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2393:7:4",
@@ -1929,11 +1929,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1259,
+                  "id": 1252,
                   "indexed": false,
                   "name": "_mini_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1261,
+                  "scope": 1254,
                   "src": "2409:19:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1942,7 +1942,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1258,
+                    "id": 1251,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2409:7:4",
@@ -1962,20 +1962,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 1269,
+            "id": 1262,
             "name": "Approval",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 1268,
+              "id": 1261,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1263,
+                  "id": 1256,
                   "indexed": true,
                   "name": "_owner",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1269,
+                  "scope": 1262,
                   "src": "2451:22:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1984,7 +1984,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1262,
+                    "id": 1255,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2451:7:4",
@@ -1998,11 +1998,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1265,
+                  "id": 1258,
                   "indexed": true,
                   "name": "_spender",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1269,
+                  "scope": 1262,
                   "src": "2475:24:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2011,7 +2011,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1264,
+                    "id": 1257,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2475:7:4",
@@ -2025,11 +2025,11 @@
                 },
                 {
                   "constant": false,
-                  "id": 1267,
+                  "id": 1260,
                   "indexed": false,
                   "name": "_value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1269,
+                  "scope": 1262,
                   "src": "2501:14:4",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2038,7 +2038,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 1266,
+                    "id": 1259,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "2501:7:4",
@@ -2056,7 +2056,7 @@
             "src": "2436:81:4"
           }
         ],
-        "scope": 1271,
+        "scope": 1264,
         "src": "82:2441:4"
       }
     ],
@@ -2068,5 +2068,5 @@
   },
   "networks": {},
   "schemaVersion": "2.0.0",
-  "updatedAt": "2018-05-29T13:09:28.190Z"
+  "updatedAt": "2018-05-29T21:44:39.303Z"
 }

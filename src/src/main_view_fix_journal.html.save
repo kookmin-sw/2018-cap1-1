@@ -4,36 +4,10 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
   <script>
-    var web3Provider;
-    var contracts = {};
-    
-    if(typeof web3 !== "undefined"){
-        web3Provider = web3.currentProvider;
-    }else {
-        web3Provider = new web3Provider.providers.HttpProvider("http://localhost:7545");
-    }
-    web3 = new Web3(web3Provider);
-    
-    function subscribeJournal(journalNumber){
-    
-        $.getJSON("OpenJournal.json", function(data){
-            var Artifact = data;
-            contracts.OpenJournal = TruffleContract(Artifact);
-            contracts.OpenJournal.setProvider(web3Provider);
-            contracts.OpenJournal.deployed().then(function(instance){
-              instance.getReferenceCount(journalNumber).then(function(res){
-		var str = res['c'][0].toString();
-                console.log(str);
-		return str;
-              });
-          });
-        });
-    }
-  </script>
-  <script>
-    
+    var userId = '{{userId}}';
+    //alert(userId);
   </script>
 
   <!-- CSS  -->
@@ -151,6 +125,7 @@
             </select>
           </div>
         </div>
+
       <div style="border:1px solid; margin-bottom:20px;">
           <div class="nav-wrapper col s12 center">
               <div class="input-field">
@@ -171,10 +146,9 @@
             <p>{{i.writer}}<br></p>
             <p> 논문번호: {{i.paperNum}}</p>
             <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : {{i.keyword}}</p>
-	          <p> 버전: {{i.version}}</p>
-            <p> 조회수: {{i.hits}} </p>
-       <!--     <p><script>document.write("aa:" + subscribeJournal('{{i.paperNum}}'));</script></p> -->
-       <!--     <p> 시간: {{i.time}}</p> -->
+	    <p> 버전: {{i.version}}</p>
+	    <p> 조회수: {{i.hits}} </p>
+            <p> 시간: {{i.time}}</p>
           </li>
         </ul>
       </div>

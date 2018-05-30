@@ -242,7 +242,7 @@
                       <tbody>
                         {% for key, value in paperReferenceDic.items() %}
                         <tr>
-                          <td style="padding:5px;">{{key}}</td>
+                          <td style="padding:5px;" name="OJjournal">{{key}}</td>
                           <td style="padding:5px;">{{value}}</td>
                           <td style="padding:5px; font-weight:bold;" onclick = "modifyInfo(this)">클릭</td>
                           <td style="padding:5px; font-weight:bold;" onclick="checkReference(this)">클릭</td>
@@ -276,7 +276,7 @@
                     <tbody>
                       {% for key, value in paperContributorDic.items() %}
                       <tr>
-                        <td style="padding:5px;">{{key}}</td>
+                        <td style="padding:5px;" name="OJcontributorNum">{{key}}</td>
                         <td style="padding:5px;">{{value}}</td>
                         <td style="padding:5px; font-weight:bold;" onclick = "modifyContributorInfo(this)">클릭</td>
                         <td style="padding:5px; font-weight:bold;" onclick="checkContributor(this)">클릭</td>
@@ -321,7 +321,7 @@
 
                 <div class="col s2 center">
                   <div style="margin:0; margin-bottom:20px;" class="input-field col s12">
-                    <input style="ime-mode: disabled; text-align: right; font-size:2rem; " min="0" max="100" type="number" class="validate" name="price_percent" onkeyup="checkPercent()" required>
+                    <input style="ime-mode: disabled; text-align: right; font-size:2rem; " id="journal_percentToken" min="0" max="100" type="number" class="validate" name="price_percent" onkeyup="checkPercent()" required>
                   </div>
                 </div>
 
