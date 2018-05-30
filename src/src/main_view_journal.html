@@ -405,6 +405,9 @@
                 </tbody>
               </table>
             </form>
+            <div id="deleteBtn" style="margin-top:40px; margin-bottom:20px;" class="row right">
+              <a  onclick="location.href='/deletePaper?id={{i._id}}'" class="btn-small waves-effect waves-light blue darken-4">검수 논문 삭제</a>
+            </div>
         </div>
       </div>
     </div>
@@ -443,6 +446,14 @@
 
   <!--  Scripts-->
 
+  <script>
+    if('{{writer}}' == '{{userId}}'){
+      document.getElementById("deleteBtn").style.display = 'block';
+    }
+    else{
+      document.getElementById("deleteBtn").style.display = 'none';
+    }
+  </script>
 
   <script>
     var userId = '{{userId}}';
