@@ -19,7 +19,7 @@
 
 ## 4. 프로젝트 결과 시연 영상
 
-[![capton](http://img.youtube.com/vi/FlC69TKqo5M/0.jpg)](https://youtu.be/HUOEOGsxMhY")
+[![capton](http://img.youtube.com/vi/FlC69TKqo5M/0.jpg)](https://youtu.be/HUOEOGsxMhY "capton")
 
 
 ## 5. 팀 소개
