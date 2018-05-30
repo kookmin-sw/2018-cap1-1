@@ -17,7 +17,7 @@
 
 [![capton](http://img.youtube.com/vi/FlC69TKqo5M/0.jpg)](https://www.youtube.com/watch?v=FlC69TKqo5M "capton")
 
-## 4. 프로젝트 소개 영상
+## 4. 프로젝트 결과 시연 영상
 
 [![capton](http://img.youtube.com/vi/FlC69TKqo5M/0.jpg)](https://youtu.be/HUOEOGsxMhY")
 
