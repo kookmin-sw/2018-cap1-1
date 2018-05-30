@@ -269,7 +269,7 @@ def enrollNewMember():
         oauthCursor = oauthCollection.find({"user_id": userId})
 
         enrollFlag = 0
-        
+
         for document in cursor:                   #구글 회원 등록 확인
             if document['user_id'] == userId:
                 enrollFlag = 1
@@ -451,7 +451,7 @@ def viewPaper():
     subInfo = None
     subInfo = paperInfo.find_one({"_id":ObjectId(id), "subscribeArray":userId})
     if subInfo != None:
-        subFlag = 1 
+        subFlag = 1
     return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
                            paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum,
                            subFlag = subFlag)
@@ -544,7 +544,7 @@ def enrollPaper():
             commentNum = 0
             paperNum = "" #최종 논문 등록시 논문 번호
             now = datetime.datetime.now()
-            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))	    
+            currentTime = str(now.strftime("%Y.%m.%d %H:%M"))
             latestPaperNum = db.latestPaperNum
             latestCursor = latestPaperNum.find_one({"latestfind": "latestfind"})
             writingPaperNum = int(latestCursor['latestPaperNum']+1)
@@ -615,9 +615,12 @@ def getWriting():
     data = bulletin.find({"_id": ObjectId(id)})
     oneData = bulletin.find_one({"_id":ObjectId(id)})
     writer = oneData['userId']
-    return render_template('main_comunity_detail.html',data = data, userId = userId, writer = writer)
+    userCollection = db.Users
+    userInfo =  userCollection.find_one({"user_id":writer})
+    nameValue = userInfo['fame']
+    return render_template('main_comunity_detail.html',data = data, userId = userId, writer = writer, nameValue = nameValue)
 
-@app.route("/deleteCommunityWriting", methods=['GET', 'POST']) 
+@app.route("/deleteCommunityWriting", methods=['GET', 'POST'])
 def deleteCommunityWriting():
     id = request.args.get("id")
     bulletin = db.Bulletin
