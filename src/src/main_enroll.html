@@ -132,7 +132,7 @@
           <tbody>
             {% for i in result %}
             <tr>
-              <td>{{i.paperNum}}</td>
+              <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.paperNum}}</span></td>
               <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.title}}</span></td>
               <td>{{i.writer}}</td>
               <td>{{i.version}}</td>
