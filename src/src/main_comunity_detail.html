@@ -116,7 +116,7 @@
                 <tr>
                   <td style="font-weight: bold" class="left">{{i.title}}</td>
                   <td class="left" style="color:#9e9e9e;">|</td>
-                  <td class="left">{{i.title}}</td>
+                  <td class="left">{{i.mainCategory}}</td>
                   <td class="left">-</td>
                   <td class="left">{{i.subCategory}}</td>
                   <td class="right">{{i.time}}</td>
@@ -273,7 +273,6 @@
     var medal = document.getElementById("medalImg");
 
     if(nameValue < 50){
-      alert("dd");
       medal.src = "img/medal-bronze.png";
     }
     else if(nameValue >= 50 && nameValue < 200){
