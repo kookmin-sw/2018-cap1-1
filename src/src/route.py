@@ -444,7 +444,7 @@ def viewPaper():
     completeJournalNum = data2['paperNum']
     complete = int(data2['complete'])
     writer = data2['user_id']
-    paperReferenceDic, paperContributorDic = extractPDF(id)
+    paperReferenceDic, paperContributorDic = extractPDF(id) #reference, contributor 추출
     journalNum = papernum()
     hit = data2['hits']
     paperInfo.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
