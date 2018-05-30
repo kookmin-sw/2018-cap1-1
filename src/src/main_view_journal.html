@@ -111,7 +111,7 @@
           <div style="margin-bottom: 8px;" class="col s12 center">
           </div>
           <div class="s12 col center">
-            <iframe id="journalPDF" style="margin-bottom: 50px; margin-top:50px; width:80%; height:650px; overflow: hidden;" src="journal/{{i.fileName}}">
+            <iframe id="journalPDF" style="display: none; margin-bottom: 50px; margin-top:50px; width:80%; height:650px; overflow: hidden;" src="journal/{{i.fileName}}">
             </iframe>
 
             <table class=" striped centered ">
@@ -476,6 +476,24 @@
   </script>
 
   <script>
+    if('{{writer}}' == '{{userId}}'){
+      document.getElementById("deleteBtn").style.display = 'block';
+    }
+    else{
+      document.getElementById("deleteBtn").style.display = 'none';
+    }
+  </script>
+
+  <script>
+    if('{{subFlag}}' == 0){
+      document.getElementById("journalPDF").style.display = 'none';
+    }
+    else if('{{subFlag}}' == 1){
+      document.getElementById("journalPDF").style.display = 'block';
+    }
+  </script>
+
+  <script>
     var userId = '{{userId}}';
     var enrollUserId = '{{enrollUserId}}';
     var complete = '{{complete}}';
@@ -510,7 +528,7 @@
           document.getElementById("btn_read").style.display = "none";
       }
       else if(subFlag == 0){ //구독 버튼만 보임
-	  document.getElementById("btn_update").style.display = "none";
+	        document.getElementById("btn_update").style.display = "none";
           document.getElementById("btn_enroll").style.display = "none";
           document.getElementById("btn_read").style.display = "block";
       }
