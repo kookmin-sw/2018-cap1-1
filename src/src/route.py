@@ -120,7 +120,6 @@ def blockSubscribeUpdate():
     userCollection.update({"user_id":userId}, {"$set":{"obId":"0", "journal_number":"0", "state": 0, "subPaperNum":user['subPaperNum']+1}})
     return moveToSubPaper()
 
-
 @app.route("/enrollState")
 def enrollState():
     userId = checkUserId()
@@ -130,7 +129,7 @@ def enrollState():
     userCollection.update({"user_id":userId}, {"$set":{"state":int(data_list[1]), "obId":data_list[0], "journal_number":data_list[2]}})
     collection = db.PaperInformation
     rows = collection.find({"complete": 0}).sort("writingPaperNum",-1)
-    return render_template('main_enroll.html', data =rows, userId=userId)
+    return render_template('main_enroll.html', result =rows, userId=userId)
 
 @app.route("/subscribeState")
 def subscribeState():
@@ -270,6 +269,7 @@ def enrollNewMember():
         oauthCursor = oauthCollection.find({"user_id": userId})
 
         enrollFlag = 0
+
         for document in cursor:                   #구글 회원 등록 확인
             if document['user_id'] == userId:
                 enrollFlag = 1
@@ -436,17 +436,55 @@ def extractPDF(obId):
 @app.route("/main_view_journal", methods=['GET', 'POST'])
 def viewPaper():
     id = request.args.get("id") #현재 보려고 하는 논문의 ObjectId 값 get
-    paperInfo = db.PaperInformation
     userId = checkUserId()
+    paperInfo = db.PaperInformation
     data = paperInfo.find({"_id": ObjectId(id)})
     data2 = paperInfo.find_one({"_id": ObjectId(id)})
     enrollUserId = data2['user_id']
     completeJournalNum = data2['paperNum']
     complete = int(data2['complete'])
+    writer = data2['user_id']
     paperReferenceDic, paperContributorDic = extractPDF(id)
     journalNum = papernum()
+    hit = data2['hits']
+    paperInfo.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
+    subFlag = 0
+    subInfo = None
+    subInfo = paperInfo.find_one({"_id":ObjectId(id), "subscribeArray":userId})
+    if subInfo != None:
+        subFlag = 1
     return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
-                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum)
+                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum,
+                           subFlag = subFlag, writer = writer)
+
+@app.route("/main_view_reference_journal", methods=['GET', 'POST'])
+def movoTorefenrenceJournal():
+    journalNum = request.args.get("journalNum")
+    return viewReferencePaper(str(journalNum))
+
+def viewReferencePaper(journalNum):
+    userId = checkUserId()
+    paperInfo = db.PaperInformation
+    obPaper = paperInfo.find_one({"paperNum":str(journalNum)}) #논문 번호를 이용하여, paper를 찾아줌
+    id = obPaper['_id']
+    data = paperInfo.find({"_id": ObjectId(id)})
+    data2 = paperInfo.find_one({"_id": ObjectId(id)})
+    enrollUserId = data2['user_id']
+    completeJournalNum = data2['paperNum']
+    complete = int(data2['complete'])
+    writer = data2['user_id']
+    paperReferenceDic, paperContributorDic = extractPDF(id)
+    journalNum = papernum()
+    hit = data2['hits']
+    paperInfo.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
+    subFlag = 0
+    subInfo = None
+    subInfo = paperInfo.find_one({"_id":ObjectId(id), "subscribeArray":userId})
+    if subInfo != None:
+        subFlag = 1
+    return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
+                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum,
+                           subFlag = subFlag, writer = writer)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
@@ -483,10 +521,34 @@ def versionUpdate():
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
+def viewPaperafterAdapt(obId):
+    id = obId
+    userId = checkUserId()
+    paperInfo = db.PaperInformation
+    data = paperInfo.find({"_id": ObjectId(id)})
+    data2 = paperInfo.find_one({"_id": ObjectId(id)})
+    enrollUserId = data2['user_id']
+    completeJournalNum = data2['paperNum']
+    complete = int(data2['complete'])
+    writer = data2['user_id']
+    paperReferenceDic, paperContributorDic = extractPDF(id)
+    journalNum = papernum()
+    hit = data2['hits']
+    paperInfo.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
+    subFlag = 0
+    subInfo = None
+    subInfo = paperInfo.find_one({"_id":ObjectId(id), "subscribeArray":userId})
+    if subInfo != None:
+        subFlag = 1
+    return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
+                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum,
+                           subFlag = subFlag, writer = writer)
+
 @app.route("/adaptPaperComment") #댓글 채택시 명성 부여
 def adaptPaperComment():
     data = request.args.get("data")
     list = data.split(',') # 0번째 댓글번호, 1번째 문서객체아이디, 2번째 댓글 작성자 아이디, 3번째 채택flag, 4번째 글 작성자 아이디
+    id = list[1]
     paperCollection = db.PaperInformation
     userCollection = db.Users
     userId = checkUserId()
@@ -499,8 +561,7 @@ def adaptPaperComment():
             paperCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
             {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
             data = paperCollection.find({"_id": ObjectId(list[1])})
-            paperNumDic = extractReference(list[1])
-            return render_template('main_view_journal.html',data = data, userId = userId, paperNumDic = paperNumDic)
+            return viewPaperafterAdapt(id)
 
     oauthUserCollection = db.Oauth_Users
     oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
@@ -512,8 +573,7 @@ def adaptPaperComment():
             writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
             {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
             data = writingCollection.find({"_id": ObjectId(list[1])})
-            paperNumDic = extractReference(list[1])
-            return render_template('main_view_journal.html',data = data, userId = userId, paperNumDic = paperNumDic)
+            return viewPaperafterAdapt(id)
 
     loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
     return render_template('main_login.html', loginFlag=loginFlag)
@@ -561,7 +621,6 @@ def enrollPaper():
                 enrollPaperNum = userInfo['enrollPaperNum']
                 userCollection.update({"user_id": userId}, {"$set":{"enrollPaperNum":enrollPaperNum+1}})
             elif sessionState == 1:
-                print("논문작성")
                 oauthCollection = db.Oauth_Users
                 oauthUserInfo   = oauthCollection.find_one({"user_id": userId})
                 enrollPaperNum  = oauthUserInfo['enrollPaperNum']
@@ -606,7 +665,23 @@ def getWriting():
             hit = document['hits']
     bulletin.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
     data = bulletin.find({"_id": ObjectId(id)})
-    return render_template('main_comunity_detail.html',data = data, userId = userId)
+    oneData = bulletin.find_one({"_id":ObjectId(id)})
+    writer = oneData['userId']
+    return render_template('main_comunity_detail.html',data = data, userId = userId, writer = writer)
+
+@app.route("/deleteCommunityWriting", methods=['GET', 'POST'])
+def deleteCommunityWriting():
+    id = request.args.get("id")
+    bulletin = db.Bulletin
+    bulletin.remove({"_id": ObjectId(id)})
+    return mainComunity()
+
+@app.route("/deletePaper", methods=['GET', 'POST'])
+def deletePaper():
+    id = request.args.get("id")
+    paperCollection = db.PaperInformation
+    paperCollection.remove({"_id": ObjectId(id)})
+    return mainEnroll()
 
 def getUserName():
     userId = checkUserId()

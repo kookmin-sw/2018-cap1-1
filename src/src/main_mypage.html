@@ -82,6 +82,15 @@
               </tr>
               <tr>
                 <td style="font-weight: bold;">
+                  USER ID
+                </td>
+                <td id="blockchain_id">
+                  
+                </td>
+              </tr>
+              <tr>
+              <tr>
+                <td style="font-weight: bold;">
                   이메일
                 </td>
                 <td>
@@ -129,10 +138,10 @@
       <div class="row" style="margin-bottom:0px;">
         <div style="padding-top:10px;" class="col s6 left">
           <div style="margin:10px;">
-            <p style="font-size:2rem; font-weight:bold; margin:0; padding:0;">구독한 논문</p>
+            <p style="font-size:2rem; font-weight:bold; margin:0; padding:0;">등록한 논문</p>
           </div>
           <div style="overflow:scroll;">
-	    {% for i in subPaperInfo %}
+	    {% for i in writePaper %}
             <div class="col s12" onclick="location.href='/main_view_journal?id={{i._id}}'">
               <div class="card blue darken-4">
                 <div style="padding:15px;" class="card-content white-text">
@@ -147,10 +156,10 @@
 
         <div style=" padding-top:10px;" class="col s6 left">
           <div style="margin:10px;">
-            <p style="font-size:2rem; font-weight:bold; margin:0; padding:0;">등록한 논문</p>
+            <p style="font-size:2rem; font-weight:bold; margin:0; padding:0;">구독한 논문</p>
           </div>
           <div style="overflow:scroll; min-height: 500px; max-height:700px;">
-            {% for i in writePaper %}
+            {% for i in subPaperInfo %}
             <div class="col s12" onclick="location.href='/main_view_journal?id={{i._id}}'">
               <div class="card blue darken-4">
                 <div style="padding:15px;" class="card-content white-text">

@@ -4,10 +4,22 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
-
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script>
-    var userId = '{{userId}}';
-    //alert(userId);
+    var web3Provider;
+    var contracts = {};
+    var global_instance = undefined;
+
+    if(typeof web3 !== "undefined"){
+        web3Provider = web3.currentProvider;
+    }else {
+        web3Provider = new web3Provider.providers.HttpProvider("http://localhost:7545");
+    }
+    web3 = new Web3(web3Provider);
+    
+  </script>
+  <script>
+
   </script>
 
   <!-- CSS  -->
@@ -91,9 +103,7 @@
         <div class="row center">
           <h5 class="header col s12  black-text">토큰을 지불하고 논문을 구독할 수 있습니다.</h5>
         </div>
-        <div class="row center">
-          <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">더 알아보기</a>
-        </div>
+
         <br><br>
       </div>
     </div>
@@ -105,7 +115,7 @@
     <div class="section">
       <form name="search" action="searchCompleteWord" method="POST">
         <div class="row" style="margin-bottom:0px;">
-          <div class="col s4 center">
+          <div class="col s6 center">
             <select id="mainCat" name="mainCat" class="browser-default" onchange="ShowHideSubCat()">
               <option value="total">전체</option>
               <option value="engineering">공학</option>
@@ -119,43 +129,52 @@
               <option value="natural">자연</option>
             </select>
           </div>
-          <div class="col s4 center">
+          <div class="col s6 center">
             <select id="subCat" name="subCat"class="browser-default">
               <option value="0">전체</option>
             </select>
           </div>
-
-          <div class="col s4 center">
-            <select class="browser-default">
-              <option value="9">인기논문</option>
-              <option value="10">최신논문</option>
-            </select>
-          </div>
         </div>
-      <div style="border:1px solid; margin-bottom:20px;">
-          <div class="nav-wrapper col s12 center">
-              <div class="input-field">
-                <input id="search" name="querySentence" type="search" required>
-                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                <i class="material-icons">close</i>
-              </div>
-          </div>
-      </div>
-    </form>
+        <div style="border:1px solid; margin-bottom:20px;">
+            <div class="nav-wrapper col s12 center">
+                <div class="input-field">
+                  <input id="search" name="querySentence" type="search" required>
+                  <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                  <i class="material-icons">close</i>
+                </div>
+            </div>
+        </div>
+      </form>
 
-      {% for i in result %}
-      <div class="col s12">
-        <ul class="collection">
-          <li class="collection-item avatar" onclick="location.href='/main_view_journal?id={{i._id}}'">
-            <i class="material-icons circle">folder</i>
-            <span class="title">{{i.title}}</span>
-            <p>{{i.writer}}<br></p>
-            <p style="line-height:1.3rem; font-size:0.8rem;">주제어 : {{i.keyword}}</p>
-            <p> 시간: {{i.time}}</p>
-          </li>
-        </ul>
+      <div class="col s12 center">
+        <table class="striped highlight centered responsive-table">
+          <thead>
+            <tr>
+                <th style="font-weight:bold; width:10%;">논문번호</th>
+                <th style="font-weight:bold; width:50%;">논문제목</th>
+                <th style="font-weight:bold; width:15%;">논문저자</th>
+                <th style="font-weight:bold; width:10%;">논문버전</th>
+                <th style="font-weight:bold; width:10%;">논문가치</th>
+                <th style="font-weight:bold; width:5%;">조회수</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for i in result %}
+            <tr>
+              <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.paperNum}}</span></td>
+              <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.title}}</span></td>
+              <td>{{i.writer}}</td>
+              <td>{{i.version}}</td>
+              <td><span class="oj-ref-count" data-id="{{i.paperNum}}"></span></td>
+		<!-- oj-ref-count = 참조 수 전체 태그 가진 클래스 / data-id = 각 참조 수 태그를 구분하는 값 -->
+              <td>{{i.hits}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-      {% endfor %}
+
 
       <div class="col s12 center">
         <ul class="pagination">
@@ -239,6 +258,29 @@
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
   <script src="js/common.js"></script>
+  <script>
+    function setJournalRefCount(instance) {
+        $(".oj-ref-count").each(async function () {
+          var journalNumber = $(this).attr("data-id");
+          await instance.getReferenceCount(journalNumber).then(function (res) {
+            var count = res['c'][0].toString();
+            $(".oj-ref-count[data-id=\"" + journalNumber + "\"]").html(count);
+          });
+        });
+    }
+    
+    $(document).ready(function () {
+      $.getJSON("OpenJournal.json", function(data){
+        var Artifact = data;
+        contracts.OpenJournal = TruffleContract(Artifact);
+        contracts.OpenJournal.setProvider(web3Provider);
+        contracts.OpenJournal.deployed().then(function(instance){
+          global_instance = instance;
+          setJournalRefCount(global_instance);
+        });
+      });
+    });
+  </script>
 
-  </body>
+</body>
 </html>

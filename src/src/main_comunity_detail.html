@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Open Journal</title>
 
+
+
   <script>
   function checkComment(comment){
     var img_id = comment;
@@ -114,7 +116,7 @@
                 <tr>
                   <td style="font-weight: bold" class="left">{{i.title}}</td>
                   <td class="left" style="color:#9e9e9e;">|</td>
-                  <td class="left">{{i.title}}</td>
+                  <td class="left">{{i.mainCategory}}</td>
                   <td class="left">-</td>
                   <td class="left">{{i.subCategory}}</td>
                   <td class="right">{{i.time}}</td>
@@ -125,7 +127,8 @@
             </div>
             <div style="margin : 5px; margin-top:0px;" class="s12 center">
               <p class="right" style="margin:0;">{{i.userName}}</p>
-              <img style="width:3%; height:3%;" class="right" src="img/gold-medal.png">
+              <p id="nameValue" style="display:none">{{nameValue}}</p>
+              <img id="medalImg" style="width:3%; height:3%;" class="right" src="">
             </div>
             <div style="min-height:500px;" class="s12 col center">
               <p style="margin:0; text-align: left;" > {{i.contents}}</p>
@@ -146,7 +149,7 @@
                         </td>
 
                         <td id="{{j.commentNum}}_{{i._id}}_{{j.userId}}_{{j.adaptFlag}}_{{i.userId}}" onclick="adapt(this)" class="comment-check unchecked">
-                          <img  style="height:20px; width:20px;" src="img/uncheck.png"/>
+                          <img  style="height:15px; width:15px;" src="img/uncheck.png"/>
                         </td>
 
                         <script>
@@ -188,6 +191,9 @@
                   </table>
               </form>
               </div>
+            </div>
+            <div id="deleteBtn" style="margin-top:40px; margin-bottom:20px;" class="row right">
+              <a  onclick="location.href='/deleteCommunityWriting?id={{i._id}}'" class="btn-small waves-effect waves-light blue darken-4">게시글 삭제</a>
             </div>
           </div>
         </div>
@@ -253,6 +259,32 @@
       member.style.display = 'none';
       nonmember.style.display = 'list-item';
     }
+  </script>
+  <script>
+    if('{{writer}}' == '{{userId}}'){
+      document.getElementById("deleteBtn").style.display = 'block';
+    }
+    else{
+      document.getElementById("deleteBtn").style.display = 'none';
+    }
+  </script>
+  <script>
+    var nameValue = parseInt(document.getElementById("nameValue").innerText);
+    var medal = document.getElementById("medalImg");
+
+    if(nameValue < 50){
+      medal.src = "img/medal-bronze.png";
+    }
+    else if(nameValue >= 50 && nameValue < 200){
+      medal.src = "img/medal-silver.png";
+    }
+    else if(nameValue >= 200 && nameValue < 500){
+      medal.src = "img/medal-gold.png";
+    }
+    else if(nameValue >= 500){
+      medal.src = "img/medal-star.png";
+    }
+
   </script>
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>

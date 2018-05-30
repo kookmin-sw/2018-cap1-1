@@ -104,33 +104,61 @@
                 <td class="left">{{i.mainCategory}}</td>
                 <td class="left">-</td>
                 <td class="left">{{i.subCategory}}</td>
-                <td class="right blue-text" style="font-size:1.2rem; font-weight: bold">{{i.time}}</td>
+                <td class="right blue-text text-darken-4" style="font-size:1rem; font-weight: bold">{{i.paperNum}}</td>
               </tr>
             </tbody>
           </table>
           <div style="margin-bottom: 8px;" class="col s12 center">
           </div>
           <div class="s12 col center">
-            <iframe id="journalPDF" style="width:80%; height:650px; overflow: hidden;" src="journal/{{i.fileName}}">
+            <iframe id="journalPDF" style="margin-bottom: 50px; margin-top:50px; width:80%; height:650px; overflow: hidden;" src="journal/{{i.fileName}}">
             </iframe>
 
-            <table class="journal_info">
+            <table class=" striped centered ">
               <tbody>
                 <tr>
-                  <td style="font-weight: bold;">
+                  <td style="width:20%; font-weight: bold;">
                     저자
                   </td>
                   <td>
-                    {{i.writer}}
+                    <p style="padding-left : 10px;text-align: left;">{{i.writer}}</p>
                   </td>
                 </tr>
                 <tr>
-                  <td style="font-weight: bold;">
+                  <td style="width:20%; font-weight: bold;">
                     Abstract
                   </td>
                   <td>
                     <p style="padding-left : 10px;text-align: left;">{{i.abstract}}</p>
                   </td>
+                </tr>
+                <tr>
+                  <td style="width:20%; font-weight: bold;">
+                    Keyword
+                  </td>
+                  <td>
+                    <p style="padding-left : 10px;text-align: left;">{{i.keyword}}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%; font-weight: bold;">
+                    Reference
+                  </td>
+                  <td>
+                    {% for key, value in paperReferenceDic.items() %}
+                    <p onclick="location.href='/main_view_reference_journal?journalNum={{key}}'" style="padding-left :10px; cursor:pointer; text-align: left;">[<span>{{key}}</span>]&nbsp;<span style="font-weight:bold;">{{value}}</span></p>
+                    {% endfor %}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width:20%; font-weight: bold;">
+                    Contributor
+                  </td>
+                  <td>
+	                  {% for key, value in paperContributorDic.items() %}
+	                  <p style="padding-left : 10px;text-align: left;">[<span>{{key}}</span>]&nbsp;<span style="font-weight:bold;">{{value}}</span></p>
+	                  {% endfor %}
+	              </td>
                 </tr>
               </tbody>
             </table>
@@ -155,7 +183,7 @@
             <div style="overflow:scroll; background-color:white; width:80%; height:80%;" class="uploadFinalJournal">
               <div style="color:black;" class="row">
 
-                <div class="col center s12">
+                <div class="col s12 center">
                   <p style="text-align: center; margin:20px; border:1px solid red;">
                     <span style="color:red; font-size:1.5rem;">주의사항</span><br><br>
 
@@ -166,7 +194,7 @@
                   </p>
                 </div>
 
-                <div class="col center s12">
+                <div class="col s12 center">
                   <table class="view_final_info">
                     <tbody>
                       <tr>
@@ -228,121 +256,71 @@
                   <div style="margin:20px; margin-bottom:0px; text-align:left;">
                     <span style=" font-size:1.5rem; font-weight:bold;">Reference</span>
                   </div>
-                  <div>
-                    {% for key, value in paperReferenceDic.items() %}
-                    <div class="col s12">
-
-                      <div class="col s2">
-                        <div  class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span style="margin-bottom:0px; font-size:1.3rem;" name="OJjournal" class="card-title">{{key}}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s6">
-                        <div class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title" id="journal_name">{{value}}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s1" onclick="modifyInfo(this)">
-                        <div class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
-                            <p id="">클릭</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s1" onclick="checkReference(this)">
-                        <div class="card blue darken-4">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
-                            <p id="">클릭</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col s2">
-                        <div class="card">
-                          <div style="padding:1px;" class="card-content white-text">
-                            <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">번호&제목 일치여부</span>
+                  <div class="col s12 center">
+                    <table class="striped">
+                      <thead>
+                        <tr>
+                            <th style="width:20%;">논문번호</th>
+                            <th style="width:40%;">논문제목</th>
+                            <th style="width:10%;">정보수정</th>
+                            <th style="width:10%;">일치여부</th>
+                            <th style="width:20%;">결과</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for key, value in paperReferenceDic.items() %}
+                        <tr>
+                          <td style="padding:5px;" name="OJjournal">{{key}}</td>
+                          <td style="padding:5px;">{{value}}</td>
+                          <td style="padding:5px; font-weight:bold;" onclick = "modifyInfo(this)">클릭</td>
+                          <td style="padding:5px; font-weight:bold;" onclick="checkReference(this)">클릭</td>
+                          <td style="padding:5px;">
                             <p id="correspond" style="color:green;">일치합니다.</p>
                             <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    {% endfor %}
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
 
-                <div style="margin:20px; margin-bottom:0px; text-align:left;">
-                  <span style=" font-size:1.5rem; font-weight:bold;">Contributor</span>
-                </div>
-                <div>
-
-                  {% for key, value in paperContributorDic.items() %}
-                  <div class="col s12">
-
-                    <div class="col s2">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span style="margin-bottom:0px; font-size:1.3rem;" name="OJcontributorNum" class="card-title">{{key}}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s4">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span style="margin-bottom:0px; font-size:1.3rem;" class="card-title" id="contributor_name">{{value}}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s1" onclick="modifyContributorInfo(this)">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">정보수정</span>
-                          <p id="">클릭</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s1" onclick="checkContributor(this)">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">일치여부</span>
-                          <p id="">클릭</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s2">
-                      <div class="card blue darken-4">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="margin-bottom:0px; font-size:1.05rem;" class="card-title">지분(%)</span>
-                          <input style="background-color:white; height:30px; ime-mode: disabled; text-align: right; font-size:1.05rem;" id="journal_price"type="number" min="0" max="100" class="validate" name="price_percent" onkeyup="checkPercent()" required>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col s2">
-                      <div class="card">
-                        <div style="padding:1px;" class="card-content white-text">
-                          <span id="" style="color:black; margin-bottom:0px; font-size:1.05rem;" class="card-title">Contributor 일치여부</span>
+                <div style="margin-bottom:20px;" class="col s12 center">
+                  <div style="margin:20px; margin-bottom:0px; text-align:left;">
+                    <span style=" font-size:1.5rem; font-weight:bold;">Contributor</span>
+                  </div>
+                  <div class="col s12 center">
+                    <table class="striped">
+                    <thead>
+                      <tr>
+                          <th style="width:20%;">저자번호</th>
+                          <th style="width:20%;">저자이름</th>
+                          <th style="width:10%;">정보수정</th>
+                          <th style="width:10%;">일치여부</th>
+                          <th style="width:10%;">지분(%)</th>
+                          <th style="width:20%;">결과</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for key, value in paperContributorDic.items() %}
+                      <tr>
+                        <td style="padding:5px;" name="OJcontributorNum">{{key}}</td>
+                        <td style="padding:5px;">{{value}}</td>
+                        <td style="padding:5px; font-weight:bold;" onclick = "modifyContributorInfo(this)">클릭</td>
+                        <td style="padding:5px; font-weight:bold;" onclick="checkContributor(this)">클릭</td>
+                        <td style="padding:5px;">
+                          <input style="ime-mode: disabled; text-align: right; font-size:2rem; " min="0" max="100" type="number" class="validate" name="price_percent" onkeyup="checkPercent()" required>
+                        </td>
+                        <td style="padding:5px;">
                           <p id="correspond" style="color:green;">일치합니다.</p>
                           <p id="notcorrespond" style="display:none; color:red;">일치하지 않습니다.</p>
-                        </div>
-                      </div>
-                    </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
                   </div>
-                  {% endfor %}
-              </div>
-
+                </div>
 
                 <div class="col s3 center">
                   <div style="margin-bottom:0px; text-align:right;">
@@ -447,6 +425,9 @@
                 </tbody>
               </table>
             </form>
+            <div id="deleteBtn" style="margin-top:40px; margin-bottom:20px;" class="row right">
+              <a  onclick="location.href='/deletePaper?id={{i._id}}'" class="btn-small waves-effect waves-light blue darken-4">검수 논문 삭제</a>
+            </div>
         </div>
       </div>
     </div>
@@ -485,11 +466,21 @@
 
   <!--  Scripts-->
 
+  <script>
+    if('{{writer}}' == '{{userId}}'){
+      document.getElementById("deleteBtn").style.display = 'block';
+    }
+    else{
+      document.getElementById("deleteBtn").style.display = 'none';
+    }
+  </script>
 
   <script>
     var userId = '{{userId}}';
     var enrollUserId = '{{enrollUserId}}';
     var complete = '{{complete}}';
+    var subFlag = '{{subFlag}}';
+
     if(userId == enrollUserId && complete == 0){
       //alert("작성자와 현재 사용자가 같음");
       //업데이트 버튼, 최종 등록 버튼 나오고, 구독은 안나옴
@@ -513,10 +504,17 @@
     }
     else if(userId != enrollUserId && complete == 1){
       //alert("작성자와 현재 사용자가 다름");
-      //구독버튼만 나와야함
-      document.getElementById("btn_update").style.display = "none";
-      document.getElementById("btn_enroll").style.display = "none";
-      document.getElementById("btn_read").style.display = "block";
+      if(subFlag == 1){ //구독완료
+          document.getElementById("btn_update").style.display = "none";
+          document.getElementById("btn_enroll").style.display = "none";
+          document.getElementById("btn_read").style.display = "none";
+      }
+      else if(subFlag == 0){ //구독 버튼만 보임
+	  document.getElementById("btn_update").style.display = "none";
+          document.getElementById("btn_enroll").style.display = "none";
+          document.getElementById("btn_read").style.display = "block";
+      }
+
     }
   </script>
   <script>
