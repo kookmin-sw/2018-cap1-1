@@ -214,7 +214,7 @@ def moveToSubPaper():
     userId = checkUserId()
     completePaperCollection = db.PaperInformation
     result = completePaperCollection.find({"complete":1}).sort("time", -1)
-    return render_template('main_view_fix_journal.html', result = result, userId = userId)
+    return render_template('main_view_fix_journal.html', result = result, userId=userId)
 
 @app.route('/main_logout')
 def logout():
@@ -443,6 +443,7 @@ def viewPaper():
     enrollUserId = data2['user_id']
     completeJournalNum = data2['paperNum']
     complete = int(data2['complete'])
+    writer = data2['user_id']
     paperReferenceDic, paperContributorDic = extractPDF(id)
     journalNum = papernum()
     hit = data2['hits']
@@ -454,7 +455,7 @@ def viewPaper():
         subFlag = 1
     return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
                            paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum,
-                           subFlag = subFlag)
+                           subFlag = subFlag, writer = writer)
 
 @app.route("/move_paper_update", methods=['GET', 'POST'])
 def moveUpdatePaper():
@@ -491,10 +492,34 @@ def versionUpdate():
         loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
         return render_template('main_login.html', loginFlag=loginFlag)
 
+def viewPaperafterAdapt(obId):
+    id = obId
+    userId = checkUserId()
+    paperInfo = db.PaperInformation
+    data = paperInfo.find({"_id": ObjectId(id)})
+    data2 = paperInfo.find_one({"_id": ObjectId(id)})
+    enrollUserId = data2['user_id']
+    completeJournalNum = data2['paperNum']
+    complete = int(data2['complete'])
+    writer = data2['user_id']
+    paperReferenceDic, paperContributorDic = extractPDF(id)
+    journalNum = papernum()
+    hit = data2['hits']
+    paperInfo.update({"_id": ObjectId(id)},{"$set": {"hits":hit+1}})
+    subFlag = 0
+    subInfo = None
+    subInfo = paperInfo.find_one({"_id":ObjectId(id), "subscribeArray":userId})
+    if subInfo != None:
+        subFlag = 1
+    return render_template('main_view_journal.html', id = id , data = data, userId = userId, enrollUserId = enrollUserId, complete = complete,
+                           paperReferenceDic = paperReferenceDic, journalNum = journalNum, paperContributorDic = paperContributorDic, completeJournalNum = completeJournalNum,
+                           subFlag = subFlag, writer = writer)
+
 @app.route("/adaptPaperComment") #댓글 채택시 명성 부여
 def adaptPaperComment():
     data = request.args.get("data")
     list = data.split(',') # 0번째 댓글번호, 1번째 문서객체아이디, 2번째 댓글 작성자 아이디, 3번째 채택flag, 4번째 글 작성자 아이디
+    id = list[1]
     paperCollection = db.PaperInformation
     userCollection = db.Users
     userId = checkUserId()
@@ -507,8 +532,7 @@ def adaptPaperComment():
             paperCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
             {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
             data = paperCollection.find({"_id": ObjectId(list[1])})
-            paperNumDic = extractReference(list[1])
-            return render_template('main_view_journal.html',data = data, userId = userId, paperNumDic = paperNumDic)
+            return viewPaperafterAdapt(id)
 
     oauthUserCollection = db.Oauth_Users
     oauthCursor = oauthUserCollection.find({"user_id": list[2]}) #구글 유저인 경우
@@ -520,8 +544,7 @@ def adaptPaperComment():
             writingCollection.update({"_id": ObjectId(list[1]), "commentDicts.commentNum": int(commentN)},
             {"$set": {"commentDicts.$.adaptFlag": 1}}, True)
             data = writingCollection.find({"_id": ObjectId(list[1])})
-            paperNumDic = extractReference(list[1])
-            return render_template('main_view_journal.html',data = data, userId = userId, paperNumDic = paperNumDic)
+            return viewPaperafterAdapt(id)
 
     loginFlag = 2   #로그인 정보 없을 때 로그인이 필요하다는 flag전달
     return render_template('main_login.html', loginFlag=loginFlag)
@@ -615,10 +638,7 @@ def getWriting():
     data = bulletin.find({"_id": ObjectId(id)})
     oneData = bulletin.find_one({"_id":ObjectId(id)})
     writer = oneData['userId']
-    userCollection = db.Users
-    userInfo =  userCollection.find_one({"user_id":writer})
-    nameValue = userInfo['fame']
-    return render_template('main_comunity_detail.html',data = data, userId = userId, writer = writer, nameValue = nameValue)
+    return render_template('main_comunity_detail.html',data = data, userId = userId, writer = writer)
 
 @app.route("/deleteCommunityWriting", methods=['GET', 'POST'])
 def deleteCommunityWriting():
@@ -626,6 +646,13 @@ def deleteCommunityWriting():
     bulletin = db.Bulletin
     bulletin.remove({"_id": ObjectId(id)})
     return mainComunity()
+
+@app.route("/deletePaper", methods=['GET', 'POST'])
+def deletePaper():
+    id = request.args.get("id")
+    paperCollection = db.PaperInformation
+    paperCollection.remove({"_id": ObjectId(id)})
+    return mainEnroll()
 
 def getUserName():
     userId = checkUserId()
