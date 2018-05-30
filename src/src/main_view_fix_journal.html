@@ -166,8 +166,8 @@
               <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.title}}</span></td>
               <td>{{i.writer}}</td>
               <td>{{i.version}}</td>
-              <td>참조수 : <span class="oj-ref-count" data-id="{{i.paperNum}}"></span></td>
-			  <!-- oj-ref-count = 참조 수 전체 태그 가진 클래스 / data-id = 각 참조 수 태그를 구분하는 값 -->
+              <td><span class="oj-ref-count" data-id="{{i.paperNum}}"></span></td>
+		<!-- oj-ref-count = 참조 수 전체 태그 가진 클래스 / data-id = 각 참조 수 태그를 구분하는 값 -->
               <td>{{i.hits}}</td>
             </tr>
             {% endfor %}
@@ -258,7 +258,6 @@
   <script src="js/web3.min.js"></script>
   <script src="js/truffle-contract.js"></script>
   <script src="js/common.js"></script>
-<<<<<<< HEAD
   <script>
     function setJournalRefCount(instance) {
         $(".oj-ref-count").each(async function () {
@@ -282,10 +281,6 @@
       });
     });
   </script>
-  
-=======
 
->>>>>>> 61e15ec0b5ccd4ce4c1eb8046800aaa092c43ed2
-
-  </body>
+</body>
 </html>

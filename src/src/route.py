@@ -214,7 +214,7 @@ def moveToSubPaper():
     userId = checkUserId()
     completePaperCollection = db.PaperInformation
     result = completePaperCollection.find({"complete":1}).sort("time", -1)
-    return render_template('main_view_fix_journal.html', result = result, userId=userId)
+    return render_template('main_view_fix_journal.html', result = result, userId = userId)
 
 @app.route('/main_logout')
 def logout():

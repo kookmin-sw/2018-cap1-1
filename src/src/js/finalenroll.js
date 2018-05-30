@@ -43,7 +43,6 @@ function finalEnroll(_id, journalNum){
 		console.log(referenceList);
 		console.log(contributeList);
 		console.log(pricePercentList);
-		alert("STOP!");
             instance.registJournal(journalNum, title, authorShare, value, referenceList, contributeList, pricePercentList, { from: author });
             console.log(instance);
 		location.href ="enrollState?data="+_id+",3,"+journalNum;
