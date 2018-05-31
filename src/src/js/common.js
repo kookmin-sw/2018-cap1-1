@@ -70,6 +70,7 @@ function checkContractState(state, journalNumber){
                         document.getElementById("loading_journal").style.display = "block";
                     }
                     else{
+			
                         blockEnrollUpdate();
                     }
                 });
@@ -77,14 +78,71 @@ function checkContractState(state, journalNumber){
         });
     }
 }
+ 
+function getTransactionsByAccount(myaccount, startBlockNumber, endBlockNumber) {
+  
+  console.log("Searching for transactions to/from account \"" + myaccount + "\" within blocks "  + startBlockNumber + " and " + endBlockNumber);
 
-function blockEnrollUpdate(){
+  for (var i = startBlockNumber; i <= endBlockNumber; i++) {
+    if (i % 1000 == 0) {
+      console.log("Searching block " + i);
+    }
+    console.log(i);
+    var block;
+    web3.eth.getBlock(i, function(error, result){
+	if(!error){
+		console.log(result);
+		block = result;
+	}
+	else
+		console.error(error);
+    });
+    if (block != null && block.transactions != null) {
+      block.transactions.forEach( function(e) {
+        if (myaccount == "*" || myaccount == e.from || myaccount == e.to) {
+          console.log("  tx hash          : " + e.hash + "\n"
+            + "   nonce           : " + e.nonce + "\n"
+            + "   blockHash       : " + e.blockHash + "\n"
+            + "   blockNumber     : " + e.blockNumber + "\n"
+            + "   transactionIndex: " + e.transactionIndex + "\n"
+            + "   from            : " + e.from + "\n" 
+            + "   to              : " + e.to + "\n"
+            + "   value           : " + e.value + "\n"
+            + "   time            : " + block.timestamp + " " + new Date(block.timestamp * 1000).toGMTString() + "\n"
+            + "   gasPrice        : " + e.gasPrice + "\n"
+            + "   gas             : " + e.gas + "\n"
+            + "   input           : " + e.input);
+        }
+      })
+    }
+  }
+  alert("STOP");
+}
+
+
+async function blockEnrollUpdate(){
+/*
+	var startBlockNumber;
+	var endBlockNumber;
+	await web3.eth.getBlockNumber(function(error, result){
+		if(!error){
+			endBlockNumber = result;
+                        console.log("Using endBlockNumber: " + endBlockNumber);
+                        startBlockNumber = endBlockNumber - 5;
+                        console.log("Using startBlockNumber: " + startBlockNumber);
+                        getTransactionsByAccount(web3.eth.coinbase, startBlockNumber, endBlockNumber);
+		}
+                else
+                        console.error(error);
+        });
+*/
 	document.getElementById("loading_journal").style.display = "none";
   document.getElementById("complete_journal").style.display = "block";
   setTimeout(function(){
 		console.log("setTimeout..");
 		document.getElementById("complete_journal").style.display = "none";
     }, 3000)
+	// alert("STOP !!!!!!!!!!!");
 	location.href ="blockEnrollUpdate";
 }
 

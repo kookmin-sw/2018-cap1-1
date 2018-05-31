@@ -13,11 +13,16 @@ $(document).ready(function () {
         var Artifact = data;
         contracts.OpenJournal = TruffleContract(Artifact);
         contracts.OpenJournal.setProvider(web3Provider);
-    	contracts.OpenJournal.deployed().then(function(instance){
+    	contracts.OpenJournal.deployed().then(async function(instance){
             var newUser = getUserAccount();
             console.log(newUser);
-            var contractLog = instance.signUp({from: newUser});
-	    console.log(contractLog);
+            await instance.signUp({from: newUser}).then(function(tx){
+		console.log(tx.receipt);
+		console.log(tx.receipt.transactionHash);
+		console.log(tx.receipt.blockNumber);
+		console.log(tx.receipt.from);
+		alert(tx.receipt.from);
+	    });
         });
     });
 

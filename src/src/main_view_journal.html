@@ -468,7 +468,12 @@
 
   <script>
     if('{{writer}}' == '{{userId}}'){
-      document.getElementById("deleteBtn").style.display = 'block';
+      if('{{complete}}' == 0){
+	document.getElementById("deleteBtn").style.display = 'block';
+      }
+      else if('{{complete}}' == 1){
+	document.getElementById("deleteBtn").style.display = 'none';
+      }
     }
     else{
       document.getElementById("deleteBtn").style.display = 'none';
