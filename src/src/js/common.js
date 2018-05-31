@@ -20,7 +20,7 @@ $(document).ready(function () {
 		dataType: "json",
 		success: function(data){
 			var obj = JSON.parse(JSON.stringify(data));
-			console.log(obj.check_state + " and " + obj.journal_number);
+			// console.log(obj.check_state + " and " + obj.journal_number);
 			checkContractState(obj["check_state"], obj["journal_number"]);
 		},
 		error: function(thrownError){
@@ -63,15 +63,12 @@ function checkContractState(state, journalNumber){
             contracts.OpenJournal = TruffleContract(Artifact);
             contracts.OpenJournal.setProvider(web3Provider);
             contracts.OpenJournal.deployed().then(function(instance){
-		console.log("start getIsJournalValid");
                 instance.getIsJournalValid(journalNumber).then(function(res){
-			console.log(res);
                     if(res == false){
                         document.getElementById("loading_journal").style.display = "block";
                     }
                     else{
-			
-                        blockEnrollUpdate();
+			            blockEnrollUpdate();
                     }
                 });
             });

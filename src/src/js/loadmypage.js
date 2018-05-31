@@ -17,18 +17,16 @@ web3 = new Web3(web3Provider);
         contracts.OpenJournal = TruffleContract(Artifact);
         contracts.OpenJournal.setProvider(web3Provider);
         contracts.OpenJournal.deployed().then(function(instance){
-            
-            // 비동기화 문제 해결 해야만 
-		var user = getUserAccount();
-            	var res = instance.balanceOf(user);
-		var id = instance.getUserNumber({from : user});
-		console.log(id);
-		id.then(function(result){
-			document.getElementById("blockchain_id").innerText = parseInt(result['c'][0]);
-		});
-            	res.then(function(result){
-			document.getElementById("tokenNum").innerText = (parseFloat(result['c'][0]/10000));
-		});
+		    var user = getUserAccount();
+            var res = instance.balanceOf(user);
+		    var id = instance.getUserNumber({from : user});
+		    console.log(id);
+		    id.then(function(result){
+			    document.getElementById("blockchain_id").innerText = parseInt(result['c'][0]);
+		    });
+            res.then(function(result){
+			    document.getElementById("tokenNum").innerText = (parseFloat(result['c'][0]/10000));
+		    });
             // instance.getUserSubscribedJournals({from: user})
             // .then(function(res){
             //     for(var i = 0; i < res.length; i++){
