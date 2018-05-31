@@ -471,10 +471,6 @@
   var userId   = '{{userId}}';
   var subFlag  = '{{subFlag}}';
   var complete = '{{complete}}';
-  alert(writer);
-  alert(userId);
-  alert(subFlag);
-  alert(complete);
   if(writer == userId){
     if(complete == 0 ){
       document.getElementById("deleteBtn").style.display = 'block';
@@ -485,13 +481,10 @@
     document.getElementById("journalPDF").style.display = 'block';
   }
   else if(writer != userId){
-    alert("유저, 작성자 다름");
     document.getElementById("deleteBtn").style.display = 'none';
+    //document.getElementById("journalPDF").style.display = 'block';
     if(complete == 0){
       document.getElementById("journalPDF").style.display = 'block';  
-    }
-    else if(complete == 1 && subFlag == 0){
-      document.getElementById("journalPDF").style.display = 'none';
     }
     else if(complete == 1 && subFlag == 1){
       document.getElementById("journalPDF").style.display = 'block';
