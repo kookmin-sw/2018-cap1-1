@@ -212,3 +212,11 @@
   top:0px;
   left:0px;
 }
+
+.transaction_td{
+  padding:10px;  text-overflow:ellipsis; overflow:hidden; white-space:nowrap; margin-left:2px; margin-right:2px;
+}
+
+.transaction_right{
+  border-right : 3px solid #ffffff;
+}
