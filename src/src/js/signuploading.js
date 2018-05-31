@@ -17,12 +17,12 @@ $(document).ready(function () {
             var newUser = getUserAccount();
             console.log(newUser);
             await instance.signUp({from: newUser}).then(function(tx){
-		console.log(tx.receipt);
-		console.log(tx.receipt.transactionHash);
-		console.log(tx.receipt.blockNumber);
-		console.log(tx.receipt.from);
-		alert(tx.receipt.from);
-	    });
+		    console.log(tx.receipt);
+		    // console.log(tx.receipt.transactionHash);
+		    // console.log(tx.receipt.blockNumber);
+		    // console.log(tx.receipt.from);
+		    // alert(tx.receipt.from);
+	        });
         });
     });
 
@@ -34,7 +34,7 @@ $(document).ready(function () {
             contracts.OpenJournal.deployed().then(function(instance){
                 var newmember = getUserAccount();
                 instance.getIsUserValid({from: newmember}).then(function(res){
-                    console.log(res);
+                    // console.log(res);
                     if(res == true){
                         location.href ="/";
                     }

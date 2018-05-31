@@ -17,18 +17,15 @@ function subscribeJournal(_id){
         contracts.OpenJournal.deployed().then(function(instance){
         	var journalNumber = getJournalNumber();
         	var subscriberAccount = getSubscriberAccount();    
-		instance.subscribeJournal(journalNumber, { from: subscriberAccount });
-        	alert("subscriber : " + subscriberAccount + ", number : " + journalNumber + "\n구독이 완료되기까지 1분이 소요될 수 있습");
+		    instance.subscribeJournal(journalNumber, { from: subscriberAccount });
+        	// alert("subscriber : " + subscriberAccount + ", number : " + journalNumber + "\n구독이 완료되기까지 1분이 소요될 수 있습");
         	location.href ="subscribeState?data="+_id+",1,"+journalNumber;
-	});
+	    });
     });
-    
 }
 
 function getJournalNumber(){
     var number = parseInt(document.getElementById("journal_number").value);
-    console.log("number: " + number);
-    console.log("type : "+ typeof(number));
     return number;
 }
 

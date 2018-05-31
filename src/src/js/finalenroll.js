@@ -36,16 +36,16 @@ function finalEnroll(_id, journalNum){
         contracts.OpenJournal.setProvider(web3Provider);
         contracts.OpenJournal.deployed().then(function(instance){
             var author = getAuthorAccount();
-		console.log(journalNum);
-		console.log(title);
-		console.log(authorShare);
-		console.log("value:"+value);
-		console.log(referenceList);
-		console.log(contributeList);
-		console.log(pricePercentList);
+		    // console.log(journalNum);
+		    // console.log(title);
+		    // console.log(authorShare);
+		    // console.log("value:"+value);
+		    // console.log(referenceList);
+		    // console.log(contributeList);
+		    // console.log(pricePercentList);
             instance.registJournal(journalNum, title, authorShare, value, referenceList, contributeList, pricePercentList, { from: author });
             console.log(instance);
-		location.href ="enrollState?data="+_id+",3,"+journalNum;
+		    location.href ="enrollState?data="+_id+",3,"+journalNum;
 	    //$.ajax({
             //    url: "http://www.openjournal.io/enrollState",
             //    type: 'POST',

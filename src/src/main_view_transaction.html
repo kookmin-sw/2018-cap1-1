@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Open Journal</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/customize.css" type="text/css" rel="stylesheet"/>
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"> -->
+
+</head>
+<body>
+  <nav class="nav-extended white" role="navigation">
+    <ul id="dropdown1" class="dropdown-content">
+      <li id="nav_login"><a href="main_login" class="black-text">로그인</a></li>
+      <li id="nav_new_member" ><a href="main_new_member" class="black-text">회원가입</a></li>
+    </ul>
+    <ul id="dropdown2"  class="dropdown-content">
+      <li id="nav_mypage" ><a href="main_mypage" class="black-text">마이 페이지</a></li>
+      <li id="nav_buyToken" ><a href="main_token_buy_page" class="black-text">토큰구매하기</a></li>
+      <li id="nav_logout" ><a href="main_logout" class="black-text">로그아웃</a></li>
+    </ul>
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="/" class="brand-logo">Open Journal</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="main_enroll">논문 검수 및 등록</a></li>
+        <li><a href="main_view_fix_journal">논문 구독</a></li>
+        <li><a href="main_comunity">커뮤니티</a></li>
+        <li><a href="main_view_transaction">거래장부</a></li>
+        <li id="nav_login2"><a class="dropdown-trigger" href="main_login" data-target="dropdown1">로그인<i class="material-icons right">arrow_drop_down</i></a></li>
+        <li id="nav_mypage2"><a class="dropdown-trigger" href="main_mypage" data-target="dropdown2">마이페이지<i class="material-icons right">arrow_drop_down</i></a></li>
+      </ul>
+      <ul id="nav-mobile" class="sidenav">
+        <li><a href="main_enroll">논문 검수 및 등록</a></li>
+        <li><a href="main_view_fix_journal">논문 구독</a></li>
+        <li><a href="main_comunity">커뮤니티</a></li>
+        <li><a href="main_view_transaction">거래장부</a></li>
+        <li name="notmemberNav" style="display:block;"><a href="main_login">로그인</a></li>
+        <li name="notmemberNav" style="display:block;"><a href="main_new_member">회원가입</a></li>
+        <li name="memberNav" style="display:none;"><a href="main_mypage">마이 페이지</a></li>
+        <li name="memberNav" style="display:none;"><a href="main_token_buy_page">토큰 구매하기</a></li>
+        <li name="memberNav" style="display:none;"><a href="main_logout">로그아웃</a></li>
+      </ul>
+      <a data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons blue-text text-darken-4">menu</i></a>
+    </div>
+  </nav>
+
+  <textarea style="display:none", name="userId", id = "userId">'{{userId}}''</textarea>
+
+  <div id="loading_journal" style="display:none; margin:0px;" class="fixed center-align">
+    <div style="margin:0px;" class="blue lighten-4 progress">
+      <div class="blue darken-3 indeterminate"></div>
+    </div>
+    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 블록체인에 걸리는 데 약 1분 정도 소요됩니다.</span>
+  </div>
+
+  <div id="complete_journal" style="display:none; margin:0px;" class="fixed center-align">
+    <div style="margin:0px;" class="progress">
+        <div class="blue darken-3 determinate" style="width: 100%"></div>
+    </div>
+    <span style="font-weight:bold;" class="blue-text text-darken-4">논문이 성공적으로 등록되었습니다.</span>
+  </div>
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+        <br><br>
+        <h1 class="header center black-text">거래 장부보기</h1>
+        <div class="row center">
+          <h5 class="header col s12 black-text">블록체인을 바탕으로 신뢰성있는 거래를 보장합니다.</h5>
+        </div>
+        <div class="row center">
+          <a href="#" id="" class="btn-large waves-effect waves-light blue darken-4">더 알아보기</a>
+        </div>
+        <br><br>
+      </div>
+    </div>
+    <div class="parallax"><img src="img/background_transaction.jpg" alt="Unsplashed background img 1"></div>
+  </div>
+
+
+<div class="container">
+  <div class="section">
+    <div class="row">
+      <div class="s12 center col">
+        <div style="margin-top:30px;" class="nav-content center">
+          <ul class="tabs tabs-transparent">
+            <li class="blue darken-4 tab"><a class="active" href="#test1">회원 가입 Transaction 보기</a></li>
+            <li class="blue darken-4 tab"><a href="#test2">논문 등록 Transaction 보기</a></li>
+            <li class="blue darken-4 tab"><a href="#test3">논문 구독 Transaction 보기</a></li>
+            <li class="blue darken-4 tab"><a href="#test4">토큰 거래 Transaction 보기</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div id="test1" class="container">
+    <div class="section">
+      <div class="row">
+        <div class="s12 col center">
+          <table style="table-layout: fixed" class="striped centered">
+            <thead>
+              <tr>
+                  <th class="transaction_right" style="padding:5px; width:15%; font-weight:bold;">회원 번호</th>
+                  <th class="transaction_right" style="padding:5px; width:25%; font-weight:bold;">트랜잭션 해쉬코드</th>
+                  <th class="transaction_right" style="padding:5px; width:15%; font-weight:bold;">블록 번호</th>
+                  <th style="padding:5px; width:45%; font-weight:bold;">회원 계좌 주소</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td class="transaction_td transaction_right">1</td>
+                <td class="transaction_td transaction_right">0xEDeFB88fdd0xEDeFB88fddABdA1e681157424FE7b17A16DD83DCABdA1e681157424FE7b17A16DD83DC</td>
+                <td class="transaction_td transaction_right">000000</td>
+                <td class="transaction_td">0xEDeFB88fddABdA1e681157424FE7b17A16DD83DC</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="test2" class="container">
+    <div class="section">
+      <div class="row">
+        <div class="s12 col center">
+          <table style="table-layout: fixed" class="striped centered">
+            <thead>
+              <tr>
+                  <th class="transaction_right" style="padding:5px; width:15%; font-weight:bold;">논문 번호</th>
+                  <th class="transaction_right" style="padding:5px; width:25%; font-weight:bold;">트랜잭션 해쉬코드</th>
+                  <th class="transaction_right" style="padding:5px; width:15%; font-weight:bold;">블록 번호</th>
+                  <th class="transaction_right" style="padding:5px; width:35%; font-weight:bold;">저자 계좌 주소</th>
+                  <th class="transaction_right" style="padding:5px; width:10%; font-weight:bold;">가격</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td class="transaction_td transaction_right">2018050001</td>
+                <td class="transaction_td transaction_right">0xEDeFB88fdd0xEDeFB88fddABdA1e681157424FE7b17A16DD83DCABdA1e681157424FE7b17A16DD83DC</td>
+                <td class="transaction_td transaction_right">000000</td>
+                <td class="transaction_td transaction_right">0xEDeFB88fddABdA1e681157424FE7b17A16DD83DC</td>
+                <td class="transaction_td">30</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="test3" class="container">
+    <div class="section">
+      <div class="row">
+        <div class="s12 col center">
+          <table style="table-layout: fixed" class="striped centered">
+            <thead>
+              <tr>
+                <th class="transaction_right" style="padding:5px; width:15%; font-weight:bold;">논문 번호</th>
+                <th class="transaction_right" style="padding:5px; width:25%; font-weight:bold;">트랜잭션 해쉬코드</th>
+                <th class="transaction_right" style="padding:5px; width:15%; font-weight:bold;">블록 번호</th>
+                <th class="transaction_right" style="padding:5px; width:45%; font-weight:bold;">구독자 계좌주소</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td class="transaction_td transaction_right">2018050001</td>
+                <td class="transaction_td transaction_right">0xEDeFB88fddABdA1e6811574424FE7b17A16DD8324FE7b17A16DD83DC</td>
+                <td class="transaction_td transaction_right">000000</td>
+                <td class="transaction_td">0xEDeFB88fddABdA1e681157424FE7b17A16DD83DC</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="test4" class="container">
+    <div class="section">
+      <div class="row">
+        <div class="s12 col center">
+          <table style="table-layout: fixed" class="striped centered">
+            <thead>
+              <tr>
+                <th class="transaction_right" style="padding:5px; width:25%; font-weight:bold;">트랜잭션 해쉬코드</th>
+                <th class="transaction_right" style="padding:5px; width:10%; font-weight:bold;">블록 번호</th>
+                <th class="transaction_right" style="padding:5px; width:15%; font-weight:bold;">거래 토큰 양</th>
+                <th class="transaction_right" style="padding:5px; width:25%; font-weight:bold;">From</th>
+                <th class="transaction_right" style="padding:5px; width:25%; font-weight:bold;">To</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td class="transaction_td transaction_right">0xEDeFB88fddABdA1e6811574424FE7b17A16DD8324FE7b17A16DD83DC</td>
+                <td class="transaction_td transaction_right">2018050001</td>
+                <td class="transaction_td transaction_right">25</td>
+                <td class="transaction_td transaction_right">0xEDeFB88fddABdA1e681157424FE7b17A16DD83DC</td>
+                <td class="transaction_td">0xEDeFB88fddABdA1e681157424FE7b17A16DD83DC</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--  Scripts-->
+  <script>
+    var userId = '{{userId}}';
+
+    var mobile_nonmember = document.getElementsByName("notmemberNav");
+    var mobile_member = document.getElementsByName("memberNav");
+    var member = document.getElementById("nav_mypage2");
+    var nonmember = document.getElementById("nav_login2");
+
+    if(userId != ""){ //login
+
+      member.style.display = 'list-item';
+      nonmember.style.display = 'none';
+      for(i=0; i<mobile_nonmember.length; i++){
+        mobile_nonmember[i].style.display = 'none';
+      }
+      for(i=0; i<mobile_member.length; i++){
+        mobile_member[i].style.display = 'block';
+      }
+    }
+
+    else if(userId == ""){
+      for(i=0; i<mobile_nonmember.length;i++){
+        mobile_nonmember[i].style.display = 'block';
+      }
+      for(i=0; i<mobile_member.length;i++){
+        mobile_member[i].style.display = 'none';
+      }
+      member.style.display = 'none';
+      nonmember.style.display = 'list-item';
+    }
+  </script>
+
+  <script>
+    var enrollFlag = '{{enrollFlag}}'
+    if(enrollFlag == 1){
+      alert("회원가입이 완료 되었습니다.")
+    }
+  </script>
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  <script src="js/customize.js"></script>
+  <script src="js/web3.min.js"></script>
+  <script src="js/truffle-contract.js"></script>
+  <script src="js/common.js"></script>
+
+  <script>
+    var options = [
+    {selector: '#image-test', offset: 500, callback: function(el) {
+    Materialize.fadeInImage($(el)); } },
+    {selector: '#image-test2', offset: 200, callback: function(el) {
+    Materialize.fadeInImage($(el)); } }
+    ];
+
+    Materialize.scrollFire(options);
+
+    // Materialize.toast('I am a toast!', 4000) // 4000 is the duration of the toast
+
+  </script>
+
+  </body>
+</html>

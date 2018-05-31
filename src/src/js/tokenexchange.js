@@ -17,7 +17,7 @@ function buyJournalToken(){
         contracts.OpenJournal.setProvider(web3Provider);
         contracts.OpenJournal.deployed().then(function(instance){
             var user = getUserAccount();
-	    console.log(user);
+	        console.log(user);
             instance.buyToken({ from: user, value: howMuch }); // wei 곱하기 추가
             alert("'이더->토큰' 거래가 시작되었습니다. \n예상 대기시간은 1분입니다.");
 	    });
