@@ -85,7 +85,7 @@
                   USER ID
                 </td>
                 <td id="blockchain_id">
-                  
+
                 </td>
               </tr>
               <tr>
@@ -110,7 +110,7 @@
                   OpenJournal 토큰개수
                 </td>
                 <td id="tokenNum">
-                  
+
                 </td>
               </tr>
               <tr>
@@ -140,17 +140,19 @@
           <div style="margin:10px;">
             <p style="font-size:2rem; font-weight:bold; margin:0; padding:0;">등록한 논문</p>
           </div>
-          <div style="overflow:scroll;">
-	    {% for i in writePaper %}
-            <div class="col s12" onclick="location.href='/main_view_journal?id={{i._id}}'">
-              <div class="card blue darken-4">
-                <div style="padding:15px;" class="card-content white-text">
-                  <span class="card-title">{{i.title}}</span>
-                  <p>{{i.writer}} | {{i.mainCategory}} - {{i.subCategory}} </p>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
+          <div style="overflow:scroll; min-height: 500px; max-height:700px;">
+
+            <table class="striped highlight">
+              <tbody>
+                {% for i in writePaper %}
+                <tr>
+                  <td style="cursor:pointer; padding:4px;" onclick="location.href='/main_view_journal?id={{i._id}}'">
+                    <p style="margin:0px;"><span style="font-weight:bold;">{{i.title}}</span>&nbsp;<br />{{i.writer}} | {{i.mainCategory}} - {{i.subCategory}} </p>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -159,16 +161,17 @@
             <p style="font-size:2rem; font-weight:bold; margin:0; padding:0;">구독한 논문</p>
           </div>
           <div style="overflow:scroll; min-height: 500px; max-height:700px;">
-            {% for i in subPaperInfo %}
-            <div class="col s12" onclick="location.href='/main_view_journal?id={{i._id}}'">
-              <div class="card blue darken-4">
-                <div style="padding:15px;" class="card-content white-text">
-                  <span class="card-title">{{i.title}}</span>
-                  <p>{{i.writer}} | {{i.mainCategory}} - {{i.subCategory}}</p>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
+            <table class="striped highlight">
+              <tbody>
+                {% for i in subPaperInfo %}
+                <tr>
+                  <td style="cursor:pointer; padding:4px;" onclick="location.href='/main_view_journal?id={{i._id}}'">
+                    <p style="margin:0px;"><span style="font-weight:bold;">{{i.title}}</span>&nbsp;<br />{{i.writer}} | {{i.mainCategory}} - {{i.subCategory}} </p>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
