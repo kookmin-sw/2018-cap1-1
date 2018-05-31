@@ -467,31 +467,31 @@
   <!--  Scripts-->
 
   <script>
-    if('{{writer}}' == '{{userId}}'){
-        if('{{complete}}' == 1 ){
-            document.getElementById("deleteBtn").style.display = 'none';
-        }
-        else('{{complete}}' == 0 ){
-  	    document.getElementById("deleteBtn").style.display = 'block';
-	}
-    }
-    else{
+  if('{{writer}}' == '{{userId}}'){
+    if('{{complete}}' == 1 ){
       document.getElementById("deleteBtn").style.display = 'none';
     }
+    else('{{complete}}' == 0 ){
+      document.getElementById("deleteBtn").style.display = 'block';
+    }
+  }
+  else{
+    document.getElementById("deleteBtn").style.display = 'none';
+  }
   </script>
 
   <script>
-    if('{{subFlag}}' == 0){
-        if('{{writer}}' == '{{userId}}'){
-	    document.getElementById("journalPDF").style.display = 'block';
-	}
-	else{
-	    document.getElementById("journalPDF").style.display = 'none';
-        }	
+  if('{{subFlag}}' == 0){
+      if('{{writer}}' == '{{userId}}'){
+        document.getElementById("journalPDF").style.display = 'block';
+      }
+    else{
+      document.getElementById("journalPDF").style.display = 'none';
     }
-    else if('{{subFlag}}' == 1){
-      document.getElementById("journalPDF").style.display = 'block';
-    }
+  }
+  else if('{{subFlag}}' == 1){
+    document.getElementById("journalPDF").style.display = 'block';
+  }
   </script>
 
   <script>
