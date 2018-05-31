@@ -111,7 +111,7 @@
           <div style="margin-bottom: 8px;" class="col s12 center">
           </div>
           <div class="s12 col center">
-            <iframe id="journalPDF" style="display: none; margin-bottom: 50px; margin-top:50px; width:80%; height:650px; overflow: hidden;" src="journal/{{i.fileName}}">
+            <iframe id="journalPDF" style="margin-bottom: 50px; margin-top:50px; width:80%; height:650px; overflow: hidden;" src="journal/{{i.fileName}}">
             </iframe>
 
             <table class=" striped centered ">
@@ -155,10 +155,10 @@
                     Contributor
                   </td>
                   <td>
-                     {% for key, value in paperContributorDic.items() %}
-                     <p style="padding-left : 10px;text-align: left;">[<span>{{key}}</span>]&nbsp;<span style="font-weight:bold;">{{value}}</span></p>
-                     {% endfor %}
-                 </td>
+	                  {% for key, value in paperContributorDic.items() %}
+	                  <p style="padding-left : 10px;text-align: left;">[<span>{{key}}</span>]&nbsp;<span style="font-weight:bold;">{{value}}</span></p>
+	                  {% endfor %}
+	              </td>
                 </tr>
               </tbody>
             </table>
@@ -468,29 +468,15 @@
 
   <script>
     if('{{writer}}' == '{{userId}}'){
-        if('{{complete}}' == 1 ){
-            document.getElementById("deleteBtn").style.display = 'none';
-        }
-        else('{{complete}}' == 0 ){
-  	    document.getElementById("deleteBtn").style.display = 'block';
-	}
+      if('{{complete}}' == 0){
+	document.getElementById("deleteBtn").style.display = 'block';
+      }
+      else if('{{complete}}' == 1){
+	document.getElementById("deleteBtn").style.display = 'none';
+      }
     }
     else{
       document.getElementById("deleteBtn").style.display = 'none';
-    }
-  </script>
-
-  <script>
-    if('{{subFlag}}' == 0){
-        if('{{writer}}' == '{{userId}}'){
-	    document.getElementById("journalPDF").style.display = 'block';
-	}
-	else{
-	    document.getElementById("journalPDF").style.display = 'none';
-        }	
-    }
-    else if('{{subFlag}}' == 1){
-      document.getElementById("journalPDF").style.display = 'block';
     }
   </script>
 
@@ -499,6 +485,7 @@
     var enrollUserId = '{{enrollUserId}}';
     var complete = '{{complete}}';
     var subFlag = '{{subFlag}}';
+
     if(userId == enrollUserId && complete == 0){
       //alert("작성자와 현재 사용자가 같음");
       //업데이트 버튼, 최종 등록 버튼 나오고, 구독은 안나옴
@@ -528,19 +515,23 @@
           document.getElementById("btn_read").style.display = "none";
       }
       else if(subFlag == 0){ //구독 버튼만 보임
-           document.getElementById("btn_update").style.display = "none";
+	  document.getElementById("btn_update").style.display = "none";
           document.getElementById("btn_enroll").style.display = "none";
           document.getElementById("btn_read").style.display = "block";
       }
+
     }
   </script>
   <script>
     var userId = '{{userId}}';
+
     var mobile_nonmember = document.getElementsByName("notmemberNav");
     var mobile_member = document.getElementsByName("memberNav");
     var member = document.getElementById("nav_mypage2");
     var nonmember = document.getElementById("nav_login2");
+
     if(userId != ""){ //login
+
       member.style.display = 'list-item';
       nonmember.style.display = 'none';
       for(i=0; i<mobile_nonmember.length; i++){
@@ -550,6 +541,7 @@
         mobile_member[i].style.display = 'block';
       }
     }
+
     else if(userId == ""){
       for(i=0; i<mobile_nonmember.length;i++){
         mobile_nonmember[i].style.display = 'block';
