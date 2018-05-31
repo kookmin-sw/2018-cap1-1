@@ -135,9 +135,9 @@
             {% for i in result %}
             <tr>
               <td><span>{{i.writingPaperNum}}</span></td>
-              <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.title}}</span></td>
               <td>{{i.mainCategory}}</td>
               <td>{{i.subCategory}}</td>
+              <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.title}}</span></td>
               <td>{{i.writer}}</td>
               <td>{{i.version}}</td>
               <td>{{i.hits}}</td>
