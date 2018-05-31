@@ -220,3 +220,7 @@
 .transaction_right{
   border-right : 3px solid #ffffff;
 }
+
+.abstract_td{
+  text-overflow:ellipsis; overflow:hidden; white-space:nowrap;
+}

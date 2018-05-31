@@ -16,7 +16,7 @@
         web3Provider = new web3Provider.providers.HttpProvider("http://localhost:7545");
     }
     web3 = new Web3(web3Provider);
-    
+
   </script>
   <script>
 
@@ -150,8 +150,10 @@
         <table class="striped highlight centered responsive-table">
           <thead>
             <tr>
-                <th style="font-weight:bold; width:10%;">논문번호</th>
-                <th style="font-weight:bold; width:50%;">논문제목</th>
+                <th style="font-weight:bold; width:8%;">논문번호</th>
+                <th style="font-weight:bold; width:10%;">대분류</th>
+                <th style="font-weight:bold; width:10%;">소분류</th>
+                <th class="abstract_td" style="font-weight:bold; width:32%;">논문제목</th>
                 <th style="font-weight:bold; width:15%;">논문저자</th>
                 <th style="font-weight:bold; width:10%;">논문버전</th>
                 <th style="font-weight:bold; width:10%;">논문가치</th>
@@ -163,6 +165,8 @@
             {% for i in result %}
             <tr>
               <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.paperNum}}</span></td>
+              <td>{{i.mainCategory}}</td>
+              <td>{{i.subCategory}}</td>
               <td><span style="cursor:pointer;" onclick="location.href='/main_view_journal?id={{i._id}}'">{{i.title}}</span></td>
               <td>{{i.writer}}</td>
               <td>{{i.version}}</td>
@@ -268,7 +272,7 @@
           });
         });
     }
-    
+
     $(document).ready(function () {
       $.getJSON("OpenJournal.json", function(data){
         var Artifact = data;
